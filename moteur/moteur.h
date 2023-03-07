@@ -7,6 +7,15 @@
 
 #endif
 
+
+
+/// partie Manon
+
+void respectRegles();
+
+
+/// partie Latifa
+
 Move *initAction();
 Move *insTT(Move *L, Move *moves);
 void printMoveHistory(Move *L);
