@@ -47,12 +47,6 @@ int main(){
 
 
 /// partie Latifa
-typedef struct move {
-    int x; // position horizontale
-    int y; // position vertical
-    char joueur[6]; // joueur qui a joué le coup (blanc ou noir)
-    struct move *suiv;
-} Move;
 
 Move *initAction(){
     Move *moves;
