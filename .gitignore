@@ -1,7 +1,12 @@
 /fichier.o
+/fichier/fichier.o
 /IA.o
+/IA/IA.o
 /interface.o
+/interface/interface.o
 /joueur.o
+/joueur/joueur.o
 /moteur.o
+/moteur/moteur.o
 /main.o
 /main
