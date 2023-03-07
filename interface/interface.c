@@ -30,7 +30,7 @@ void rempQua (void)
 {
     char nom1[20];
     char nom2[20];
-    char c[2];
+    char c[3];
     int a1=0;
 
     printf("Joueur 1 rentrez votre pseudo :\t\n");
@@ -39,7 +39,9 @@ void rempQua (void)
     scanf("%s", nom2);
 
     printf("%s quelle case voulez-vous modifier ? \t\n", nom1);
-    scanf("%s",c);
+    scanf("%s", c);
+
+    printf("%ld\n", strlen(c));
 
     while(strlen(c)!=2)
     {
