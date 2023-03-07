@@ -4,7 +4,7 @@ Dans le cadre d'un projet d'algo de N3-S6, ce programme est développé pour met
 - Constitution de l'arborescence des fichiers - Fait
 - Configuration du makefile - Fait
 - Ajout des tests pour assurer que les règles de jeu sont respectés - En cours
-- Gestion de l'affichage sur terminal - En cours
+- Gestion de l'affichage sur terminal - Fait
 - Gestion d'un historique d'action - Fait
 
 Pour demain :
