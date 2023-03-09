@@ -7,4 +7,5 @@
 
 #endif
 
+#include "structure.h"
 #include "moteur/moteur.h"
