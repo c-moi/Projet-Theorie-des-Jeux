@@ -4,7 +4,7 @@
 /// partie du code de Manon
 
 void respectRegles(char rep[3]){
-    char couleur[6];
+   // char couleur[6];
     Move *move=(Move *)malloc(sizeof (Move));
     configPlayers(move, rep);
     //L la liste contenant tt les positions
@@ -48,8 +48,8 @@ void tour(char rep[3]){
     char rec[3];
     rec[0]=rep[0]-1;
     while(j<3){
-        for(rec[1]=rep[1]-1;rec[1]=rep[1]+1;rec[1]++){
-            if(rec=="adverse"){
+        for((rec[1])=((rep[1])-1);(rec[1])=((rep[1])+1);(rec[1])++){
+            if(strcmp(rec,"adverse")==0){
                 printf("Emplacement possible\n");
                 i=0;
             }
@@ -59,8 +59,8 @@ void tour(char rep[3]){
         }
         j++;
         rec[0]=rep[0];
-        for(rec[1]=rep[1]-1;rec[1]=rep[1]+1;rec[1]++){
-            if(rec=="adverse"){
+        for((rec[1])=((rep[1])-1);(rec[1])=((rep[1])+1);(rec[1])++){
+            if(strcmp(rec, "adverse")){
                 printf("Emplacement possible\n");
                 i=0;
             }
@@ -70,8 +70,8 @@ void tour(char rep[3]){
         }
         j++;
         rec[0]=rep[0]+1;
-        for(rec[1]=rep[1]-1;rec[1]=rep[1]+1;rec[1]++){
-            if(rec=="adverse"){
+        for((rec[1])=((rep[1])-1);(rec[1])=((rep[1])+1);(rec[1])++){
+            if(strcmp(rec, "adverse")){
                 printf("Emplacement possible\n");
                 i=0;
             }

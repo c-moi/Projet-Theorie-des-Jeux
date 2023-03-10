@@ -3,9 +3,10 @@
 
 int main(int argc, char **argv)
 {
+    char rep[3];
     Move *move=NULL;
     char pion[6];
-    respectRegles();
+    respectRegles(rep);
     switch (move->joueur){
         case 1 :
             strcpy(pion, "noir");
