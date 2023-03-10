@@ -47,12 +47,7 @@ int main(){
 
 
 /// partie Latifa
-typedef struct move {
-    int x; // position horizontale
-    int y; // position vertical
-    char joueur[6]; // joueur qui a joué le coup (blanc ou noir)
-    struct move *suiv;
-} Move;
+
 
 Move *initAction(){
     Move *moves;
@@ -63,10 +58,8 @@ Move *initAction(){
     else {
         printf ("\nJoueur qui a joué le coup (blanc ou noir):");
         scanf ("%s", moves->joueur);
-        printf ("\nPosition horizontale du joueur:");
-        scanf ("%d",&moves->x);
-        printf ("\nPosition verticale du joueur:");
-        scanf ("%d",&moves->y);
+        printf ("\nPosition du joueur:");
+        scanf ("%d",&moves->posi);
         moves->suiv=NULL;
     }
     return moves;
@@ -84,7 +77,7 @@ Move *insTT(Move *L, Move *moves){
 void printMoveHistory(Move *L){
     int cpt=0;
     while (L!=NULL){
-        printf("%s a joué en (%d,%d)\n", L->joueur, L->x, L->y);
+        printf("%s a joué en (%d,%d)\n", L->joueur, L->posi);
         cpt++;
         L=L->suiv;
     }
