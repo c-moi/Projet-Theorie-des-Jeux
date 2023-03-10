@@ -17,12 +17,14 @@ void respectRegles();
 /// partie Latifa
 
 typedef struct move {
-    int x; // position horizontale
-    int y; // position vertical
-    char joueur[6]; // joueur qui a joué le coup (blanc ou noir)
+    char position[3]; 
+    int joueur; // joueur qui a joué le coup (1 jeton noir ou 2 jeton blanc)
     struct move *suiv;
+    struct move *prec;
 } Move;
 
 Move *initAction();
 Move *insTT(Move *L, Move *moves);
-void printMoveHistory(Move *L);
+void printMoveHistory(Move *L, Move *actuel);
+Move *deplacArriere(Move *actuel);
+Move *deplacAvant(Move *actuel, Move *L);
