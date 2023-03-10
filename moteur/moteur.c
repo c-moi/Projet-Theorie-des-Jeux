@@ -48,17 +48,15 @@
 
 /// partie Latifa
 
-Move *initAction(){
+Move *initAction(int joueur, char position[3]){
     Move *moves;
     moves=(Move*)malloc(sizeof(Move));
     if(moves == NULL){
         printf("\nAllocation impossible");
     }
     else {
-        printf ("\nJoueur qui a joué le coup ( 1 jeton noir ou 2 jeton blanc):");
-        scanf ("%d", &moves->joueur);
-        printf ("\nPosition du joueur:");
-        scanf ("%s",moves->position);
+        moves->joueur=joueur;
+        strcpy(moves->position, position);
         moves->prec=NULL;
         moves->suiv=NULL;
     }
@@ -142,7 +140,8 @@ void supprimCoupApres(Move *actuel){
 
 int main(){
     Move *L, *moves, *actuel;
-    int choix=0;
+    int choix=0 , var1=0;
+    char var2[3];
     L=NULL;
     actuel=NULL;
     while (choix != 5){
@@ -162,18 +161,30 @@ int main(){
                     if(actuel->suiv!=NULL){
                         supprimCoupApres (actuel);
                     }
-                    moves = initAction();
+                    printf("\nJoueur (1 pour noir ou 2 pour blanc):");
+                    scanf("%d", &var1);
+                    printf("\nQuel est la position du joueur ?:");
+                    scanf("%s", var2);
+                    moves=initAction(var1, var2);
                     L = insTT(L, moves);
                     actuel = moves;
                 }
                 else if (actuel==NULL){
                     if(L==NULL){
-                        moves = initAction();
+                        printf("\nJoueur (1 pour noir ou 2 pour blanc):");
+                        scanf("%d", &var1);
+                        printf("\nQuel est la position du joueur ?:");
+                        scanf("%s", var2);
+                        moves=initAction(var1, var2);
                         L = insTT(L, moves);
                         actuel = moves;
                     }
                     else if (L!=NULL){
-                        moves = initAction();
+                        printf("\nJoueur (1 pour noir ou 2 pour blanc):");
+                        scanf("%d", &var1);
+                        printf("\nQuel est la position du joueur ?:");
+                        scanf("%s", var2);
+                        moves=initAction(var1, var2);
                         actuel=moves;
                         moves->suiv=L;
                         L=moves;

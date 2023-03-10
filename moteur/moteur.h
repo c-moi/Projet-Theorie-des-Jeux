@@ -11,8 +11,7 @@
 
 /// partie Manon
 
-void respectRegles();
-
+///void respectRegles();
 
 /// partie Latifa
 
@@ -23,8 +22,9 @@ typedef struct move {
     struct move *prec;
 } Move;
 
-Move *initAction();
+Move *initAction(int joueur, char position[3]);
 Move *insTT(Move *L, Move *moves);
 void printMoveHistory(Move *L, Move *actuel);
 Move *deplacArriere(Move *actuel);
 Move *deplacAvant(Move *actuel, Move *L);
+void supprimCoupApres(Move *actuel);
