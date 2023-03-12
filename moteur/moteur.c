@@ -94,51 +94,173 @@ void tour(char rep[3]){
 
 /// partie Latifa
 
-// Move *initAction(){
-//     Move *moves;
-//     moves=(Move*)malloc(sizeof(Move));
-//     if(moves == NULL){
-//         printf("\nAllocation impossible");
-//     }
-//     else {
-//         printf ("\nJoueur qui a joué le coup (blanc ou noir):");
-//         scanf ("%s", moves->joueur);
-//         printf ("\nPosition horizontale du joueur:");
-//         scanf ("%d",&moves->x);
-//         printf ("\nPosition verticale du joueur:");
-//         scanf ("%d",&moves->y);
-//         moves->suiv=NULL;
-//     }
-//     return moves;
-// }
+Move *creatMaillon(int joueur, char position[3]){
+    Move *moves;
+    moves=(Move*)malloc(sizeof(Move));
+    if(moves == NULL){
+        printf("\nAllocation impossible");
+    }
+    else {
+        moves->joueur=joueur;
+        strcpy(moves->position, position);
+        moves->prec=NULL;
+        moves->suiv=NULL;
+    }
+    return moves;
+}
 
-// Move *insTT(Move *L, Move *moves){
-//     if(L==NULL) L=moves;
-//     else{
-//         moves->suiv=L;
-//         L=moves;
-//     }
-//     return L;
-// }
+Move *depFin(Move *L){
+    while(L->suiv != NULL){
+            L=L->suiv;
+    }
+    return L;
+}
 
-// void printMoveHistory(Move *L){
-//     int cpt=0;
-//     while (L!=NULL){
-//         printf("%s a joué en (%d,%d)\n", L->joueur, L->x, L->y);
-//         cpt++;
-//         L=L->suiv;
-//     }
-//     if (cpt==0) printf("\nListe vide!");
-// }
+Move *insTT(Move *L, Move *moves){
+    Move *dep=L;
+    if (L==NULL){
+        L=moves;
+        L->prec=NULL;
+        L->suiv=NULL;
+    }
+    else{
+        dep = depFin(dep);
+        moves->suiv=dep->suiv;
+        moves->prec=dep;
+        dep->suiv=moves;
+    }
+    return L;
+}
+
+void printMoveHistory(Move *L, Move *actuel){
+    int cpt=0;
+    if (actuel==NULL) printf("\nListe vide!");
+    else if (actuel!=NULL){
+        while (L!=actuel){
+            printf("Mouvement %d : %d a joué en (%s)\n", cpt+1, L->joueur, L->position);
+            L=L->suiv;
+            cpt++;
+        }
+        printf("Mouvement %d : %d a joué en (%s)\n", cpt+1, L->joueur, L->position);
+        cpt++;
+    }
+}
+
+Move *deplacArriere(Move *actuel){
+    if (actuel!=NULL){
+        if(actuel->prec!=NULL){
+            actuel=actuel->prec;
+        }
+        else if (actuel->prec==NULL){
+            actuel=NULL;
+        }
+    }
+    return actuel;
+}
+
+Move *deplacAvant(Move *actuel, Move *L){
+    if (actuel!=NULL){
+        if(actuel->suiv!=NULL){
+            actuel=actuel->suiv;
+        }
+    }
+    if(actuel==NULL){
+        actuel=L;
+    }
+    return actuel;
+}
+
+void supprimCoupApres(Move *actuel){
+    if (actuel!=NULL){
+        Move *suivant=actuel->suiv;
+        while(suivant!=NULL){
+            actuel->suiv=suivant->suiv;
+            if (actuel->suiv != NULL) {
+                actuel->suiv->prec = actuel;
+            }
+            free(suivant);
+            suivant = actuel->suiv;
+        }
+    }
+}
 
 // int main(){
-//     Move *L, *moves;
+//     Move *L, *moves, *actuel;
+//     int choix=0 , var1=0;
+//     char var2[3];
 //     L=NULL;
-//     while(1){
-//         moves=initAction();
-//         if(moves!=NULL){
-//             L=insTT(L,moves);
-//             printMoveHistory(L);
+//     actuel=NULL;
+//     while (choix != 5){
+//         printf("\nMenu :\n");
+//         printf("1. Ajouter un coup joué\n");
+//         printf("2. Se déplacer vers le coup précédent\n");
+//         printf("3. Se déplacer vers l'avant\n");
+//         printf("4. Afficher l'historique des coups joués\n");
+//         printf("5. Quitter\n");
+//         printf("Choix : ");
+//         scanf("%d", &choix);
+//         printf("\n");
+
+//         switch (choix){
+//             case 1:
+//                 if (actuel!=NULL){
+//                     if(actuel->suiv!=NULL){
+//                         supprimCoupApres (actuel);
+//                     }
+//                     printf("\nJoueur (1 pour noir ou 2 pour blanc):");
+//                     scanf("%d", &var1);
+//                     printf("\nQuel est la position du joueur ?:");
+//                     scanf("%s", var2);
+//                     moves=initAction(var1, var2);
+//                     L = insTT(L, moves);
+//                     actuel = moves;
+//                 }
+//                 else if (actuel==NULL){
+//                     if(L==NULL){
+//                         printf("\nJoueur (1 pour noir ou 2 pour blanc):");
+//                         scanf("%d", &var1);
+//                         printf("\nQuel est la position du joueur ?:");
+//                         scanf("%s", var2);
+//                         moves=initAction(var1, var2);
+//                         L = insTT(L, moves);
+//                         actuel = moves;
+//                     }
+//                     else if (L!=NULL){
+//                         printf("\nJoueur (1 pour noir ou 2 pour blanc):");
+//                         scanf("%d", &var1);
+//                         printf("\nQuel est la position du joueur ?:");
+//                         scanf("%s", var2);
+//                         moves=initAction(var1, var2);
+//                         actuel=moves;
+//                         moves->suiv=L;
+//                         L=moves;
+//                         moves->suiv->prec=moves;
+//                         supprimCoupApres(actuel);
+//                     }
+//                 }
+//                 break;
+//             case 2:
+//                 actuel=deplacArriere(actuel);
+//                 if (actuel!=NULL) printf("Voici le coup précédent : %s", actuel->position);
+//                 else{
+//                     printf("Liste vide!\n");
+//                 }
+//                 break;
+//             case 3:
+//                 actuel=deplacAvant(actuel,L);
+//                 if (actuel!=NULL) printf("Vous êtes revenu au coup : %s\n", actuel->position);
+//                 else{
+//                     printf("Vous êtes à votre dernier coup!\n");
+//                 }
+//                 break;
+//             case 4:
+//                 printMoveHistory(L,actuel);
+//                 break;
+//             case 5:
+//                 printf("Au revoir !\n");
+//                 break;
+//             default:
+//                 printf("Choix invalide, veuillez entrer une option valide.\n");
 //         }
 //     }
 //     return 0;

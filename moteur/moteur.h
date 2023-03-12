@@ -1,10 +1,17 @@
-#ifndef MAIN
-#define MAIN
+#ifndef H_PA_MAIN
+#define H_PA_MAIN
 
-#include <stdio.h>
+#include <stdio.h> 
 #include <stdlib.h>
 #include <string.h>
-#include "../structure.h"
+
+typedef struct move {
+    char position[3]; 
+    int joueur; // joueur qui a joué le coup (1 jeton noir ou 2 jeton blanc)
+
+    struct move *suiv;
+    struct move *prec;
+} Move;
 
 #endif
 
@@ -16,8 +23,14 @@ void respectRegles(char rep[3]);
 void tour(char rep[3]);
 
 
-/// partie Latifa
+// ----------------------------------------------------------------------------------------------
+// - prototypes de la gestion d'historique de coups ---------------------------------------------
 
-// Move *initAction();
-// Move *insTT(Move *L, Move *moves);
-// void printMoveHistory(Move *L);
+Move *creatMaillon(int joueur, char position[3]);
+Move *insTT(Move *L, Move *moves);
+void printMoveHistory(Move *L, Move *actuel);
+Move *deplacArriere(Move *actuel);
+Move *deplacAvant(Move *actuel, Move *L);
+void supprimCoupApres(Move *actuel);
+
+// ----------------------------------------------------------------------------------------------
