@@ -30,7 +30,14 @@ typedef struct move {
 #ifndef H_PA_PROTO_INTERFACE
 #define H_PA_PROTO_INTERFACE
 
+// temporaire
+Move *initAction();
+Move *insTT(Move *L, Move *moves);
 
+void affichQua (void);
+void rempQua (void);
+Move * rempTab2 (char val[8][8]);
+void rempTab (void);
 
 #endif
 
