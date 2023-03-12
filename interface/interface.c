@@ -76,9 +76,9 @@ void rempQua (void)
 
 }
 
-int main(void)
-{
-    affichQua();
-    rempQua();
+// int main(void)
+// {
+//     affichQua();
+//     rempQua();
 
-}
+// }
