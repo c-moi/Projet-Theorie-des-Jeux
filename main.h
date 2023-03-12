@@ -1,3 +1,6 @@
+// ----------------------------------------------------------------------------------------------
+// - elements necessaires au bon fonctionnement du programme en general -------------------------
+
 #ifndef H_PA_MAIN
 #define H_PA_MAIN
 
@@ -15,5 +18,25 @@ typedef struct move {
 
 #endif
 
+// ----------------------------------------------------------------------------------------------
+
+
+
+
+#ifndef H_PA_INTERFACE
+#define H_PA_INTERFACE
+
 // #include "interface/interface.h"
+
+#endif
+
+
+
+
+
+#ifndef H_PA_MOTEUR
+#define H_PA_MOTEUR 
+
 #include "moteur/moteur.h"
+
+#endif
