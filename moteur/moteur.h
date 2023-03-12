@@ -1,3 +1,6 @@
+// ----------------------------------------------------------------------------------------------
+// - elements necessaires au bon fonctionnement du programme en general -------------------------
+
 #ifndef H_PA_MAIN
 #define H_PA_MAIN
 
@@ -15,16 +18,52 @@ typedef struct move {
 
 #endif
 
+// ----------------------------------------------------------------------------------------------
+
+
+
+
+
+// ----------------------------------------------------------------------------------------------
+// - import pour la gestion des fichiers --------------------------------------------------------
+
+#ifndef H_PA_FICHIERS
+#define H_PA_FICHIERS
+
+#include "../fichier/fichier.h"
+
+#endif
+
+// ----------------------------------------------------------------------------------------------
+
+
+
+
+
+// ----------------------------------------------------------------------------------------------
+// - prototypes securisation des actions du joueur sur le jeu -----------------------------------
+
+#ifndef H_PA_REGLES
+#define H_PA_REGLES
+
 #include "../joueur/joueur.h"
 
-/// partie Manon
-
 void respectRegles(char rep[3]);
-void tour(char rep[3]);
+void verifContour(char rep[3]);
+
+#endif
+
+// ----------------------------------------------------------------------------------------------
+
+
+
 
 
 // ----------------------------------------------------------------------------------------------
 // - prototypes de la gestion d'historique de coups ---------------------------------------------
+
+#ifndef H_PA_HISTORY
+#define H_PA_HISTORY
 
 Move *creatMaillon(int joueur, char position[3]);
 Move *insTT(Move *L, Move *moves);
@@ -32,5 +71,7 @@ void printMoveHistory(Move *L, Move *actuel);
 Move *deplacArriere(Move *actuel);
 Move *deplacAvant(Move *actuel, Move *L);
 void supprimCoupApres(Move *actuel);
+
+#endif
 
 // ----------------------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 #include "joueur.h"
 
 
-char configPlayers(Move *move, char rep[3]){
+char* configPlayers(Move *move, char rep[3]){
     int choix;
     int diff;
     move->joueur=1;
@@ -17,13 +17,13 @@ char configPlayers(Move *move, char rep[3]){
             lancerPartie(move, rep);
             break;
         default : 
-            printf("Ceci n'est pas une réponse correcte");
+            printf("Ceci n'est pas une réponse correcte\n");
             rep="0";
     }
     return rep;
 }
 
-char lancerPartie(Move *move, char rep[3]){
+char* lancerPartie(Move *move, char rep[3]){
         printf("Lancement de la partie...");
         printf("Joueur %d ou souhaitez-vous placer votre pion ?\n", move->joueur);
         scanf("%s", rep);
