@@ -15,11 +15,12 @@ typedef struct move {
 
 #endif
 
-
+#include "../joueur/joueur.h"
 
 /// partie Manon
 
-///void respectRegles();
+void respectRegles(char rep[3]);
+void tour(char rep[3]);
 
 
 // ----------------------------------------------------------------------------------------------

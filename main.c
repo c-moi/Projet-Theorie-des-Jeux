@@ -1,9 +1,27 @@
 #include "main.h"
+         
 
 
-int main(){
+int main(int argc, char **argv){
+    
+    // Main de Manon
+    char rep[3];
+    Move *move=NULL;
+    char pion[6];
+    respectRegles(rep);
+    switch (move->joueur){
+        case 1 :
+            strcpy(pion, "noir");
+            break;
+        case 2 :
+            strcpy(pion, "blanc");
+            break;
+        default :
+            printf("Aucune couleur a été attribuée !\n");   
 
 
+
+    // Main de Latifa
     // - débug de la gestion d'historique de coups ---------------------------------------------
     Move *L, *moves, *actuel;
     int choix=0 , var1=0;

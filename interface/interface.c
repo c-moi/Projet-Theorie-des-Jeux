@@ -30,7 +30,7 @@ void rempQua (void)
 {
     char nom1[20];
     char nom2[20];
-    char c[3];
+    char c[2];
     int a1=0;
 
     printf("Joueur 1 rentrez votre pseudo :\t\n");
@@ -76,9 +76,8 @@ void rempQua (void)
 
 }
 
-// int main(void)
-// {
-//     affichQua();
-//     rempQua();
-
-// }
+/*int main(void)
+{
+    affichQua();
+    rempQua();
+}*/

@@ -3,45 +3,91 @@
 
 /// partie du code de Manon
 
-// void respectRegles(){
-//     char rep[3];
-//     char *listpos[10]; //tableau regroupant toutes les positions des pions 
-//     int pre = 0; // présent dan sla liste
-//     printf("Ou souhaitez-vous placer votre pion ?\n");
-//     scanf("%s", rep);
-//     while(strlen(rep)!=2){
-//         printf("Cela ne correspond pas à un numéro de case, rentrez une lettre suivie d'un chiffre :\n");
-//         scanf("%s", rep);
-//     }
-//     printf("%ld\n", strlen(listpos));
-//     if((rep[0]>=97 && rep[0]<=104) && (rep[1]>=49 && rep[1]<=56)){
-//         printf("OK\n");
-//         for(int i=0; i <= strlen(listpos); i++){
-//             printf("%s", listpos[i]);
-//             if(listpos[i]==rep){
-//                 printf("yey\n");
-//                 pre = 1;
-//             }
-//         }
-//         if(pre == 1){
-//             printf("Position impossible car la case est déjà occupée\n");
-//         }
-//         else{
-//             printf("OK !\n");
-//             listpos[strlen(listpos)]=rep;
-//         }
-//     }
-//     else{
-//         printf("Ceci ne correspond pas à une case du plateau !\n");
-//     }
-// }
+void respectRegles(char rep[3]){
+   // char couleur[6];
+    Move *move=(Move *)malloc(sizeof (Move));
+    configPlayers(move, rep);
+    //L la liste contenant tt les positions
+    // L1 la liste de Latifa contenant les positions des pions noirs
+    //L2 la liste contenant les positions des pions blancs 
+    int pre = 0; // présent dans la liste
 
+    for(int j=0;j<=60;j++){
+        while(strlen(rep)!=2){
+            printf("Cela ne correspond pas à un numéro de case, rentrez une lettre suivie d'un chiffre :\n");
+            configPlayers(move, rep);
+        }
+        if((rep[0]>=97 && rep[0]<=104) && (rep[1]>=49 && rep[1]<=56)){
+            printf("OK\n");
+            while(move->suiv!=NULL){
+                if(move->posi==rep){
+                    pre = 1;
+                }
+                move = move->suiv;
+            }
+            if(pre == 1){
+                printf("Position impossible car la case est déjà occupée\n");
+            }
+            else{
+                printf("La case est vide\n");
+                // fonction qui fait le tour de rep
+                tour(rep);
+                //L->suiv=rep; à mettre à la fin si tt les conditions sont vérifiées
+            }
+        }
+        else{
+            printf("Ceci ne correspond pas à une case du plateau !\n");
+        }
+        move->joueur = (move->joueur%2)+1;
+    }
+}
 
-// int main(){
-//     respectRegles();
-//     return 0;
-// }
-
+void tour(char rep[3]){
+    int i=0;
+    int j=0;
+    char rec[3];
+    rec[0]=rep[0]-1;
+    while(j<3){
+        for((rec[1])=((rep[1])-1);(rec[1])=((rep[1])+1);(rec[1])++){
+            if(strcmp(rec,"adverse")==0){
+                printf("Emplacement possible\n");
+                i=0;
+            }
+            else{
+                i++;
+            }
+        }
+        j++;
+        rec[0]=rep[0];
+        for((rec[1])=((rep[1])-1);(rec[1])=((rep[1])+1);(rec[1])++){
+            if(strcmp(rec, "adverse")){
+                printf("Emplacement possible\n");
+                i=0;
+            }
+            else{
+                i++;
+            }
+        }
+        j++;
+        rec[0]=rep[0]+1;
+        for((rec[1])=((rep[1])-1);(rec[1])=((rep[1])+1);(rec[1])++){
+            if(strcmp(rec, "adverse")){
+                printf("Emplacement possible\n");
+                i=0;
+            }
+            else{
+                i++;
+            }
+        }
+        j++;
+    }
+    if(i!=0){
+        printf("Emplacement impossible car aucun pion adverse autour\n");
+    }
+    else{
+        printf("Règle suivante\n");
+    }
+}
 
 
 
