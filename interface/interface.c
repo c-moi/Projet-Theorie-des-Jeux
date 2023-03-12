@@ -104,45 +104,45 @@ void rempQua (void)
 
 }
 
-// Move *initAction()
-// {
-//     Move *moves;
-//     moves=(Move*)malloc(sizeof(Move));
-//     if(moves == NULL){
-//         printf("\nAllocation impossible");
-//     }
-//     else {
-//         printf ("\nJoueur qui a joué le coup (blanc ou noir):");
-//         scanf ("%s", moves->joueur);
-//         printf ("\nPosition du joueur:");
-//         scanf ("%s",moves->posi);
-//         while(strlen(moves->posi)!=2)
-//         {
-//             printf("Cela ne correspond pas à un numéro de case, rentrez une lettre suivie d'un chiffre :\n");
-//             scanf("%s", moves->posi);
-//         }
+Move *initAction()
+{
+    Move *moves;
+    moves=(Move*)malloc(sizeof(Move));
+    if(moves == NULL){
+        printf("\nAllocation impossible");
+    }
+    else {
+        printf ("\nJoueur qui a joué le coup (blanc ou noir):");
+        scanf ("%s", moves->joueur);
+        printf ("\nPosition du joueur:");
+        scanf ("%s",moves->position);
+        while(strlen(moves->position)!=2)
+        {
+            printf("Cela ne correspond pas à un numéro de case, rentrez une lettre suivie d'un chiffre :\n");
+            scanf("%s", moves->position);
+        }
 
-//         if((moves->posi[0]>=97 && moves->posi[0]<=104) && (moves->posi[1]>=49 && moves->posi[1]<=56))
-//         {
-//             printf("OK\n");
-//         }
-//         else{
-//             printf("Ceci ne correspond pas à une case du plateau !\n");
-//         }
-//         moves->suiv = NULL;
-//     }
-//     return moves;
-// }
+        if((moves->position[0]>=97 && moves->position[0]<=104) && (moves->position[1]>=49 && moves->position[1]<=56))
+        {
+            printf("OK\n");
+        }
+        else{
+            printf("Ceci ne correspond pas à une case du plateau !\n");
+        }
+        moves->suiv = NULL;
+    }
+    return moves;
+}
 
-// Move *insTT(Move *L, Move *moves)
-// {
-//     if(L==NULL) L=moves;
-//     else{
-//         moves->suiv=L;
-//         L=moves;
-//     }
-//     return L;
-// }
+Move *insTT(Move *L, Move *moves)
+{
+    if(L==NULL) L=moves;
+    else{
+        moves->suiv=L;
+        L=moves;
+    }
+    return L;
+}
 
 
 
