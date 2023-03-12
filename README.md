@@ -4,10 +4,7 @@ Dans le cadre d'un projet d'algo de N3-S6, ce programme est développé pour met
 - Constitution de l'arborescence des fichiers - Fait
 - Configuration du makefile - Fait
 - Ajout des tests pour assurer que les règles de jeu sont respectés - En cours
-- Gestion de l'affichage sur terminal - Fait
+- Gestion de l'affichage sur terminal - En vérifications
 - Gestion d'un historique d'action - Fait
+- Implémentation du déplacement dans l'historique de jeu - Fait
 
-Pour demain :
-- Terminer les tests sur le jeu
-- Terminer l'affichage du tableau (pouvoir compléter toutes les cases)
-- Implémentation du déplacement dans l'historique de jeu
