@@ -5,9 +5,9 @@
 int main(int argc, char **argv){
     
     // Main de Jade
-    affichQua();
+ //   affichQua();
     //rempQua();
-    rempTab();
+ //   rempTab();
 
 
 
@@ -15,24 +15,10 @@ int main(int argc, char **argv){
     // - débug de l'initialisation du jeu partie events ----------------------------------------
     /* on n'en a pas vraiment besoin, dans les autres fonctions du main. 
        Tu peux l'initialiser dans la fonction directement */
-    // char rep[3]; 
-    // Move *move=NULL; // pourquoi faire ?
-    // char pion[6]; // pourquoi faire ?
-    
-    // respectRegles(rep);
+    char rep[3]; 
+    respectRegles(rep);
 
-    // // a quoi sert ce switch ?
-    // switch (move->joueur)
-    // {
-    //     case 1 :
-    //         strcpy(pion, "noir");
-    //         break;
-    //     case 2 :
-    //         strcpy(pion, "blanc");
-    //         break;
-    //     default :
-    //         printf("Aucune couleur a été attribuée !\n");   
-    // }
+
 
 
     // Main de Latifa

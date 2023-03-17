@@ -4,9 +4,25 @@
 /// partie du code de Manon
 
 void respectRegles(char rep[3]){
-   // char couleur[6];
-    Move *move=(Move *)malloc(sizeof (Move));
-    configPlayers(move, rep);
+    Move *Li=(Move *)malloc(sizeof (Move));
+    configPlayers(Li, rep);
+    Move *L=NULL;
+    Move *L1 =NULL;
+    Move *L2 =NULL;
+    Move *depl=NULL;
+    Move *moves1=creatMaillon(1,"e4");
+    Move *moves2=creatMaillon(1,"d5");
+    Move *moves3=creatMaillon(2,"e5");
+    Move *moves4=creatMaillon(2,"d4");
+    Li=insTT(Li,moves1);
+    Li=insTT(Li,moves2);
+    Li=insTT(Li,moves3);
+    Li=insTT(Li,moves4);
+    depl=depFin(depl);
+    L=depl->suiv;
+
+    
+
     //L la liste contenant tt les positions
     // L1 la liste de Latifa contenant les positions des pions noirs
     //L2 la liste contenant les positions des pions blancs 
@@ -17,19 +33,19 @@ void respectRegles(char rep[3]){
         while(strlen(rep) != 2)
         {
             printf("Cela ne correspond pas à un numéro de case, rentrez une lettre suivie d'un chiffre :\n");
-            configPlayers(move, rep);
+            configPlayers(Li, rep);
         }
 
         if((rep[0] >= 97 && rep[0] <= 104) && (rep[1] >= 49 && rep[1] <= 56))
         {
             printf("OK\n");
-            while(move->suiv!=NULL)
+            while(Li->suiv!=NULL)
             {
-                if(move->position == rep)
+                if(Li->position == rep)
                 {
                     pre = 1;
                 }
-                move = move->suiv;
+                Li = Li->suiv;
             }
             if(pre == 1){
                 printf("Position impossible car la case est déjà occupée\n");
@@ -44,7 +60,7 @@ void respectRegles(char rep[3]){
         else{
             printf("Ceci ne correspond pas à une case du plateau !\n");
         }
-        move->joueur = (move->joueur % 2) + 1;
+        Li->joueur = (Li->joueur % 2) + 1;
     }
 }
 
@@ -151,57 +167,57 @@ Move *insTT(Move *L, Move *moves){
     return L;
 }
 
-void printMoveHistory(Move *L, Move *actuel){
-    int cpt=0;
-    if (actuel==NULL) printf("\nListe vide!");
-    else if (actuel!=NULL){
-        while (L!=actuel){
-            printf("Mouvement %d : %d a joué en (%s)\n", cpt+1, L->joueur, L->position);
-            L=L->suiv;
-            cpt++;
-        }
-        printf("Mouvement %d : %d a joué en (%s)\n", cpt+1, L->joueur, L->position);
-        cpt++;
-    }
-}
+// void printMoveHistory(Move *L, Move *actuel){
+//     int cpt=0;
+//     if (actuel==NULL) printf("\nListe vide!");
+//     else if (actuel!=NULL){
+//         while (L!=actuel){
+//             printf("Mouvement %d : %d a joué en (%s)\n", cpt+1, L->joueur, L->position);
+//             L=L->suiv;
+//             cpt++;
+//         }
+//         printf("Mouvement %d : %d a joué en (%s)\n", cpt+1, L->joueur, L->position);
+//         cpt++;
+//     }
+// }
 
-Move *deplacArriere(Move *actuel){
-    if (actuel!=NULL){
-        if(actuel->prec!=NULL){
-            actuel=actuel->prec;
-        }
-        else if (actuel->prec==NULL){
-            actuel=NULL;
-        }
-    }
-    return actuel;
-}
+// Move *deplacArriere(Move *actuel){
+//     if (actuel!=NULL){
+//         if(actuel->prec!=NULL){
+//             actuel=actuel->prec;
+//         }
+//         else if (actuel->prec==NULL){
+//             actuel=NULL;
+//         }
+//     }
+//     return actuel;
+// }
 
-Move *deplacAvant(Move *actuel, Move *L){
-    if (actuel!=NULL){
-        if(actuel->suiv!=NULL){
-            actuel=actuel->suiv;
-        }
-    }
-    if(actuel==NULL){
-        actuel=L;
-    }
-    return actuel;
-}
+// Move *deplacAvant(Move *actuel, Move *L){
+//     if (actuel!=NULL){
+//         if(actuel->suiv!=NULL){
+//             actuel=actuel->suiv;
+//         }
+//     }
+//     if(actuel==NULL){
+//         actuel=L;
+//     }
+//     return actuel;
+// }
 
-void supprimCoupApres(Move *actuel){
-    if (actuel!=NULL){
-        Move *suivant=actuel->suiv;
-        while(suivant!=NULL){
-            actuel->suiv=suivant->suiv;
-            if (actuel->suiv != NULL) {
-                actuel->suiv->prec = actuel;
-            }
-            free(suivant);
-            suivant = actuel->suiv;
-        }
-    }
-}
+// void supprimCoupApres(Move *actuel){
+//     if (actuel!=NULL){
+//         Move *suivant=actuel->suiv;
+//         while(suivant!=NULL){
+//             actuel->suiv=suivant->suiv;
+//             if (actuel->suiv != NULL) {
+//                 actuel->suiv->prec = actuel;
+//             }
+//             free(suivant);
+//             suivant = actuel->suiv;
+//         }
+//     }
+// }
 
 // int main(){
 //     Move *L, *moves, *actuel;
