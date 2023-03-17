@@ -30,7 +30,7 @@ typedef struct move {
 #ifndef H_PA_INTERFACE
 #define H_PA_INTERFACE
 
-// #include "interface/interface.h"
+#include "interface/interface.h"
 
 #endif
 

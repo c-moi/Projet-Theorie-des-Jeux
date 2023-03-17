@@ -6,7 +6,6 @@ int main(int argc, char **argv){
     
     // Main de Jade
     affichQua();
-    //rempQua();
     rempTab();
 
 
