@@ -49,7 +49,7 @@ typedef struct move {
 #include "../joueur/joueur.h"
 
 void respectRegles(char rep[3]);
-void verifContour(char rep[3]);
+void verifContour(char rep[3],Move *Li);
 
 #endif
 

@@ -1,132 +1,5 @@
 #include "moteur.h"
 
-
-/// partie du code de Manon
-
-void respectRegles(char rep[3]){
-    Move *Li=(Move *)malloc(sizeof (Move));
-    configPlayers(Li, rep);
-    Move *L=NULL;
-    Move *L1 =NULL;
-    Move *L2 =NULL;
-    Move *depl=NULL;
-    Move *moves1=creatMaillon(1,"e4");
-    Move *moves2=creatMaillon(1,"d5");
-    Move *moves3=creatMaillon(2,"e5");
-    Move *moves4=creatMaillon(2,"d4");
-    Li=insTT(Li,moves1);
-    Li=insTT(Li,moves2);
-    Li=insTT(Li,moves3);
-    Li=insTT(Li,moves4);
-    depl=depFin(depl);
-    L=depl->suiv;
-
-    
-
-    //L la liste contenant tt les positions
-    // L1 la liste de Latifa contenant les positions des pions noirs
-    //L2 la liste contenant les positions des pions blancs 
-    int pre = 0; // présent dans la liste
-
-    for(int j=0; j<=60; j++)
-    {
-        while(strlen(rep) != 2)
-        {
-            printf("Cela ne correspond pas à un numéro de case, rentrez une lettre suivie d'un chiffre :\n");
-            configPlayers(Li, rep);
-        }
-
-        if((rep[0] >= 97 && rep[0] <= 104) && (rep[1] >= 49 && rep[1] <= 56))
-        {
-            printf("OK\n");
-            while(Li->suiv!=NULL)
-            {
-                if(Li->position == rep)
-                {
-                    pre = 1;
-                }
-                Li = Li->suiv;
-            }
-            if(pre == 1){
-                printf("Position impossible car la case est déjà occupée\n");
-            }
-            else{
-                printf("La case est vide\n");
-                // fonction qui fait le tour de rep
-                verifContour(rep);
-                //L->suiv=rep; à mettre à la fin si tt les conditions sont vérifiées
-            }
-        }
-        else{
-            printf("Ceci ne correspond pas à une case du plateau !\n");
-        }
-        Li->joueur = (Li->joueur % 2) + 1;
-    }
-}
-
-void verifContour(char rep[3]){
-    int i=0;
-    int j=0;
-    char rec[3];
-    rec[0]=rep[0]-1;
-
-    while(j<3)
-    {
-        for((rec[1])=((rep[1])-1); (rec[1])=((rep[1])+1); (rec[1])++)
-        {
-            if(strcmp(rec,"adverse")==0)
-            {
-                printf("Emplacement possible\n");
-                i=0;
-            }
-            else
-            {
-                i++;
-            }
-        }
-        j++;
-        rec[0]=rep[0];
-        for((rec[1])=((rep[1])-1); (rec[1])=((rep[1])+1); (rec[1])++)
-        {
-            if(strcmp(rec, "adverse"))
-            {
-                printf("Emplacement possible\n");
-                i=0;
-            }
-            else
-            {
-                i++;
-            }
-        }
-        j++;
-        rec[0]=rep[0]+1;
-        for((rec[1])=((rep[1])-1); (rec[1])=((rep[1])+1); (rec[1])++)
-        {
-            if(strcmp(rec, "adverse"))
-            {
-                printf("Emplacement possible\n");
-                i=0;
-            }
-            else
-            {
-                i++;
-            }
-        }
-        j++;
-    }
-    if(i!=0)
-    {
-        printf("Emplacement impossible car aucun pion adverse autour\n");
-    }
-    else
-    {
-        printf("Règle suivante\n");
-    }
-}
-
-
-
-
 /// partie Latifa
 
 Move *creatMaillon(int joueur, char position[3]){
@@ -145,8 +18,11 @@ Move *creatMaillon(int joueur, char position[3]){
 }
 
 Move *depFin(Move *L){
-    while(L->suiv != NULL){
-            L=L->suiv;
+    if(L!=NULL)
+    {
+        while(L->suiv != NULL){
+                L=L->suiv;
+        }
     }
     return L;
 }
@@ -219,84 +95,135 @@ Move *insTT(Move *L, Move *moves){
 //     }
 // }
 
-// int main(){
-//     Move *L, *moves, *actuel;
-//     int choix=0 , var1=0;
-//     char var2[3];
-//     L=NULL;
-//     actuel=NULL;
-//     while (choix != 5){
-//         printf("\nMenu :\n");
-//         printf("1. Ajouter un coup joué\n");
-//         printf("2. Se déplacer vers le coup précédent\n");
-//         printf("3. Se déplacer vers l'avant\n");
-//         printf("4. Afficher l'historique des coups joués\n");
-//         printf("5. Quitter\n");
-//         printf("Choix : ");
-//         scanf("%d", &choix);
-//         printf("\n");
 
-//         switch (choix){
-//             case 1:
-//                 if (actuel!=NULL){
-//                     if(actuel->suiv!=NULL){
-//                         supprimCoupApres (actuel);
-//                     }
-//                     printf("\nJoueur (1 pour noir ou 2 pour blanc):");
-//                     scanf("%d", &var1);
-//                     printf("\nQuel est la position du joueur ?:");
-//                     scanf("%s", var2);
-//                     moves=initAction(var1, var2);
-//                     L = insTT(L, moves);
-//                     actuel = moves;
-//                 }
-//                 else if (actuel==NULL){
-//                     if(L==NULL){
-//                         printf("\nJoueur (1 pour noir ou 2 pour blanc):");
-//                         scanf("%d", &var1);
-//                         printf("\nQuel est la position du joueur ?:");
-//                         scanf("%s", var2);
-//                         moves=initAction(var1, var2);
-//                         L = insTT(L, moves);
-//                         actuel = moves;
-//                     }
-//                     else if (L!=NULL){
-//                         printf("\nJoueur (1 pour noir ou 2 pour blanc):");
-//                         scanf("%d", &var1);
-//                         printf("\nQuel est la position du joueur ?:");
-//                         scanf("%s", var2);
-//                         moves=initAction(var1, var2);
-//                         actuel=moves;
-//                         moves->suiv=L;
-//                         L=moves;
-//                         moves->suiv->prec=moves;
-//                         supprimCoupApres(actuel);
-//                     }
-//                 }
-//                 break;
-//             case 2:
-//                 actuel=deplacArriere(actuel);
-//                 if (actuel!=NULL) printf("Voici le coup précédent : %s", actuel->position);
-//                 else{
-//                     printf("Liste vide!\n");
-//                 }
-//                 break;
-//             case 3:
-//                 actuel=deplacAvant(actuel,L);
-//                 if (actuel!=NULL) printf("Vous êtes revenu au coup : %s\n", actuel->position);
-//                 else{
-//                     printf("Vous êtes à votre dernier coup!\n");
-//                 }
-//                 break;
-//             case 4:
-//                 printMoveHistory(L,actuel);
-//                 break;
-//             case 5:
-//                 printf("Au revoir !\n");
-//                 break;
-//             default:
-//                 printf("Choix invalide, veuillez entrer une option valide.\n");
-//         }
-//     }
-//     return 0;
-// }
+
+
+/// partie du code de Manon
+
+void respectRegles(char rep[3]){
+    Move *Li=(Move *)malloc(sizeof (Move));//Li la liste contenant tt les positions
+    configPlayers(Li, rep);
+   // Move *L=NULL;
+    Move *L1 =NULL;// L1 la liste de Latifa contenant les positions des pions noirs
+    Move *L2 =NULL;//L2 la liste contenant les positions des pions blancs 
+    Move *depl=NULL;
+    Move *ptr1=Li;
+    Move *moves1=creatMaillon(1,"e4");
+    Move *moves2=creatMaillon(1,"d5");
+    Move *moves3=creatMaillon(2,"e5");
+    Move *moves4=creatMaillon(2,"d4");
+    Li=insTT(Li,moves1);
+    Li=insTT(Li,moves2);
+    Li=insTT(Li,moves3);
+    Li=insTT(Li,moves4);
+    L1=insTT(L1,moves1);
+    L1=insTT(L1,moves2);
+    L2=insTT(L2,moves3);
+    L2=insTT(L2,moves4);
+    if(ptr1!=NULL){
+        depl=depFin(depl);
+        Li=depl->suiv;
+    }    
+
+    
+    int pre = 0; // présent dans la liste
+
+    for(int j=0; j<=60; j++)
+    {
+        while(strlen(rep) != 2)
+        {
+            printf("Cela ne correspond pas à un numéro de case, rentrez une lettre suivie d'un chiffre :\n");
+            configPlayers(Li, rep);
+        }
+
+        if((rep[0] >= 97 && rep[0] <= 104) && (rep[1] >= 49 && rep[1] <= 56))
+        {
+            printf("OK\n");
+            while(Li->suiv!=NULL)
+            {
+                if(Li->position == rep)
+                {
+                    pre = 1;
+                }
+                Li = Li->suiv;
+            }
+            if(pre == 1){
+                printf("Position impossible car la case est déjà occupée\n");
+            }
+            else{
+                printf("La case est vide\n");
+                // fonction qui fait le tour de rep
+                verifContour(rep,Li);
+                //L->suiv=rep; à mettre à la fin si tt les conditions sont vérifiées
+            }
+        }
+        else{
+            printf("Ceci ne correspond pas à une case du plateau !\n");
+        }
+        Li->joueur = (Li->joueur % 2) + 1;
+    }
+}
+
+void verifContour(char rep[3],Move *Li){
+    int i=0;
+    int j=0;
+    char rec[3];
+    rec[0]=rep[0]-1;
+
+    while(j<3)
+    {
+        for((rec[1])=((rep[1])-1); (rec[1])=((rep[1])+1); (rec[1])++)
+        {
+            if(strcmp(rec,Li->position)==0)
+            {
+                printf("Emplacement possible\n");
+                i=0;
+            }
+            else
+            {
+                i++;
+            }
+        }
+        j++;
+        rec[0]=rep[0];
+        for((rec[1])=((rep[1])-1); (rec[1])=((rep[1])+1); (rec[1])++)
+        {
+            if(strcmp(rec, Li->position)==0)
+            {
+                printf("Emplacement possible\n");
+                i=0;
+            }
+            else
+            {
+                i++;
+            }
+        }
+        j++;
+        rec[0]=rep[0]+1;
+        for((rec[1])=((rep[1])-1); (rec[1])=((rep[1])+1); (rec[1])++)
+        {
+            if(strcmp(rec, Li->position))
+            {
+                printf("Emplacement possible\n");
+                i=0;
+            }
+            else
+            {
+                i++;
+            }
+        }
+        j++;
+    }
+    if(i!=0)
+    {
+        printf("Emplacement impossible car aucun pion adverse autour\n");
+    }
+    else
+    {
+        printf("Règle suivante\n");
+    }
+}
+
+
+
+
