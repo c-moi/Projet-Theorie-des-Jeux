@@ -2,12 +2,27 @@
          
 
 
-int main(int argc, char **argv){
-    
+int main(int argc, char **argv)
+{
+    Move* lst_pions = NULL;
+    int i=0;
+
+    SDL_Thread* Thread = SDL_CreateThread(Display, "Affichage", lst_pions);
+
+    while(i<5)
+    {
+        printf("Ca marche ?\n");
+        sleep(3);
+        i++;
+    }
+    SDL_WaitThread(Thread, NULL);
+
+    return 0;
+
     // Main de Jade
-    affichQua();
-    //rempQua();
-    rempTab();
+    // affichQua();
+    // //rempQua();
+    // rempTab();
 
 
 

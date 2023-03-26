@@ -25,12 +25,29 @@ typedef struct move {
 
 
 // ----------------------------------------------------------------------------------------------
+// - import des fonctions de gestion de threads -------------------------------------------------
+#ifndef H_PA_THREAD
+#define H_PA_THREAD
+
+
+
+#endif
+
+// ----------------------------------------------------------------------------------------------
+
+
+
+
+
+// ----------------------------------------------------------------------------------------------
 // - import des fonctions de l'interface --------------------------------------------------------
 
 #ifndef H_PA_INTERFACE
 #define H_PA_INTERFACE
 
-// #include "interface/interface.h"
+#include "interface/interface.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_thread.h>
 
 #endif
 
@@ -45,6 +62,18 @@ typedef struct move {
 #define H_PA_MOTEUR 
 
 #include "moteur/moteur.h"
+
+#endif
+
+// ----------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------
+// - import de l'interface ----------------------------------------------------------------------
+
+#ifndef H_PA_PROTO_INTERFACE
+#define H_PA_PROTO_INTERFACE
+
+int Display (void* liste);
 
 #endif
 
