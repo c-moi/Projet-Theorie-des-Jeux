@@ -203,6 +203,24 @@ void supprimCoupApres(Move *actuel){
     }
 }
 
+Move *chargerHistorique() {
+    Move *L = NULL;
+    FILE *fichier;
+    char ligne[10];
+    int joueur;
+    char position[3];
+    fichier = fopen("historique.bi", "rb");
+    if (fichier != NULL) {
+        while (fgets(ligne, 10, fichier) != NULL) {
+            sscanf(ligne, "%d;%s", &joueur, position);
+            Move *moves = creatMaillon(joueur, position);
+            L = insTT(L, moves);
+        }
+    }
+    fclose(fichier);
+    return L;
+}
+
 // int main(){
 //     Move *L, *moves, *actuel;
 //     int choix=0 , var1=0;

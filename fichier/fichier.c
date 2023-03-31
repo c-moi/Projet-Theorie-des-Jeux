@@ -5,10 +5,10 @@ void sauvegarderHistorique (Move *L, Move *actuel){
     fichier = fopen("historique.bi", "wb");
     if (fichier!=NULL){
         while (L!=actuel){
-            fprintf(fichier, "%d;%s", L->joueur, L->position);
+            fprintf(fichier, "%d;%s\n", L->joueur, L->position);
             L=L->suiv;
         }
-        fprintf(fichier, "%d;%s", L->joueur, L->position);
+        fprintf(fichier, "%d;%s\n", L->joueur, L->position);
     }
     fclose(fichier);
 }

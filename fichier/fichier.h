@@ -31,7 +31,6 @@ typedef struct move {
 #define H_PA_PROTO_FIC
 
 void sauvegarderHistorique (Move *L, Move *actuel);
-
 #endif
 
 // ----------------------------------------------------------------------------------------------

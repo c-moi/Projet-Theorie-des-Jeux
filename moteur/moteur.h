@@ -71,6 +71,7 @@ void printMoveHistory(Move *L, Move *actuel);
 Move *deplacArriere(Move *actuel);
 Move *deplacAvant(Move *actuel, Move *L);
 void supprimCoupApres(Move *actuel);
+Move *chargerHistorique();
 
 #endif
 
