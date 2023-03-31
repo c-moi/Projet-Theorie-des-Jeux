@@ -1,5 +1,3 @@
-#include "joueur.h"
-
 
 char* configPlayers(Move *move, char rep[3]){
     int choix;
@@ -29,4 +27,3 @@ char* lancerPartie(Move *move, char rep[3]){
         scanf("%s", rep);
         return rep;
 }
-
