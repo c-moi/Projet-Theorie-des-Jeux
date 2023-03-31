@@ -12,21 +12,18 @@ int main(int argc, char **argv){
 
 
     // Main de Manon
-    // - débug de l'initialisation du jeu partie events ----------------------------------------
-    /* on n'en a pas vraiment besoin, dans les autres fonctions du main. 
-       Tu peux l'initialiser dans la fonction directement */
+    Move *LG=NULL, *L=NULL;
     char rep[3]; 
-    respectRegles(rep);
+    respectRegles(rep, LG, L);
 
 
 
 
     // Main de Latifa
     // - débug de la gestion d'historique de coups ---------------------------------------------
-    // Move *L, *moves, *actuel;
+    // Move *moves, *actuel;
     // int choix=0 , var1=0;
     // char var2[3];
-    // L=NULL;
     // actuel=NULL;
     // while (choix != 5){
     //     printf("\nMenu :\n");

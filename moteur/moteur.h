@@ -48,8 +48,9 @@ typedef struct move {
 
 #include "../joueur/joueur.h"
 
-void respectRegles(char rep[3]);
-void verifContour(char rep[3],Move *Li);
+void respectRegles(char rep[3], Move *LG, Move *L);
+void verifContour(char rep[3],Move *LG, Move *List_J1, Move *List_J2, int pre);
+void verifSuite(char rec[3], char rep[3], Move *Liste, int pre);
 
 #endif
 
