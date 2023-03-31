@@ -8,7 +8,7 @@ m = moteur/moteur
 
 all: main.o fichier.o IA.o interface.o joueur.o moteur.o main run clean
 
-main: main.o ${fic}.o ${ia}.o ${i}.o ${j}.o ${m}.o
+main: main.o fichier.o IA.o interface.o joueur.o moteur.o
 	gcc -o main main.o fichier.o IA.o interface.o joueur.o moteur.o
 
 main.o: main.c
