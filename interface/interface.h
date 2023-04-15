@@ -26,11 +26,14 @@ typedef struct move {
 
 // ----------------------------------------------------------------------------------------------
 // - import des fonctions de gestion de threads -------------------------------------------------
-#ifndef H_PA_THREAD
-#define H_PA_THREAD
+#ifndef H_PA_INTERFACE
+#define H_PA_INTERFACE
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_thread.h>
+
+int Display (void* liste);
 
 #endif
 
@@ -47,7 +50,9 @@ typedef struct move {
 #ifndef H_PA_PROTO_INTERFACE
 #define H_PA_PROTO_INTERFACE
 
-int Display (void* liste);
+Move *initAction();
+Move *insTT(Move *L, Move *moves);
+
 void affichQua (void);
 void rempQua (void);
 Move * rempTab2 (char val[8][8]);

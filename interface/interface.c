@@ -1,6 +1,12 @@
 #include "interface.h"
 
 
+
+    // Main de Jade
+    // affichQua();
+    // //rempQua();
+    // rempTab();
+
 //fonction à ne surtout pas modifier, ta structure est liste
 int Display (void* liste)
 {
