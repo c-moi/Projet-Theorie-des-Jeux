@@ -1,21 +1,28 @@
 # Projet-Theorie-des-Jeux
 Dans le cadre d'un projet d'algo de N3-S6, ce programme est développé pour mettre en pratique l'algorithme de la théorie des jeux dans des jeux de société..
 
-- Constitution de l'arborescence des fichiers - Fait
-- Configuration du makefile - Fait
-- Ajout des tests pour assurer que les règles de jeu sont respectés - En cours
-- Gestion de l'affichage sur terminal - En vérifications
-- Gestion d'un historique d'action - Fait
-- Implémentation du déplacement dans l'historique de jeu - Fait
+### Nouvelle version majeure (en cours) ###
 
-Tous les codes sont fusionnés et fonctionnels.
+Choses implémentées :
+- Mise en place des règles primaires du jeu (dans les cases d'un tableau, case non prise, ...)
+- Mise en place de la gestion d'un historique de jeu
+- Gestion d'un affichage sur terminal
 
+Options complémentaires :
+- Structuration du programme dans les fichiers (headers & sources)
+- Mise en place du multi-threading dans l'algorythme
+
+
+
+## A compléter ##
+- Structurer le code interface avec Jade
+- Finir de gérer les dépendances dans les fichiers headers
+
+
+
+## A Faire pour la suite ##
 
 - Commencer la gestion des fichiers
-- Continuer à implémenter les règles de jeu
-- Pour l'interface, continuer à travailler indépendamment du reste du code tant que la thread n'est pas créée.
-- Créer la thread pour rendre le fonctionnement de l'interface indépendant du reste des évenements.
+- Finir d'implémenter les règles de jeu
+- Pour l'interface, commencer à gérer l'interface avec SDL2
 - Commencer à développer l'IA
-
-## Faire attention pour les règles et l'interface, certaines fonctions qui doivent retourner n'ont pas de variable à laquelle associer le retour dans l'appel.
-## Vérifier que tous les warnings ont disparu (ce n'est pas forcément le cas lorsque vous compilez. Pensez à modifier le fichier dans lequel vous voulez voir si les warnings sont présents avec un commentaire par exemple)
