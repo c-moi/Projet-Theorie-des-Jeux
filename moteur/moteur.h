@@ -51,6 +51,9 @@ typedef struct move {
 void respectRegles(char rep[3], Move *LG, Move *L);
 void verifContour(char rep[3],Move *LG, Move *List_J1, Move *List_J2, int pre);
 void verifSuite(char rec[3], char rep[3], Move *Liste, int pre);
+void retournPions(char pionallie[3], char rep[3], char tour[3], Move *LG, Move *L1, Move *L2);
+int estDans(char pion[3], Move *L);
+Move* supprimerElement(Move* list, char valeur[3]);
 
 #endif
 
