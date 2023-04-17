@@ -43,8 +43,8 @@ typedef struct move {
 // ----------------------------------------------------------------------------------------------
 // - prototypes configuration du/des joueurs ----------------------------------------------------
 
-#ifndef H_PA_PROTO_JOUEUR
-#define H_PA_PROTO_JOUEUR
+#ifndef H_PA_JOUEUR
+#define H_PA_JOUEUR
 
 char* configPlayers(Move *move, char rep[3]);
 char* lancerPartie(Move *move, char rep[3]);
