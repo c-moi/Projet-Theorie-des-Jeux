@@ -1,12 +1,6 @@
 #include "interface.h"
 
 
-
-    // Main de Jade
-    // affichQua();
-    // //rempQua();
-    // rempTab();
-
 //fonction à ne surtout pas modifier, ta structure est liste
 int Display (void* liste)
 {
@@ -42,11 +36,11 @@ int Display (void* liste)
     }
 }
 
-// void affichQua (void)
-// {
-//     printf(" \nBienvenu sur Othello ");
-   
 
+void affichQua (void)
+{
+    printf(" \nBienvenu sur Othello ");
+   
     printf("\n_________________________\n");
     printf("|a1|b1|c1|d1|e1|f1|g1|h1|\n");
     printf("_________________________\n");
@@ -66,14 +60,6 @@ int Display (void* liste)
     printf("_________________________\n");
 
 
-    
-
-
-// }
-
-<<<<<<< HEAD
-
-
 Move *initAction()
 {
     Move *moves=NULL;
@@ -91,6 +77,20 @@ Move *initAction()
             printf("Cela ne correspond pas à un numéro de case, rentrez une lettre suivie d'un chiffre :\n");
             scanf("%s", moves->position);
         }
+        if((moves->position[0]>=97 && moves->position[0]<=104) && (moves->position[1]>=49 && moves->position[1]<=56))
+        {
+            printf("OK\n");
+        }
+        else{
+            printf("Ceci ne correspond pas à une case du plateau !\n");
+        }
+        
+        moves->suiv = NULL;
+    }
+    return moves;
+}
+
+
 =======
 // void rempQua (void)
 // {
@@ -101,6 +101,9 @@ Move *initAction()
 //     //char y[1];
 //     int a1=0;
 
+
+// ###### Pas sûr dece que c'est #####
+ 
 //     printf("\nJoueur 1 rentrez votre pseudo :\n");
 //     scanf("%s", nom1);
 //     printf("Joueur 2, rentrez votre pseudo :\n");
@@ -168,48 +171,8 @@ Move *initAction()
     
 
 // }
+##### fin de la partie doute #####
 
-// // Move *initAction()
-// // {
-// //     Move *moves;
-// //     moves=(Move*)malloc(sizeof(Move));
-// //     if(moves == NULL){
-// //         printf("\nAllocation impossible");
-// //     }
-// //     else {
-// //         printf ("\nJoueur qui a joué le coup (blanc ou noir):");
-// //         scanf ("%s", moves->joueur);
-// //         printf ("\nPosition du joueur:");
-// //         scanf ("%s",moves->posi);
-// //         while(strlen(moves->posi)!=2)
-// //         {
-// //             printf("Cela ne correspond pas à un numéro de case, rentrez une lettre suivie d'un chiffre :\n");
-// //             scanf("%s", moves->posi);
-// //         }
->>>>>>> b105457c0ebae2fa96f7f545c9eaac3facb6f6fc
-
-// //         if((moves->posi[0]>=97 && moves->posi[0]<=104) && (moves->posi[1]>=49 && moves->posi[1]<=56))
-// //         {
-// //             printf("OK\n");
-// //         }
-// //         else{
-// //             printf("Ceci ne correspond pas à une case du plateau !\n");
-// //         }
-// //         moves->suiv = NULL;
-// //     }
-// //     return moves;
-// // }
-
-<<<<<<< HEAD
-// Move *insTT(Move *L, Move *moves)
-// {
-//     if(L==NULL) L=moves;
-//     else{
-//         moves->suiv=L;
-//         L=moves;
-//     }
-//     return L;
-// }
 
 
 
@@ -218,35 +181,12 @@ Move * rempTab2 (char val[8][8])
     Move * move=NULL;
     Move * L=NULL;
     int perso=1;
+    // ou : char perso[6]="blanc";
     for(int i=0; i<5;i++)
     {
         initAction();
-        insTT(L, move);
+        //insTT(L, move);
     }
-=======
-// // Move *insTT(Move *L, Move *moves)
-// // {
-// //     if(L==NULL) L=moves;
-// //     else{
-// //         moves->suiv=L;
-// //         L=moves;
-// //     }
-// //     return L;
-// // }
-
-
-
-// Move * rempTab2 (char val[8][8])
-// {
-//     Move * move;
-//     Move * L;
-//     char perso[6]="blanc";
-//     for(int i=0; i<5;i++)
-//     {
-//         initAction();
-//         insTT(L, move);
-//     }
->>>>>>> b105457c0ebae2fa96f7f545c9eaac3facb6f6fc
     
 //     while(L!=NULL)
 //     {
@@ -292,21 +232,87 @@ Move * rempTab2 (char val[8][8])
 //     val[3][4]='2';
     
     
-//     printf("\n_________________________\n");
-//     printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[0][0], val[0][1],val[0][2],val[0][3],val[0][4],val[0][5],val[0][7],val[0][7]);
-//     printf("_________________________\n");
-//     printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[1][0], val[1][1],val[1][2],val[1][3],val[1][4],val[1][5],val[1][7],val[1][7]);
-//     printf("_________________________\n");
-//     printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[2][0], val[2][1],val[2][2],val[2][3],val[2][4],val[2][5],val[2][7],val[2][7]);
-//     printf("_________________________\n");
-//     printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[3][0], val[3][1],val[3][2],val[3][3],val[3][4],val[3][5],val[3][7],val[3][7]);
-//     printf("_________________________\n");
-//     printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[4][0], val[4][1],val[4][2],val[4][3],val[4][4],val[4][5],val[4][7],val[4][7]);
-//     printf("_________________________\n");
-//     printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[5][0], val[5][1],val[5][2],val[5][3],val[5][4],val[5][5],val[5][7],val[5][7]);
-//     printf("_________________________\n");
-//     printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[6][0], val[6][1],val[6][2],val[6][3],val[6][4],val[6][5],val[6][7],val[6][7]);
-//     printf("_________________________\n");
-//     printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[7][0], val[7][1],val[7][2],val[7][3],val[7][4],val[7][5],val[7][7],val[7][7]);
-//     printf("_________________________\n");
-// }
+//    printf("\n_________________________\n");
+//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[0][0], val[0][1],val[0][2],val[0][3],val[0][4],val[0][5],val[0][7],val[0][7]);
+//    printf("_________________________\n");
+//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[1][0], val[1][1],val[1][2],val[1][3],val[1][4],val[1][5],val[1][7],val[1][7]);
+//    printf("_________________________\n");
+//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[2][0], val[2][1],val[2][2],val[2][3],val[2][4],val[2][5],val[2][7],val[2][7]);
+//    printf("_________________________\n");
+//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[3][0], val[3][1],val[3][2],val[3][3],val[3][4],val[3][5],val[3][7],val[3][7]);
+//    printf("_________________________\n");
+//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[4][0], val[4][1],val[4][2],val[4][3],val[4][4],val[4][5],val[4][7],val[4][7]);
+//    printf("_________________________\n");
+//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[5][0], val[5][1],val[5][2],val[5][3],val[5][4],val[5][5],val[5][7],val[5][7]);
+//    printf("_________________________\n");
+//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[6][0], val[6][1],val[6][2],val[6][3],val[6][4],val[6][5],val[6][7],val[6][7]);
+//    printf("_________________________\n");
+//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[7][0], val[7][1],val[7][2],val[7][3],val[7][4],val[7][5],val[7][7],val[7][7]);
+//    printf("_________________________\n");
+}
+
+
+
+
+
+
+
+int main(int argc, char *argv[]) {
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    SDL_Surface *surface;
+    SDL_Texture *texture;
+    SDL_Event event;
+    TTF_Font *font;
+    SDL_Color color = { 255, 255, 255 };
+    int quit = 0;
+    
+    // Initialisation de SDL2
+    SDL_Init(SDL_INIT_VIDEO);
+    TTF_Init();
+    
+    // Création de la fenêtre
+    window = SDL_CreateWindow("OTHELO", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
+    renderer = SDL_CreateRenderer(window, -1, 0);
+
+    // Chargement de la police d'écriture
+    font = TTF_OpenFont("Desktop/nice_sugar/Nice Sugar.ttf", 32);
+
+    // Création de la surface de rendu du texte
+    surface = TTF_RenderText_Solid(font, "Bonjour, comment ça va ?", color);
+
+    // Création de la texture à partir de la surface de rendu du texte
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    
+    // Boucle principale
+    while (!quit) {
+        // Gestion des événements
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    quit = 1;
+                    break;
+            }
+        }
+         // Effacement de l'écran
+        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+        SDL_RenderClear(renderer);
+
+        // Affichage de la texture contenant le texte
+        SDL_RenderCopy(renderer, texture, NULL, NULL);
+        
+        // Affichage du rendu à l'écran
+        SDL_RenderPresent(renderer);
+    }
+    
+    // Libération des ressources
+    TTF_CloseFont(font);
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    TTF_Quit();
+    SDL_Quit();
+    
+    return 0;
+}

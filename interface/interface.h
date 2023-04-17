@@ -19,7 +19,8 @@ typedef struct move {
 #endif
 
 // ----------------------------------------------------------------------------------------------
-
+// - import du moteur ---------------------------------------------------------------------------
+//#include "moteur/moteur.c"
 
 
 
@@ -51,12 +52,13 @@ int Display (void* liste);
 #define H_PA_PROTO_INTERFACE
 
 Move *initAction();
-Move *insTT(Move *L, Move *moves);
 
 void affichQua (void);
 void rempQua (void);
 Move * rempTab2 (char val[8][8]);
 void rempTab (void);
+
+int main(int argc, char* argv[]) ;
 
 #endif
 

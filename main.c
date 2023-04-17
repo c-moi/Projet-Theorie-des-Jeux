@@ -1,7 +1,6 @@
 #include "main.h"
          
 
-
 int main(int argc, char **argv)
 {
     Move* lst_pions = NULL;
