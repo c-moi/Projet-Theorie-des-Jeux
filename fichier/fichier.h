@@ -27,10 +27,12 @@ typedef struct move {
 // ----------------------------------------------------------------------------------------------
 // - prototypes gestion des fichiers ------------------------------------------------------------
 
-#ifndef H_PA_PROTO_FIC
-#define H_PA_PROTO_FIC
+#ifndef H_PA_FICHIER
+#define H_PA_FICHIER
 
+Move *chargerHistorique(Move* Liste);
 void sauvegarderHistorique (Move *L, Move *actuel);
+
 
 #endif
 
