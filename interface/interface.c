@@ -60,15 +60,7 @@ Move *initAction()
     return moves;
 }
 
-/*Move *insTT(Move *L, Move *moves)
-{
-    if(L==NULL) L=moves;
-    else{
-        moves->suiv=L;
-        L=moves;
-    }
-    return L;
-}*/
+
 
 
 
@@ -80,7 +72,7 @@ Move * rempTab2 (char val[8][8])
     for(int i=0; i<5;i++)
     {
         initAction();
-        insTT(L, move);
+        //insTT(L, move);
     }
     
     while(L!=NULL)
@@ -145,3 +137,70 @@ void rempTab (void)
     printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[7][0], val[7][1],val[7][2],val[7][3],val[7][4],val[7][5],val[7][7],val[7][7]);
     printf("_________________________\n");
 }
+
+
+
+
+
+
+
+int main(int argc, char *argv[]) {
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    SDL_Surface *surface;
+    SDL_Texture *texture;
+    SDL_Event event;
+    TTF_Font *font;
+    SDL_Color color = { 255, 255, 255 };
+    int quit = 0;
+    
+    // Initialisation de SDL2
+    SDL_Init(SDL_INIT_VIDEO);
+    TTF_Init();
+    
+    // Création de la fenêtre
+    window = SDL_CreateWindow("OTHELO", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
+    renderer = SDL_CreateRenderer(window, -1, 0);
+
+    // Chargement de la police d'écriture
+    font = TTF_OpenFont("Desktop/nice_sugar/Nice Sugar.ttf", 32);
+
+    // Création de la surface de rendu du texte
+    surface = TTF_RenderText_Solid(font, "Bonjour, comment ça va ?", color);
+
+    // Création de la texture à partir de la surface de rendu du texte
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    
+    // Boucle principale
+    while (!quit) {
+        // Gestion des événements
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    quit = 1;
+                    break;
+            }
+        }
+         // Effacement de l'écran
+        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+        SDL_RenderClear(renderer);
+
+        // Affichage de la texture contenant le texte
+        SDL_RenderCopy(renderer, texture, NULL, NULL);
+        
+        // Affichage du rendu à l'écran
+        SDL_RenderPresent(renderer);
+    }
+    
+    // Libération des ressources
+    TTF_CloseFont(font);
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    TTF_Quit();
+    SDL_Quit();
+    
+    return 0;
+}
+
