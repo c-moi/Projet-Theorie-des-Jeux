@@ -43,62 +43,64 @@ Move *insTT(Move *L, Move *moves){
     return L;
 }
 
-// void printMoveHistory(Move *L, Move *actuel){
-//     int cpt=0;
-//     if (actuel==NULL) printf("\nLGste vide!");
-//     else if (actuel!=NULL){
-//         while (L!=actuel){
-//             printf("Mouvement %d : %d a joué en (%s)\n", cpt+1, L->joueur, L->position);
-//             L=L->suiv;
-//             cpt++;
-//         }
-//         printf("Mouvement %d : %d a joué en (%s)\n", cpt+1, L->joueur, L->position);
-//         cpt++;
-//     }
-// }
+void printMoveHistory(Move *L, Move *actuel){
+    int cpt=0;
+    if (actuel==NULL) printf("\nLGste vide!");
+    else if (actuel!=NULL){
+        while (L!=actuel){
+            printf("Mouvement %d : %d a joué en (%s)\n", cpt+1, L->joueur, L->position);
+            L=L->suiv;
+            cpt++;
+        }
+        printf("Mouvement %d : %d a joué en (%s)\n", cpt+1, L->joueur, L->position);
+        cpt++;
+    }
+}
 
-// Move *deplacArriere(Move *actuel){
-//     if (actuel!=NULL){
-//         if(actuel->prec!=NULL){
-//             actuel=actuel->prec;
-//         }
-//         else if (actuel->prec==NULL){
-//             actuel=NULL;
-//         }
-//     }
-//     return actuel;
-// }
+Move *deplacArriere(Move *actuel){
+    if (actuel!=NULL){
+        if(actuel->prec!=NULL){
+            actuel=actuel->prec;
+        }
+        else if (actuel->prec==NULL){
+            actuel=NULL;
+        }
+    }
+    return actuel;
+}
 
-// Move *deplacAvant(Move *actuel, Move *L){
-//     if (actuel!=NULL){
-//         if(actuel->suiv!=NULL){
-//             actuel=actuel->suiv;
-//         }
-//     }
-//     if(actuel==NULL){
-//         actuel=L;
-//     }
-//     return actuel;
-// }
+Move *deplacAvant(Move *actuel, Move *L){
+    if (actuel!=NULL){
+        if(actuel->suiv!=NULL){
+            actuel=actuel->suiv;
+        }
+    }
+    if(actuel==NULL){
+        actuel=L;
+    }
+    return actuel;
+}
 
-// void supprimCoupApres(Move *actuel){
-//     if (actuel!=NULL){
-//         Move *suivant=actuel->suiv;
-//         while(suivant!=NULL){
-//             actuel->suiv=suivant->suiv;
-//             if (actuel->suiv != NULL) {
-//                 actuel->suiv->prec = actuel;
-//             }
-//             free(suivant);
-//             suivant = actuel->suiv;
-//         }
-//     }
-// }
-
-
+void supprimCoupApres(Move *actuel){
+    if (actuel!=NULL){
+        Move *suivant=actuel->suiv;
+        while(suivant!=NULL){
+            actuel->suiv=suivant->suiv;
+            if (actuel->suiv != NULL) {
+                actuel->suiv->prec = actuel;
+            }
+            free(suivant);
+            suivant = actuel->suiv;
+        }
+    }
+}
 
 
-/// partie du code de Manon
+
+
+
+
+// partie du code de Manon
 
 void respectRegles(char rep[3], Move *LG, Move *L){
     // L la liste historique
@@ -107,7 +109,6 @@ void respectRegles(char rep[3], Move *LG, Move *L){
     Move *List_J1 =NULL;// List_J1 la LGste contenant les positions des pions noirs
     Move *List_J2 =NULL;//List_J2 la LGste contenant les positions des pions blancs 
     Move *depl=NULL;
-    Move *ptr1=LG;
     Move *moves1=creatMaillon(1,"e4");
     Move *moves2=creatMaillon(1,"d5");
     Move *moves3=creatMaillon(2,"e5");
@@ -120,9 +121,14 @@ void respectRegles(char rep[3], Move *LG, Move *L){
     List_J1=insTT(List_J1,moves2);
     List_J2=insTT(List_J2,moves3);
     List_J2=insTT(List_J2,moves4);
-    if(ptr1!=NULL){
+    if(LG!=NULL){
         depl=depFin(depl);
-        //L=depl->suiv;
+        if(L==NULL){
+            depl->suiv=NULL;
+        }
+        else{
+            L=depl->suiv;
+        }
     }    
 
     
@@ -278,7 +284,6 @@ void verifContour(char rep[3],Move *LG, Move *List_J1, Move *List_J2, int pre){
     if(i!=0)
     {
         printf("Emplacement impossible car aucun pion adverse autour\n");
-        //break;
     }
 }
 
@@ -299,6 +304,192 @@ void verifSuite(char rec[3], char rep[3], Move *Liste, int pre){
         }
     }
 }
+
+int estDans(char pion[3], Move *L){
+    char *ptr1=L->position;
+    int j=1;
+    while(ptr1!=NULL){
+        if(strcmp(pion, ptr1)==0){
+            j=0;
+            break;
+        }
+        else{
+            j++;
+            ptr1=L->suiv->position;
+        }
+    }
+    return j;
+}
+
+
+//Supprimer un élément d'une liste
+Move* supprimerElement(Move* list, char valeur[3])
+{
+Move  *tmp;
+Move  *previous;
+ 
+if (list == NULL) // si la liste est NULL on s'arrete tout de suite
+  return (list);
+previous = list;
+if (previous->position == valeur) // Verifie la tete de liste, cas particulier
+{
+  list = previous->suiv;
+  free(previous);
+  return (list);
+}
+tmp = previous->suiv; // le cas n est gere on se place donc sur le cas n+1
+while(tmp != NULL) // On Mouline est on supprime si on trouve l'element
+{
+  if (tmp->position == valeur)
+  {
+    previous->suiv = tmp->suiv;
+    free(tmp);
+    return (list);
+  }
+  previous = tmp; // pour ce souvenir dans la prochaine iteration du precedent
+  tmp = tmp->suiv;
+}
+return list;
+}
+
+
+void retournPions(char pionallie[3], char rep[3], char tour[3], Move *LG, Move *L1, Move *L2){
+    tour=rep;
+    //retourne les pions de la colonne au-dessus
+    if("colonne dessus"){
+        while(strcmp(tour,pionallie)!=0){
+            if(LG->joueur==1){
+                supprimerElement(L2, tour);
+                insTT(L1, creatMaillon(1,tour));
+            }
+            else{
+                supprimerElement(L1, tour);
+                insTT(L2, creatMaillon(1,tour));
+            }
+            tour[1]=tour[1]-1;
+        }
+    }
+    //retourne les pions de la colonne en-dessous
+    if("colonne dessous"){
+        while(strcmp(tour,pionallie)!=0){
+            if(LG->joueur==1){
+                supprimerElement(L2, tour);
+                insTT(L1, creatMaillon(1,tour));
+            }
+            else{
+                supprimerElement(L1, tour);
+                insTT(L2, creatMaillon(1,tour));
+            }
+            tour[1]=tour[1]+1;
+        }
+    }
+    //retourne les pions de la ligne à gauche
+    if("ligne gauche"){
+        while(strcmp(tour,pionallie)!=0){
+            if(LG->joueur==1){
+                supprimerElement(L2, tour);
+                insTT(L1, creatMaillon(1,tour));
+            }
+            else{
+                supprimerElement(L1, tour);
+                insTT(L2, creatMaillon(1,tour));
+            }
+            tour[0]=tour[0]-1;
+        }
+    }
+    //retourne les pions de la ligne à droite
+    if("ligne droite"){
+        while(strcmp(tour,pionallie)!=0){
+            if(LG->joueur==1){
+                supprimerElement(L2, tour);
+                insTT(L1, creatMaillon(1,tour));
+            }
+            else{
+                supprimerElement(L1, tour);
+                insTT(L2, creatMaillon(1,tour));
+            }
+            tour[0]=tour[0]+1;
+        }
+    }
+    //retourne les pions de la diagonale au-dessus à gauche
+    if("diag haut gauche"){
+        while(strcmp(tour,pionallie)!=0){
+            if(LG->joueur==1){
+                supprimerElement(L2, tour);
+                insTT(L1, creatMaillon(1,tour));
+            }
+            else{
+                supprimerElement(L1, tour);
+                insTT(L2, creatMaillon(1,tour));
+            }
+            tour[0]=tour[0]-1;
+            tour[1]=tour[1]-1;
+        }
+    }
+    //retourne les pions de la diagonale au-dessus à droite
+    if("diag haut droite"){
+        while(strcmp(tour,pionallie)!=0){
+            if(LG->joueur==1){
+                supprimerElement(L2, tour);
+                insTT(L1, creatMaillon(1,tour));
+            }
+            else{
+                supprimerElement(L1, tour);
+                insTT(L2, creatMaillon(1,tour));
+            }
+            tour[0]=tour[0]+1;
+            tour[1]=tour[1]-1;
+        }
+    }
+    //retourne les pions de la diagonale en-dessous à gauche
+    if("diag bas gauche"){
+        while(strcmp(tour,pionallie)!=0){
+            if(LG->joueur==1){
+                supprimerElement(L2, tour);
+                insTT(L1, creatMaillon(1,tour));
+            }
+            else{
+                supprimerElement(L1, tour);
+                insTT(L2, creatMaillon(1,tour));
+            }
+            tour[0]=tour[0]-1;
+            tour[1]=tour[1]+1;
+        }
+    }
+    //retourne les pions de la diagonale en-dessous à droite
+    if("diag bas droite"){
+        while(strcmp(tour,pionallie)!=0){
+            if(LG->joueur==1){
+                supprimerElement(L2, tour);
+                insTT(L1, creatMaillon(1,tour));
+            }
+            else{
+                supprimerElement(L1, tour);
+                insTT(L2, creatMaillon(1,tour));
+            }
+            tour[0]=tour[0]+1;
+            tour[1]=tour[1]+1;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // void moteur (){
@@ -384,3 +575,4 @@ void verifSuite(char rec[3], char rep[3], Move *Liste, int pre){
 //         }
 //     }
 // }
+
