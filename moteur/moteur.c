@@ -2,7 +2,7 @@
 
 
 
-void moteurJeu(Move *listeG)
+int moteurJeu(void *listeG)
 {
     Move* maillon = NULL;
     // init historique coups
@@ -146,6 +146,7 @@ void moteurJeu(Move *listeG)
                 break;
         }
     }
+    return 0;
 }
 
 Move *initPlto(Move *liste, Move *LN, Move *LB)
