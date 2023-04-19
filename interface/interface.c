@@ -17,21 +17,39 @@ int Display(void *liste)
     TTF_Init();
 
     // Création de la fenêtre
-    window = SDL_CreateWindow("OTHELO", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
+    window = SDL_CreateWindow("OTHELLO", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
     renderer = SDL_CreateRenderer(window, -1, 0);
 
-    // Chargement de la police d'écriture
-    // font = TTF_OpenFont("Desktop/nice_sugar/Nice Sugar.ttf", 32);
+    // // Chargement de la police d'écriture
+    //  font = TTF_OpenFont("Desktop/nice_sugar/Nice Sugar.ttf", 32);
 
-    // Création de la surface de rendu du texte
+    // // Création de la surface de rendu du texte
     // surface = TTF_RenderText_Solid(font, "Bonjour, comment ça va ?", color);
 
-    // Création de la texture à partir de la surface de rendu du texte
-    // texture = SDL_CreateTextureFromSurface(renderer, surface);
+    // // Création de la texture à partir de la surface de rendu du texte
+    //  texture = SDL_CreateTextureFromSurface(renderer, surface);
 
     // Boucle principale
     while (!quit)
     {
+        // Chargement de la police d'écriture
+     font = TTF_OpenFont("Desktop/nice_sugar/Nice Sugar.ttf", 32);
+
+    // Création de la surface de rendu du texte
+    surface = TTF_RenderText_Solid(font, "Bonjour, comment ça va ?", color);
+
+    // Création de la texture à partir de la surface de rendu du texte
+     texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+     // Effacement de l'écran
+        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+        SDL_RenderClear(renderer);
+
+        // Affichage de la texture contenant le texte
+        SDL_RenderCopy(renderer, texture, NULL, NULL);
+
+        // Affichage du rendu à l'écran
+        SDL_RenderPresent(renderer);
         // Gestion des événements
         while (SDL_PollEvent(&event))
         {
@@ -42,59 +60,59 @@ int Display(void *liste)
                 break;
             }
         }
-        // Effacement de l'écran
-        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-        SDL_RenderClear(renderer);
+        // // Effacement de l'écran
+        // SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+        // SDL_RenderClear(renderer);
 
-        // Affichage de la texture contenant le texte
-        SDL_RenderCopy(renderer, texture, NULL, NULL);
+        // // Affichage de la texture contenant le texte
+        // SDL_RenderCopy(renderer, texture, NULL, NULL);
 
-        // Affichage du rendu à l'écran
-        SDL_RenderPresent(renderer);
+        // // Affichage du rendu à l'écran
+        // SDL_RenderPresent(renderer);
     }
     exit(0);
 
-    // Libération des ressources
-    // TTF_CloseFont(font);
-    // SDL_FreeSurface(surface);
-    // SDL_DestroyTexture(texture);
+    //Libération des ressources
+    TTF_CloseFont(font);
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    // TTF_Quit();
+    TTF_Quit();
     SDL_Quit();
 
     return 0;
 
     // je fais juste un test pour te montrer comment ça fonctionne
 
-    // SDL_Window *window = NULL;
-    // SDL_Renderer *renderer = NULL;
-    // SDL_Event event;
+//     SDL_Window *window = NULL;
+//     SDL_Renderer *renderer = NULL;
+//     SDL_Event event;
 
-    // SDL_Init(SDL_INIT_VIDEO);
+//     SDL_Init(SDL_INIT_VIDEO);
 
-    // window = SDL_CreateWindow("Othello", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, 0);
+//     window = SDL_CreateWindow("Othello", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, 0);
 
-    // renderer = SDL_CreateRenderer(window, -1, 0);
+//     renderer = SDL_CreateRenderer(window, -1, 0);
 
-    // while(1)
-    // {
-    //     while(SDL_PollEvent(&event))
-    //     {
-    //         if(event.type == SDL_QUIT)
-    //         {
-    //             SDL_DestroyRenderer(renderer);
-    //             SDL_DestroyWindow(window);
-    //             SDL_Quit();
+//     while(1)
+//     {
+//         while(SDL_PollEvent(&event))
+//         {
+//             if(event.type == SDL_QUIT)
+//             {
+//                 SDL_DestroyRenderer(renderer);
+//                 SDL_DestroyWindow(window);
+//                 SDL_Quit();
 
-    //             exit(0);
-    //         }
-    //     }
+//                 exit(0);
+//             }
+//         }
 
-    //     SDL_RenderClear(renderer);
+//         SDL_RenderClear(renderer);
 
-    //     SDL_RenderPresent(renderer);
-    // }
+//         SDL_RenderPresent(renderer);
+//     }
 }
 
 void affichQua(void)

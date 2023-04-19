@@ -73,7 +73,7 @@ typedef struct paramJeu
 
 } parametres;
 
-void moteurJeu(Move *liste);
+int moteurJeu(void *liste);
 Move* initPlto(Move* liste, Move* LN, Move* LB);
 
 Move* creatMaillon(int joueur, char position[3]);
