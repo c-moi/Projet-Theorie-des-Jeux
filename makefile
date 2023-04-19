@@ -1,6 +1,5 @@
-CPPFLAGS = `sdl2-config --cflags`
-CFLAGS = -W -Wall $(shell sdl2-config --cflags)
-LDFLAGS = -export-dynamic $(shell sdl2-config --libs)
+CFLAGS = -W -Wall `pkg-config sdl2 --cflags`
+LDFLAGS = -export-dynamic `pkg-config sdl2 --libs` -lSDL2_ttf
 
 fic = fichier/fichier
 ia = IA/IA

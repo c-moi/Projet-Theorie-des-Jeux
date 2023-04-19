@@ -36,6 +36,12 @@ typedef struct move {
 
 int Display (void* liste);
 
+void affichQua (void);
+Move *initAction();
+void rempQua (void);
+Move * rempTab2 (char val[8][8]);
+void rempTab (void);
+
 #endif
 
 // ----------------------------------------------------------------------------------------------
@@ -51,14 +57,7 @@ int Display (void* liste);
 #ifndef H_PA_PROTO_INTERFACE
 #define H_PA_PROTO_INTERFACE
 
-Move *initAction();
 
-void affichQua (void);
-void rempQua (void);
-Move * rempTab2 (char val[8][8]);
-void rempTab (void);
-
-int main(int argc, char* argv[]) ;
 
 #endif
 
