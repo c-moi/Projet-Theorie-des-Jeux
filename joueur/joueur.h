@@ -47,7 +47,6 @@ typedef struct move {
 #define H_PA_JOUEUR
 
 char* configPlayers(Move *move, char rep[3]);
-char* lancerPartie(Move *move, char rep[3]);
 
 #endif
 

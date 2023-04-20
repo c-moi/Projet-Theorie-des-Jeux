@@ -31,7 +31,7 @@ int moteurJeu(void *listeG)
     listeG = initPlto(listeG, List_J1, List_J2);
     actuel = deplacFin(listeG);
 
-    rep[3] = configPlayers(listeG, rep); // à modifier
+   // rep[3] = configPlayers(listeG, rep); // à modifier
 
     // En attendant :
     parametres jeu = {2, 0, 1};
@@ -155,9 +155,23 @@ Move *initPlto(Move *liste, Move *LN, Move *LB)
     liste = insTT(liste, creatMaillon(2, "e4"));
     liste = insTT(liste, creatMaillon(1, "d5"));
     liste = insTT(liste, creatMaillon(2, "e5"));
-    //ins listesN et B
+    LN = insTT(LN, creatMaillon(1, "d4"));
+    LN = insTT(LN, creatMaillon(1, "d5"));
+    LB = insTT(LB, creatMaillon(2, "e4"));
+    LB = insTT(LB, creatMaillon(2, "e5"));
 
     return liste;
+}
+
+Move *listAdverse(Move *liste, Move *List_J1, Move *List_J2){
+    Move *L;
+    if(liste->joueur == 1){
+        L = List_J2;
+    }
+    else{
+        L = List_J1;
+    }
+    return L;
 }
 
 Move *creatMaillon(int joueur, char position[3]){
@@ -228,121 +242,75 @@ Move* respectRegles(Move* Liste, Move* Maillon, Move* List_J1, Move* List_J2, pa
         }
         else
         {
-            // ###### A compléter ######
-
              printf("La case est vide\n");
             // fonction qui fait le tour de rep
-             verifContour(Maillon->position, Liste, List_J1, List_J2, pre);
-            // L->suiv=rep; à mettre à la fin si tt les conditions sont vérifiées
+             verifContour(Maillon->position, Liste, List_J1, List_J2, pre, jeu);
         }
     }
     else
     {
         printf("Ceci ne correspond pas à une case du plateau !\n");
     }
-    // if(jeu->tourJoueur==1){
-    //     insTT(List_J1, move);
-    // }                                   a mettre a la fin  
-    // else{
-    //     insTT(List_J2, move); 
-    // }
-        //insTT(Liste, move);
-        //jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;  A mettre à la fin de la dernière règle
 
     return Liste;
 }
 
-// Je vous laisserai modifier parce que je sais pas ce qui est la dernière version
-void verifContour(char rep[3], Move *LG, Move *List_J1, Move *List_J2, int pre)
+void verifContour(char rep[3], Move *LG, Move *List_J1, Move *List_J2, int pre, parametres *jeu)
 {
+    Move *listadv = NULL;
     int i = 1;
     int j = 0;
     char rec[3];
     rec[0] = rep[0] - 1;
-    if (LG->joueur == 1)
+    while (j < 3)
     {
-        while (j < 3)
+        for ((rec[1]) = ((rep[1]) - 1); (rec[1]) = ((rep[1]) + 1); (rec[1])++)
         {
-            for ((rec[1]) = ((rep[1]) - 1); (rec[1]) = ((rep[1]) + 1); (rec[1])++)
+            if (strcmp(rec, listAdverse(LG, List_J1, List_J2)->position) == 0)
             {
-                if (strcmp(rec, List_J2->position) == 0)
-                {
-                    printf("Emplacement possible\n");
-                    verifSuite(rec, rep, List_J1, pre);
-                    i = 0;
-                }
-                else
-                {
-                    i++;
-                }
+                insTT(listadv, creatMaillon(2, rec));
+                printf("Emplacement possible\n");
+                verifAllie(rec, rep, LG, List_J1, List_J2, pre, jeu);
+                i = 0;
             }
-            j++;
-            rec[0] = rep[0];
-            for ((rec[1]) = ((rep[1]) - 1); (rec[1]) = ((rep[1]) + 1); (rec[1])++)
+            else
             {
-                if (strcmp(rec, List_J2->position) == 0)
-                {
-                    printf("Emplacement possible\n");
-                    verifSuite(rec, rep, List_J1, pre);
-                    i = 0;
-                }
-                else
-                {
-                    i++;
-                }
+                i++;
             }
-            j++;
         }
-    }
-    else
-    {
-        while (j < 3)
+        j++;
+        rec[0] = rep[0];
+        for ((rec[1]) = ((rep[1]) - 1); (rec[1]) = ((rep[1]) + 1); (rec[1])++)
         {
-            for ((rec[1]) = ((rep[1]) - 1); (rec[1]) = ((rep[1]) + 1); (rec[1])++)
+            if (strcmp(rec, listAdverse(LG, List_J1, List_J2)->position) == 0)
             {
-                if (strcmp(rec, List_J1->position) == 0)
-                {
-                    printf("Emplacement possible\n");
-                    verifSuite(rec, rep, List_J2, pre);
-                    i = 0;
-                }
-                else
-                {
-                    i++;
-                }
+                insTT(listadv, creatMaillon(2, rec));
+                printf("Emplacement possible\n");
+                verifAllie(rec, rep, LG, List_J1, List_J2, pre, jeu);
+                i = 0;
             }
-            j++;
-            rec[0] = rep[0];
-            for ((rec[1]) = ((rep[1]) - 1); (rec[1]) = ((rep[1]) + 1); (rec[1])++)
+            else
             {
-                if (strcmp(rec, List_J1->position) == 0)
-                {
-                    printf("Emplacement possible\n");
-                    verifSuite(rec, rep, List_J2, pre);
-                    i = 0;
-                }
-                else
-                {
-                    i++;
-                }
+                i++;
             }
-            j++;
-            rec[0] = rep[0] + 1;
-            for ((rec[1]) = ((rep[1]) - 1); (rec[1]) = ((rep[1]) + 1); (rec[1])++)
-            {
-                if (strcmp(rec, List_J1->position))
-                {
-                    printf("Emplacement possible\n");
-                    verifSuite(rec, rep, List_J2, pre);
-                    i = 0;
-                }
-                else
-                {
-                    i++;
-                }
-            }
-            j++;
         }
+        j++;
+        rec[0] = rep[0] + 1;
+        for ((rec[1]) = ((rep[1]) - 1); (rec[1]) = ((rep[1]) + 1); (rec[1])++)
+        {
+            if (strcmp(rec, listAdverse(LG, List_J1, List_J2)->position))
+            {
+                insTT(listadv, creatMaillon(2, rec));
+                printf("Emplacement possible\n");
+                verifAllie(rec, rep, LG, List_J1, List_J2, pre, jeu);
+                i = 0;
+            }
+            else
+            {
+                i++;
+            }
+        }
+        j++;
     }
     if (i != 0)
     {
@@ -350,11 +318,65 @@ void verifContour(char rep[3], Move *LG, Move *List_J1, Move *List_J2, int pre)
     }
 }
 
-void verifSuite(char rec[3], char rep[3], Move *Liste, int pre)
+int estDans(char pion[3], Move *L){
+    char *ptr1=L->position;
+    int j=1;
+    while(ptr1!=NULL){
+        if(strcmp(pion, ptr1)==0){
+            j=0;
+            break;
+        }
+        else{
+            j++;
+            ptr1=L->suiv->position;
+        }
+    }
+    return j;
+}
+
+//Supprimer un élément d'une liste
+Move* supprimerElement(Move* list, char valeur[3])
+{
+    Move  *tmp;
+    Move  *previous;
+    
+    if (list == NULL) // si la liste est NULL on s'arrete tout de suite
+    return (list);
+    previous = list;
+    if (previous->position == valeur) // Verifie la tete de liste, cas particulier
+    {
+        list = previous->suiv;
+        free(previous);
+        return (list);
+    }
+    tmp = previous->suiv; // le cas n est gere on se place donc sur le cas n+1
+    while(tmp != NULL) // On continue est on supprime si on trouve l'element
+    {
+        if (tmp->position == valeur)
+        {
+            previous->suiv = tmp->suiv;
+            free(tmp);
+            return (list);
+        }
+        previous = tmp; // pour se souvenir dans la prochaine iteration du precedent
+        tmp = tmp->suiv;
+    }
+    return list;
+}
+
+void retournPions(char *suite[3],  Move *Liste, Move *L1, Move *L2){
+    supprimerElement(listAdverse(Liste, L1, L2), suite);
+    insTT(Liste, creatMaillon(Liste->joueur,suite));
+}
+
+void verifAllie(char rec[3], char rep[3], Move *Liste, Move *LN, Move *LB, int pre, parametres *jeu)
 {
     char recl[3];
     recl[1] = rec[1];
-
+    char suite[3]; 
+    suite[0] = rec[0];
+    suite[1] = rec[1];
+    // Ligne à droite
     if (rec[0] == (rep[0] + 1) && rec[1] == (rep[1]))
     {
         for (int i = 1; i < 8; i++)
@@ -367,7 +389,191 @@ void verifSuite(char rec[3], char rep[3], Move *Liste, int pre)
             }
             else
             {
-                //faire tt la ligne
+                if(estDans(recl, Liste)){
+                    insTT(Liste, creatMaillon(Liste->joueur, rep));
+                    Liste->suiv=rep;
+                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1; // C'est ici et les lignes similaires en dessous la fin des vérifs stv y mettre tes lignes
+                    while(strcmp(suite, recl) != 0){
+                        retournPions(suite, Liste, LN, LB);
+                        suite[0] = suite[0] + 1;
+                    }
+                }
+            }
+        }
+    }
+    // Ligne à gauche
+    else if(rec[0] == (rep[0] - 1) && rec[1] == (rep[1])){
+        for (int i = 1; i < 8; i++)
+        {
+            recl[0] = rec[0] - i;
+            if (pre == 0)
+            {
+                printf("position impossible");
+                break;
+            }
+            else
+            {
+                if(estDans(recl, Liste)){
+                    insTT(Liste, creatMaillon(Liste->joueur, rep));
+                    Liste->suiv=rep;
+                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
+                    while(strcmp(suite, recl) != 0){
+                        retournPions(suite, Liste, LN, LB);
+                        suite[0] = suite[0] - 1;
+                    }
+                }
+            }
+        }
+    }
+    // Colonne dessus
+    else if(rec[0] == (rep[0]) && rec[1] == (rep[1] - 1)){
+        for (int i = 1; i < 8; i++)
+        {
+            recl[1] = rec[1] - i;
+            if (pre == 0)
+            {
+                printf("position impossible");
+                break;
+            }
+            else
+            {
+                if(estDans(recl, Liste)){
+                    insTT(Liste, creatMaillon(Liste->joueur, rep));
+                    Liste->suiv=rep;
+                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
+                    while(strcmp(suite, recl) != 0){
+                        retournPions(suite, Liste, LN, LB);
+                        suite[1] = suite[1] - 1;
+                    }
+                }
+            }
+        }
+    }
+    // Colonne dessous
+    else if(rec[0] == (rep[0]) && rec[1] == (rep[1] + 1)){
+        for (int i = 1; i < 8; i++)
+        {
+            recl[1] = rec[1] + i;
+            if (pre == 0)
+            {
+                printf("position impossible");
+                break;
+            }
+            else
+            {
+                if(estDans(recl, Liste)){
+                    insTT(Liste, creatMaillon(Liste->joueur, rep));
+                    Liste->suiv=rep;
+                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
+                    while(strcmp(suite, recl) != 0){
+                        retournPions(suite, Liste, LN, LB);
+                        suite[1] = suite[1] + 1;
+                    }
+                }
+            }
+        }
+    }
+    // Diagonale en haut à gauche
+    else if(rec[0] == (rep[0] - 1) && rec[1] == (rep[1] - 1)){
+        for (int i = 1; i < 8; i++)
+        {
+            recl[0] = rec[0] - i;
+            recl[1] = rec[1] - i;
+            if (pre == 0)
+            {
+                printf("position impossible");
+                break;
+            }
+            else
+            {
+                if(estDans(recl, Liste)){
+                    insTT(Liste, creatMaillon(Liste->joueur, rep));
+                    Liste->suiv=rep;
+                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
+                    while(strcmp(suite, recl) != 0){
+                        retournPions(suite, Liste, LN, LB);
+                        suite[0] = suite[0] - 1;
+                        suite[1] = suite[1] - 1;
+                    }
+                }
+            }
+        }
+    }
+    // Diagonale en haut à droite
+    else if(rec[0] == (rep[0] + 1) && rec[1] == (rep[1] - 1)){
+        for (int i = 1; i < 8; i++)
+        {
+            recl[0] = rec[0] + i;
+            recl[1] = rec[1] - i;
+            if (pre == 0)
+            {
+                printf("position impossible");
+                break;
+            }
+            else
+            {
+                if(estDans(recl, Liste)){
+                    insTT(Liste, creatMaillon(Liste->joueur, rep));
+                    Liste->suiv=rep;
+                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
+                    while(strcmp(suite, recl) != 0){
+                        retournPions(suite, Liste, LN, LB);
+                        suite[0] = suite[0] + 1;
+                        suite[1] = suite[1] -1;
+                    }
+                }
+            }
+        }
+    }
+    // Diagonale en bas à gauche
+    else if(rec[0] == (rep[0] - 1) && rec[1] == (rep[1] + 1)){
+        for (int i = 1; i < 8; i++)
+        {
+            recl[0] = rec[0] - i;
+            recl[1] = rec[1] + i;
+            if (pre == 0)
+            {
+                printf("position impossible");
+                break;
+            }
+            else
+            {
+                if(estDans(recl, Liste)){
+                    insTT(Liste, creatMaillon(Liste->joueur, rep));
+                    Liste->suiv=rep;
+                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
+                    while(strcmp(suite, recl) != 0){
+                        retournPions(suite, Liste, LN, LB);
+                        suite[0] = suite[0] - 1;
+                        suite[1] = suite[1] + 1;
+                    }
+                }
+            }
+        }
+    }
+    // Diagonale en bas à droite
+    else if(rec[0] == (rep[0] + 1) && rec[1] == (rep[1] + 1)){
+        for (int i = 1; i < 8; i++)
+        {
+            recl[0] = rec[0] + i;
+            recl[1] = rec[1] + i;
+            if (pre == 0)
+            {
+                printf("position impossible");
+                break;
+            }
+            else
+            {
+                if(estDans(recl, Liste)){
+                    insTT(Liste, creatMaillon(Liste->joueur, rep));
+                    Liste->suiv=rep;
+                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
+                    while(strcmp(suite, recl) != 0){
+                        retournPions(suite, Liste, LN, LB);
+                        suite[0] = suite[0] + 1;
+                        suite[1] = suite[1] + 1;
+                    }
+                }
             }
         }
     }
@@ -450,177 +656,6 @@ void supprimCoupApres(Move *actuel)
         }
     }
 }
-
-
-
-int estDans(char pion[3], Move *L){
-    char *ptr1=L->position;
-    int j=1;
-    while(ptr1!=NULL){
-        if(strcmp(pion, ptr1)==0){
-            j=0;
-            break;
-        }
-        else{
-            j++;
-            ptr1=L->suiv->position;
-        }
-    }
-    return j;
-}
-
-
-//Supprimer un élément d'une liste
-Move* supprimerElement(Move* list, char valeur[3])
-{
-    Move  *tmp;
-    Move  *previous;
-    
-    if (list == NULL) // si la liste est NULL on s'arrete tout de suite
-    return (list);
-    previous = list;
-    if (previous->position == valeur) // Verifie la tete de liste, cas particulier
-    {
-    list = previous->suiv;
-    free(previous);
-    return (list);
-    }
-    tmp = previous->suiv; // le cas n est gere on se place donc sur le cas n+1
-    while(tmp != NULL) // On Mouline est on supprime si on trouve l'element
-    {
-    if (tmp->position == valeur)
-    {
-        previous->suiv = tmp->suiv;
-        free(tmp);
-        return (list);
-    }
-    previous = tmp; // pour ce souvenir dans la prochaine iteration du precedent
-    tmp = tmp->suiv;
-    }
-    return list;
-}
-
-
-void retournPions(char pionallie[3], char rep[3], char tour[3], Move *LG, Move *L1, Move *L2){
-    tour=rep;
-    //retourne les pions de la colonne au-dessus
-    if("colonne dessus"){
-        while(strcmp(tour,pionallie)!=0){
-            if(LG->joueur==1){
-                supprimerElement(L2, tour);
-                insTT(L1, creatMaillon(1,tour));
-            }
-            else{
-                supprimerElement(L1, tour);
-                insTT(L2, creatMaillon(1,tour));
-            }
-            tour[1]=tour[1]-1;
-        }
-    }
-    //retourne les pions de la colonne en-dessous
-    if("colonne dessous"){
-        while(strcmp(tour,pionallie)!=0){
-            if(LG->joueur==1){
-                supprimerElement(L2, tour);
-                insTT(L1, creatMaillon(1,tour));
-            }
-            else{
-                supprimerElement(L1, tour);
-                insTT(L2, creatMaillon(1,tour));
-            }
-            tour[1]=tour[1]+1;
-        }
-    }
-    //retourne les pions de la ligne à gauche
-    if("ligne gauche"){
-        while(strcmp(tour,pionallie)!=0){
-            if(LG->joueur==1){
-                supprimerElement(L2, tour);
-                insTT(L1, creatMaillon(1,tour));
-            }
-            else{
-                supprimerElement(L1, tour);
-                insTT(L2, creatMaillon(1,tour));
-            }
-            tour[0]=tour[0]-1;
-        }
-    }
-    //retourne les pions de la ligne à droite
-    if("ligne droite"){
-        while(strcmp(tour,pionallie)!=0){
-            if(LG->joueur==1){
-                supprimerElement(L2, tour);
-                insTT(L1, creatMaillon(1,tour));
-            }
-            else{
-                supprimerElement(L1, tour);
-                insTT(L2, creatMaillon(1,tour));
-            }
-            tour[0]=tour[0]+1;
-        }
-    }
-    //retourne les pions de la diagonale au-dessus à gauche
-    if("diag haut gauche"){
-        while(strcmp(tour,pionallie)!=0){
-            if(LG->joueur==1){
-                supprimerElement(L2, tour);
-                insTT(L1, creatMaillon(1,tour));
-            }
-            else{
-                supprimerElement(L1, tour);
-                insTT(L2, creatMaillon(1,tour));
-            }
-            tour[0]=tour[0]-1;
-            tour[1]=tour[1]-1;
-        }
-    }
-    //retourne les pions de la diagonale au-dessus à droite
-    if("diag haut droite"){
-        while(strcmp(tour,pionallie)!=0){
-            if(LG->joueur==1){
-                supprimerElement(L2, tour);
-                insTT(L1, creatMaillon(1,tour));
-            }
-            else{
-                supprimerElement(L1, tour);
-                insTT(L2, creatMaillon(1,tour));
-            }
-            tour[0]=tour[0]+1;
-            tour[1]=tour[1]-1;
-        }
-    }
-    //retourne les pions de la diagonale en-dessous à gauche
-    if("diag bas gauche"){
-        while(strcmp(tour,pionallie)!=0){
-            if(LG->joueur==1){
-                supprimerElement(L2, tour);
-                insTT(L1, creatMaillon(1,tour));
-            }
-            else{
-                supprimerElement(L1, tour);
-                insTT(L2, creatMaillon(1,tour));
-            }
-            tour[0]=tour[0]-1;
-            tour[1]=tour[1]+1;
-        }
-    }
-    //retourne les pions de la diagonale en-dessous à droite
-    if("diag bas droite"){
-        while(strcmp(tour,pionallie)!=0){
-            if(LG->joueur==1){
-                supprimerElement(L2, tour);
-                insTT(L1, creatMaillon(1,tour));
-            }
-            else{
-                supprimerElement(L1, tour);
-                insTT(L2, creatMaillon(1,tour));
-            }
-            tour[0]=tour[0]+1;
-            tour[1]=tour[1]+1;
-        }
-    }
-}
-
 
 
 

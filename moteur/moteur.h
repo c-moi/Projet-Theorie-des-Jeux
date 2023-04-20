@@ -81,15 +81,16 @@ Move* insTT(Move *L, Move *moves);
 Move* deplacFin(Move *L);
 
 Move* respectRegles(Move* Liste, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu);
-void verifContour(char rep[3],Move *LG, Move *List_J1, Move *List_J2, int pre);
-void verifSuite(char rec[3], char rep[3], Move *Liste, int pre);
+void verifContour(char rep[3],Move *LG, Move *List_J1, Move *List_J2, int pre, parametres *jeu);
+void verifAllie(char rec[3], char rep[3], Move *Liste, Move *LN, Move *LB, int pre, parametres *jeu);
 
 Move *deplacArriere(Move *actuel);
 Move *deplacAvant(Move *actuel);
 void printMoveHistory(Move *L, Move *actuel);
 void supprimCoupApres(Move *actuel);
 
-void retournPions(char pionallie[3], char rep[3], char tour[3], Move *LG, Move *L1, Move *L2);
+Move *listAdverse(Move *liste, Move *List_J1, Move *List_J2);
+void retournPions(char *suite[3],  Move *Liste, Move *L1, Move *L2);
 int estDans(char pion[3], Move *L);
 Move* supprimerElement(Move* list, char valeur[3]);
 
