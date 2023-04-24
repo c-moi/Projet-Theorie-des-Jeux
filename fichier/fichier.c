@@ -7,7 +7,7 @@ Move *chargerHistorique(Move* Liste)
     char ligne[10];
     int joueur;
     char position[3];
-    fichier = fopen("historique.bi", "rb");
+    fichier = fopen("historique.bin", "rb");
 
     if (fichier != NULL)
     {
@@ -22,11 +22,14 @@ Move *chargerHistorique(Move* Liste)
     return Liste;
 }
 
-void sauvegarderHistorique (Move *L, Move *actuel){
+void sauvegarderHistorique (Move *L, Move *actuel)
+{
     FILE *fichier;
-    fichier = fopen("historique.bi", "wb");
-    if (fichier!=NULL){
-        while (L!=actuel){
+    fichier = fopen("historique.bin", "wb");
+    if (fichier != NULL)
+    {
+        while (L != actuel)
+        {
             fprintf(fichier, "%d;%s\n", L->joueur, L->position);
             L=L->suiv;
         }

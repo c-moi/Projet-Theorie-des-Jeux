@@ -4,17 +4,7 @@
 #ifndef H_PA_MAIN
 #define H_PA_MAIN
 
-#include <stdio.h> 
-#include <stdlib.h>
-#include <string.h>
-
-typedef struct move {
-    char position[3]; 
-    int joueur; // joueur qui a joué le coup (1 jeton noir ou 2 jeton blanc)
-
-    struct move *suiv;
-    struct move *prec;
-} Move;
+#include "../globals.h"
 
 #endif
 
@@ -25,12 +15,39 @@ typedef struct move {
 
 
 // ----------------------------------------------------------------------------------------------
-// - import pour la gestion des fichiers --------------------------------------------------------
+// - prototypes moteur de jeu -------------------------------------------------------------------
 
-#ifndef H_PA_FICHIERS
-#define H_PA_FICHIERS
+#ifndef H_PA_MOTEUR
+#define H_PA_MOTEUR
 
-#include "../fichier/fichier.h"
+typedef struct paramJeu
+{
+    int nbJoueurs;
+    int lvlOrdi;
+    int tourJoueur;
+
+} parametres;
+
+int moteurJeu(void* DATA);
+void initPlto(Move** LN, Move** LB);
+
+Move* creatMaillon(int joueur, char position[3]);
+Move* insTT(Move *L, Move *moves);
+Move* deplacFin(Move *L);
+
+void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu);
+void verifContour(char rep[3],Move *LG, Move *List_J1, Move *List_J2, int pre);
+void verifSuite(char rec[3], char rep[3], Move *Liste, int pre);
+
+void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp);
+void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp);
+int estDans(char pion[3], Move *L); 
+void printMoveHistory(Move *Liste, Move *End);
+Move* supprimCoupApres(Move *actuel);
+
+void retournPions(char pionallie[3], char rep[3], char tour[3], Move *LG, Move *L1, Move *L2);
+Move* supprimerElement(Move* list, char valeur[3]);
+
 
 #endif
 
@@ -45,14 +62,6 @@ typedef struct move {
 
 #include "../joueur/joueur.h"
 
-
-#ifndef H_PA_JOUEUR
-#define H_PA_JOUEUR
-
-char* configPlayers(Move* move, char rep[3]);
-
-#endif
-
 // ----------------------------------------------------------------------------------------------
 
 
@@ -60,57 +69,8 @@ char* configPlayers(Move* move, char rep[3]);
 
 
 // ----------------------------------------------------------------------------------------------
-// - prototypes securisation des actions du joueur sur le jeu -----------------------------------
+// - import pour la gestion des fichiers --------------------------------------------------------
 
-#ifndef H_PA_MOTEUR
-#define H_PA_MOTEUR
+#include "../fichier/fichier.h"
 
-typedef struct paramJeu
-{
-    int nbJoueurs;
-    int lvlOrdi;
-    int tourJoueur;
-
-} parametres;
-
-int moteurJeu(void *liste);
-Move* initPlto(Move* liste, Move* LN, Move* LB);
-
-Move* creatMaillon(int joueur, char position[3]);
-Move* insTT(Move *L, Move *moves);
-Move* deplacFin(Move *L);
-
-Move* respectRegles(Move* Liste, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu);
-void verifContour(char rep[3],Move *LG, Move *List_J1, Move *List_J2, int pre);
-void verifSuite(char rec[3], char rep[3], Move *Liste, int pre);
-
-Move *deplacArriere(Move *actuel);
-Move *deplacAvant(Move *actuel);
-void printMoveHistory(Move *L, Move *actuel);
-void supprimCoupApres(Move *actuel);
-
-void retournPions(char pionallie[3], char rep[3], char tour[3], Move *LG, Move *L1, Move *L2);
-int estDans(char pion[3], Move *L);
-Move* supprimerElement(Move* list, char valeur[3]);
-
-
-#endif
-
-// ----------------------------------------------------------------------------------------------
-
-
-
-
-
-// ----------------------------------------------------------------------------------------------
-// - prototypes de la gestion d'historique de coups ---------------------------------------------
-
-#ifndef H_PA_HISTORY
-#define H_PA_HISTORY
-
-
-
-
-
-#endif
 // ----------------------------------------------------------------------------------------------

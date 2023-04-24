@@ -4,23 +4,13 @@
 #ifndef H_PA_MAIN
 #define H_PA_MAIN
 
-#include <stdio.h> 
-#include <stdlib.h>
-#include <string.h>
-
-typedef struct move {
-    char position[3]; 
-    int joueur; // joueur qui a joué le coup (1 jeton noir ou 2 jeton blanc)
-
-    struct move *suiv;
-    struct move *prec;
-} Move;
+#include "../globals.h"
 
 #endif
 
 // ----------------------------------------------------------------------------------------------
 // - import du moteur ---------------------------------------------------------------------------
-//#include "moteur/moteur.c"
+
 
 
 
@@ -30,34 +20,27 @@ typedef struct move {
 #ifndef H_PA_INTERFACE
 #define H_PA_INTERFACE
 
-#include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_thread.h>
 
-int Display (void* liste);
+
+typedef struct listes {
+    Move *new;
+    Move *affiche;
+} A_Comparer;
+
+void Display(void);
+
+int debug(void* DATA);
+bool listCmp (Move* liste_printed);
+Move* listCpy (void);
 
 void affichQua (void);
 Move *initAction();
 void rempQua (void);
-Move * rempTab2 (char val[8][8]);
-void rempTab (void);
-
-#endif
-
-// ----------------------------------------------------------------------------------------------
-
-
-
-
-
-
-// ----------------------------------------------------------------------------------------------
-// - import de l'interface ----------------------------------------------------------------------
-
-#ifndef H_PA_PROTO_INTERFACE
-#define H_PA_PROTO_INTERFACE
-
-
+void rempTab (Move* liste);
+void rempTab2 (Move* liste, char* val[8][8]);
+void setupTab(char* val[8][8]);
 
 #endif
 

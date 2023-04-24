@@ -4,17 +4,23 @@
 #ifndef H_PA_MAIN
 #define H_PA_MAIN
 
-#include <stdio.h> 
-#include <stdlib.h>
-#include <string.h>
+#include "../globals.h"
 
-typedef struct move {
-    char position[3]; 
-    int joueur; // joueur qui a joué le coup (1 jeton noir ou 2 jeton blanc)
+#endif
 
-    struct move *suiv;
-    struct move *prec;
-} Move;
+// ----------------------------------------------------------------------------------------------
+
+
+
+
+
+// ----------------------------------------------------------------------------------------------
+// - prototypes des fonctions -------------------------------------------------------------------
+
+#ifndef H_PA_IA
+#define H_PA_IA
+
+
 
 #endif
 
@@ -31,22 +37,6 @@ typedef struct move {
 #define H_PA_FICHIERS
 
 #include "../fichier/fichier.h"
-
-#endif
-
-// ----------------------------------------------------------------------------------------------
-
-
-
-
-
-// ----------------------------------------------------------------------------------------------
-// - prototypes des fonctions -------------------------------------------------------------------
-
-#ifndef H_PA_PROTO_IA
-#define H_PA_PROTO_IA
-
-
 
 #endif
 
