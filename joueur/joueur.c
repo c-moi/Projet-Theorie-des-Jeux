@@ -1,13 +1,15 @@
 #include "joueur.h"
 
 
-char* configPlayers(Move *move, char rep[3]){
+char* configPlayers(Move *move, char rep[3])
+{
     int choix;
     int lvl;
     move->joueur=1;
     printf("Souhaitez-vous jouer à 1 joueur ou 2 ?\n tapez 1 pour un joueur ou 2 pour 2 joueurs\n");
     scanf("%d", &choix);
-    switch (choix){
+    switch (choix)
+    {
         case 1 : 
             printf("Choisissez la difficulté de l'IA : rentrez un nombre entre 1 et 10\n");
             scanf("%d", &lvl);
@@ -23,7 +25,8 @@ char* configPlayers(Move *move, char rep[3]){
     return rep;
 }
 
-char* lancerPartie(Move *move, char rep[3]){
+char* lancerPartie(Move *move, char rep[3])
+{
         printf("Lancement de la partie...");
         printf("Joueur %d ou souhaitez-vous placer votre pion ?\n", move->joueur);
         scanf("%s", rep);

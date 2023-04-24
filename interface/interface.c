@@ -1,7 +1,6 @@
 #include "interface.h"
 
-// fonction à ne surtout pas modifier, ta structure est liste
-int Display(void *liste)
+void Display(void)
 {
     SDL_Window *window;
     SDL_Renderer *renderer;
@@ -11,6 +10,12 @@ int Display(void *liste)
     TTF_Font *font;
     SDL_Color color = {255, 255, 255};
     int quit = 0;
+
+    //Initialisation test maj
+    // Move* printed_SDL = NULL;
+    // printed_SDL = listeG;
+
+    SDL_Thread* Debug = SDL_CreateThread(debug, "Débug", NULL);
 
     // Initialisation de SDL2
     SDL_Init(SDL_INIT_VIDEO);
@@ -33,23 +38,24 @@ int Display(void *liste)
     while (!quit)
     {
         // Chargement de la police d'écriture
-     font = TTF_OpenFont("Desktop/nice_sugar/Nice Sugar.ttf", 32);
+        // font = TTF_OpenFont("Desktop/nice_sugar/Nice Sugar.ttf", 32);
 
-    // Création de la surface de rendu du texte
-    surface = TTF_RenderText_Solid(font, "Bonjour, comment ça va ?", color);
+        // Création de la surface de rendu du texte
+        //surface = TTF_RenderText_Solid(font, "Bonjour, comment ça va ?", color);
 
-    // Création de la texture à partir de la surface de rendu du texte
-     texture = SDL_CreateTextureFromSurface(renderer, surface);
+        // Création de la texture à partir de la surface de rendu du texte
+        //texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-     // Effacement de l'écran
-        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-        SDL_RenderClear(renderer);
+        // Effacement de l'écran
+        //SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+        //SDL_RenderClear(renderer);
 
         // Affichage de la texture contenant le texte
-        SDL_RenderCopy(renderer, texture, NULL, NULL);
+        //SDL_RenderCopy(renderer, texture, NULL, NULL);
 
         // Affichage du rendu à l'écran
-        SDL_RenderPresent(renderer);
+        // SDL_RenderPresent(renderer);
+
         // Gestion des événements
         while (SDL_PollEvent(&event))
         {
@@ -68,7 +74,7 @@ int Display(void *liste)
         // SDL_RenderCopy(renderer, texture, NULL, NULL);
 
         // // Affichage du rendu à l'écran
-        // SDL_RenderPresent(renderer);
+        SDL_RenderPresent(renderer);
     }
     exit(0);
 
@@ -81,7 +87,7 @@ int Display(void *liste)
     TTF_Quit();
     SDL_Quit();
 
-    return 0;
+    SDL_WaitThread(Debug, NULL);
 
     // je fais juste un test pour te montrer comment ça fonctionne
 
@@ -114,6 +120,108 @@ int Display(void *liste)
 //         SDL_RenderPresent(renderer);
 //     }
 }
+
+
+
+
+void aff(Move* liste_debug)
+{
+    if(liste_debug != NULL)
+        {
+            while (liste_debug != NULL)
+            {
+                printf("Liste 2 : %d %s\n", liste_debug->joueur, liste_debug->position);
+                liste_debug = liste_debug->suiv;
+            }
+        }
+}
+
+
+
+// Partie débug dans terminal
+int debug(void* DATA)
+{
+    Move* printed_term = NULL;
+
+    affichQua();
+
+    SDL_Delay(5000);
+
+    while (1)
+    {
+        // printf("%s\n", (listCmp(printed_term)) ? "true" : "false");
+        // SDL_Delay(2000);
+        if (listCmp(printed_term) == false)
+        {
+            printed_term = listCpy();
+            rempTab(printed_term);
+
+            // aff(printed_term);
+        }
+    }
+
+    return 0;
+}
+
+bool listCmp (Move* liste_printed)
+{
+    Move* tmp = listeG;
+    while (tmp != NULL || liste_printed != NULL)
+    {
+        if (tmp == NULL || liste_printed == NULL)
+        {
+            return false;
+        }
+        else
+        {
+            if (tmp->joueur != liste_printed->joueur)
+            {
+                if (tmp->position != liste_printed->position)
+                {
+                    return false;
+                }
+                else
+                {
+                    tmp = tmp->suiv;
+                    liste_printed = liste_printed->suiv;
+                }
+            }
+            else
+            {
+                tmp = tmp->suiv;
+                liste_printed = liste_printed->suiv;
+            }
+        }
+    }
+
+    return true;
+}
+
+Move* listCpy (void)
+{
+    Move* tmp = listeG;
+    Move* Cpyliste = malloc(sizeof(Move));
+    Move* tmp2 = Cpyliste;
+
+    while (tmp != NULL)
+    {
+        tmp2->joueur = tmp->joueur;
+        strcpy(tmp2->position, tmp->position);
+
+        if(tmp->suiv != NULL)
+            tmp2->suiv = malloc(sizeof(Move));
+        else
+            tmp2->suiv = NULL;
+        
+        tmp2->prec = NULL;
+
+        tmp2 = tmp2->suiv;
+        tmp = tmp->suiv;
+    }
+
+    return Cpyliste;
+}
+
 
 void affichQua(void)
 {
@@ -168,16 +276,16 @@ void affichQua(void)
 //     return moves;
 // }
 
-void rempQua(void)
-{
-    char nom1[20];
-    char nom2[20];
-    char c[3];
-    // char x[1];
-    // char y[1];
-    int a1 = 0;
+// void rempQua(void)
+// {
+//     char nom1[20];
+//     char nom2[20];
+//     char c[3];
+//     // char x[1];
+//     // char y[1];
+//     int a1 = 0;
 
-    // ###### Pas sûr dece que c'est #####
+    // ###### Pas sûr de ce que c'est #####
 
     //     printf("\nJoueur 1 rentrez votre pseudo :\n");
     //     scanf("%s", nom1);
@@ -237,80 +345,85 @@ void rempQua(void)
     //     printf("_________________________\n");
     //     printf("|a8|b8|c8|d8|e8|f8|g8|h8|\n");
     //     printf("_________________________\n");
-}
+// }
 
 // ##### fin de la partie doute #####
 
-// Move * rempTab2 (char val[8][8])
-// {
-//     Move * move=NULL;
-//     Move * L=NULL;
-//     int perso=1;
-//     // ou : char perso[6]="blanc";
-//     for(int i=0; i<5;i++)
-//     {
-//         initAction();
-//         //insTT(L, move);
-//     }
+void rempTab (Move* liste)
+{
+    char* val[8][8];
+    rempTab2 (liste, val);
 
-//     while(L!=NULL)
-//     {
-//         for(int j=0;j<64;j++)
-//         {
-//             for(int k=0; k<64;k++)
-//             {
-//                 if(strcmp(move->position,&val[k][j])==0)
-//                 {
-//                     if(move->joueur == perso)
-//                     {
-//                         val[k][j]=1;
-//                     }
-//                     else
-//                     {
-//                         val[k][j]=2;
-//                     }
-//                 }
+    for(int j=0;j<=7;j++)
+    {
+        for(int i=0;i<=7;i++)
+        {
+            if (strlen(val[j][i]) == 2)
+            {
+                val[j][i]=" ";
+            }
+        }
+    }
 
-//             }
+    printf("\n_________________________\n");
+    printf("|%s |%s |%s |%s |%s |%s |%s |%s |\n",val[0][0], val[0][1],val[0][2],val[0][3],val[0][4],val[0][5],val[0][6],val[0][7]);
+    printf("_________________________\n");
+    printf("|%s |%s |%s |%s |%s |%s |%s |%s |\n",val[1][0], val[1][1],val[1][2],val[1][3],val[1][4],val[1][5],val[1][6],val[1][7]);
+    printf("_________________________\n");
+    printf("|%s |%s |%s |%s |%s |%s |%s |%s |\n",val[2][0], val[2][1],val[2][2],val[2][3],val[2][4],val[2][5],val[2][6],val[2][7]);
+    printf("_________________________\n");
+    printf("|%s |%s |%s |%s |%s |%s |%s |%s |\n",val[3][0], val[3][1],val[3][2],val[3][3],val[3][4],val[3][5],val[3][6],val[3][7]);
+    printf("_________________________\n");
+    printf("|%s |%s |%s |%s |%s |%s |%s |%s |\n",val[4][0], val[4][1],val[4][2],val[4][3],val[4][4],val[4][5],val[4][6],val[4][7]);
+    printf("_________________________\n");
+    printf("|%s |%s |%s |%s |%s |%s |%s |%s |\n",val[5][0], val[5][1],val[5][2],val[5][3],val[5][4],val[5][5],val[5][6],val[5][7]);
+    printf("_________________________\n");
+    printf("|%s |%s |%s |%s |%s |%s |%s |%s |\n",val[6][0], val[6][1],val[6][2],val[6][3],val[6][4],val[6][5],val[6][6],val[6][7]);
+    printf("_________________________\n");
+    printf("|%s |%s |%s |%s |%s |%s |%s |%s |\n",val[7][0], val[7][1],val[7][2],val[7][3],val[7][4],val[7][5],val[7][6],val[7][7]);
+    printf("_________________________\n");
+}
 
-//         }
-//     }
-//     return L;
-// }
 
-// void rempTab (void)
-// {
+void rempTab2 (Move* liste, char* val[8][8])
+{
+    for (int i=0; i<8; i++)
+    {
+        for (int j=0; j<8; j++)
+        {
+            char* var = malloc(sizeof(char)*3);
+            sprintf(var, "%c%c", 'a'+i, '1'+j);
+            val[i][j] = var;
+        }
+    }
 
-//     char val[8][8];
-//     rempTab2 (val);
-//     for(int j=0;j<=7;j++)
-//     {
-//         for(int i=0;i<=7;i++)
-//         {
-//             val[j][i]=' ';
-//         }
+    if(liste)
 
-//     }
-//     val[3][3]='1';
-//     val[4][4]='1';
-//     val[4][3]='2';
-//     val[3][4]='2';
+    while(liste != NULL)
+    {
+        for(int j=0; j<8; j++)
+        {
+            for(int k=0; k<8; k++)
+            {
+                if(strlen(val[j][k]) == 2 && strcmp(liste->position, val[j][k]) == 0)
+                {
+                    if(liste->joueur == 1)
+                    {
+                        char* var = malloc(sizeof(char)*2);
+                        var = "1";
+                        val[j][k] = var;
+                    }
+                    else
+                    {
+                        char* var = malloc(sizeof(char)*2);
+                        var = "2";
+                        val[j][k] = var;
+                    }
+                }
 
-//    printf("\n_________________________\n");
-//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[0][0], val[0][1],val[0][2],val[0][3],val[0][4],val[0][5],val[0][7],val[0][7]);
-//    printf("_________________________\n");
-//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[1][0], val[1][1],val[1][2],val[1][3],val[1][4],val[1][5],val[1][7],val[1][7]);
-//    printf("_________________________\n");
-//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[2][0], val[2][1],val[2][2],val[2][3],val[2][4],val[2][5],val[2][7],val[2][7]);
-//    printf("_________________________\n");
-//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[3][0], val[3][1],val[3][2],val[3][3],val[3][4],val[3][5],val[3][7],val[3][7]);
-//    printf("_________________________\n");
-//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[4][0], val[4][1],val[4][2],val[4][3],val[4][4],val[4][5],val[4][7],val[4][7]);
-//    printf("_________________________\n");
-//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[5][0], val[5][1],val[5][2],val[5][3],val[5][4],val[5][5],val[5][7],val[5][7]);
-//    printf("_________________________\n");
-//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[6][0], val[6][1],val[6][2],val[6][3],val[6][4],val[6][5],val[6][7],val[6][7]);
-//    printf("_________________________\n");
-//    printf("|%c |%c |%c |%c |%c |%c |%c |%c |\n",val[7][0], val[7][1],val[7][2],val[7][3],val[7][4],val[7][5],val[7][7],val[7][7]);
-//    printf("_________________________\n");
-// }
+            }
+
+        }
+        liste = liste->suiv;
+    }
+}
