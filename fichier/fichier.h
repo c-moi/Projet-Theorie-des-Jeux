@@ -38,7 +38,8 @@ void sauvegarderHistorique (Move *L, Move *actuel);
 #ifndef H_PA_MOTEUR
 #define H_PA_MOTEUR
 
-#include "../moteur/moteur.h"
+Move* creatMaillon(int joueur, char position[3]);
+Move* insTT(Move *L, Move *moves);
 
 #endif
 
