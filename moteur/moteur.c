@@ -244,8 +244,6 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
              verifContour(Maillon->position, List_J1, List_J2);
 
             // ( MANON )
-            // pour le moment, on va se contenter de ces tests la pour les autres parties
-            // ("cela correspond à une case du tableau" et "la case est vide")
             // Il faudra regler les problèmes de verifContours car le seg fault qui est
             // produit est dû au fait que list_j1 et list_j2 sont nulles
             
@@ -290,7 +288,6 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
     }
 }
 
-// Manon, il faut adapter et tester ça, je n'y ai pas touché
 Move* verifContour(char rep[3], Move *List_J1, Move *List_J2)
 {
     Move *listadv = NULL;
@@ -306,9 +303,7 @@ Move* verifContour(char rep[3], Move *List_J1, Move *List_J2)
             {
                 listadv = insTT(listadv, creatMaillon(2, rec));
                 printf("Emplacement possible\n");
-                if(verifAllie(rep, List_J1, List_J2) == true){
-                    return true;
-                }
+                verifAllie(rep, List_J1, List_J2);
                 i = 0;
             }
             else
@@ -536,16 +531,19 @@ Move* retournPions(char suite[3],  Move *Liste, Move *L1, Move *L2){
 bool verifAllie(char rep[3], Move *LN, Move *LB)
 {
     Move *L = verifContour(rep, LN, LB);
-    char rec[3] = L->position;
+    char rech[3];
+    rech[0] = L->position[0];
+    rech[1] = L->position[1];
+    rech[2] = L->position[2];
     char recl[3];
-    recl[1] = rec[1];
+    recl[1] = rech[1];
     char suite[3]; 
     // Ligne à droite
-    if (rec[0] == (rep[0] + 1) && rec[1] == (rep[1]))
+    if (rech[0] == (rep[0] + 1) && rech[1] == (rep[1]))
     {
         for (int i = 1; i < 8; i++)
         {
-            recl[0] = rec[0] + i;
+            recl[0] = rech[0] + i;
             if (estDans(recl, listeG) == false)
             {
                 printf("position impossible");
@@ -566,10 +564,10 @@ bool verifAllie(char rep[3], Move *LN, Move *LB)
         }
     }
     // Ligne à gauche
-    else if(rec[0] == (rep[0] - 1) && rec[1] == (rep[1])){
+    else if(rech[0] == (rep[0] - 1) && rech[1] == (rep[1])){
         for (int i = 1; i < 8; i++)
         {
-            recl[0] = rec[0] - i;
+            recl[0] = rech[0] - i;
             if (estDans(recl, listeG) == false)
             {
                 printf("position impossible");
@@ -590,10 +588,10 @@ bool verifAllie(char rep[3], Move *LN, Move *LB)
         }
     }
     // Colonne dessus
-    else if(rec[0] == (rep[0]) && rec[1] == (rep[1] - 1)){
+    else if(rech[0] == (rep[0]) && rech[1] == (rep[1] - 1)){
         for (int i = 1; i < 8; i++)
         {
-            recl[1] = rec[1] - i;
+            recl[1] = rech[1] - i;
             if (estDans(recl, listeG) == false)
             {
                 printf("position impossible");
@@ -614,10 +612,10 @@ bool verifAllie(char rep[3], Move *LN, Move *LB)
         }
     }
     // Colonne dessous
-    else if(rec[0] == (rep[0]) && rec[1] == (rep[1] + 1)){
+    else if(rech[0] == (rep[0]) && rech[1] == (rep[1] + 1)){
         for (int i = 1; i < 8; i++)
         {
-            recl[1] = rec[1] + i;
+            recl[1] = rech[1] + i;
             if (estDans(recl, listeG) == false)
             {
                 printf("position impossible");
@@ -638,11 +636,11 @@ bool verifAllie(char rep[3], Move *LN, Move *LB)
         }
     }
     // Diagonale en haut à gauche
-    else if(rec[0] == (rep[0] - 1) && rec[1] == (rep[1] - 1)){
+    else if(rech[0] == (rep[0] - 1) && rech[1] == (rep[1] - 1)){
         for (int i = 1; i < 8; i++)
         {
-            recl[0] = rec[0] - i;
-            recl[1] = rec[1] - i;
+            recl[0] = rech[0] - i;
+            recl[1] = rech[1] - i;
             if (estDans(recl, listeG) == false)
             {
                 printf("position impossible");
@@ -664,11 +662,11 @@ bool verifAllie(char rep[3], Move *LN, Move *LB)
         }
     }
     // Diagonale en haut à droite
-    else if(rec[0] == (rep[0] + 1) && rec[1] == (rep[1] - 1)){
+    else if(rech[0] == (rep[0] + 1) && rech[1] == (rep[1] - 1)){
         for (int i = 1; i < 8; i++)
         {
-            recl[0] = rec[0] + i;
-            recl[1] = rec[1] - i;
+            recl[0] = rech[0] + i;
+            recl[1] = rech[1] - i;
             if (estDans(recl, listeG) == false)
             {
                 printf("position impossible");
@@ -690,11 +688,11 @@ bool verifAllie(char rep[3], Move *LN, Move *LB)
         }
     }
     // Diagonale en bas à gauche
-    else if(rec[0] == (rep[0] - 1) && rec[1] == (rep[1] + 1)){
+    else if(rech[0] == (rep[0] - 1) && rech[1] == (rep[1] + 1)){
         for (int i = 1; i < 8; i++)
         {
-            recl[0] = rec[0] - i;
-            recl[1] = rec[1] + i;
+            recl[0] = rech[0] - i;
+            recl[1] = rech[1] + i;
             if (estDans(recl, listeG) == false)
             {
                 printf("position impossible");
@@ -716,11 +714,11 @@ bool verifAllie(char rep[3], Move *LN, Move *LB)
         }
     }
     // Diagonale en bas à droite
-    else if(rec[0] == (rep[0] + 1) && rec[1] == (rep[1] + 1)){
+    else if(rech[0] == (rep[0] + 1) && rech[1] == (rep[1] + 1)){
         for (int i = 1; i < 8; i++)
         {
-            recl[0] = rec[0] + i;
-            recl[1] = rec[1] + i;
+            recl[0] = rech[0] + i;
+            recl[1] = rech[1] + i;
             if (estDans(recl, listeG) == false)
             {
                 printf("position impossible");
@@ -741,7 +739,9 @@ bool verifAllie(char rep[3], Move *LN, Move *LB)
             }
         }
     }
-    rec = L->suiv->position;
+    rech[0] = L->suiv->position[0];
+    rech[1] = L->suiv->position[1];
+    rech[2] = L->suiv->position[2];
     return false;
 }
 
