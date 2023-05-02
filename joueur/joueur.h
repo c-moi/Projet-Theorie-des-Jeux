@@ -15,6 +15,30 @@
 
 
 // ----------------------------------------------------------------------------------------------
+// - import du moteur ---------------------------------------------------------------------------
+
+#ifndef H_PA_MOTEUR
+#define H_PA_MOTEUR
+
+typedef struct paramJeu
+{
+    int nbJoueurs;
+    int lvlOrdi;
+    int tourJoueur;
+
+} parametres;
+
+#include "../moteur/moteur.h"
+
+#endif
+
+// ----------------------------------------------------------------------------------------------
+
+
+
+
+
+// ----------------------------------------------------------------------------------------------
 // - prototypes configuration du/des joueurs ----------------------------------------------------
 
 #ifndef H_PA_JOUEUR
@@ -22,6 +46,8 @@
 
 char* configPlayers(Move *move, char rep[3]);
 char* lancerPartie(Move *move, char rep[3]);
+
+Move* tourJoueur(parametres* jeu);
 
 #endif
 
