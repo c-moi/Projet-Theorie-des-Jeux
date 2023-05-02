@@ -36,12 +36,12 @@ Move* insTT(Move *L, Move *moves);
 Move* deplacFin(Move *L);
 
 void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu);
-Move* verifContour(char rep[3], parametres* jeu, Move *List_J1, Move *List_J2);
-bool verifAllie(char rep[3], Move *LN, Move *LB);
+Move* verifContour(char rep[3], parametres* jeu);
+Move* verifAllie(char rep[3], parametres* jeu);
 
 void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp);
 void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp);
-bool estDans(char pion[3], Move *L); 
+Move* estDans(char pion[3], Move *L);
 Move* listAdverse(Move *liste, Move *List_J1, Move *List_J2);
 Move* listAllie(Move *liste, Move *List_J1, Move *List_J2);
 void printMoveHistory(Move *Liste, Move *End);

@@ -218,44 +218,51 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
         {
             // ###### A ADAPTER ######
 
-             printf("La case est vide\n");
-             verifContour(Maillon->position, jeu, List_J1, List_J2);
+            printf("La case est vide\n");
+            Maillon->switched = verifAllie(Maillon->position, jeu);
 
             // ( MANON )
             // Il faudra regler les problèmes de verifContours car le seg fault qui est
             // produit est dû au fait que list_j1 et list_j2 sont nulles
             
             // en attendant :
-            if (*historique == NULL)
+            if (Maillon->switched != NULL)
             {
-                *historique = insTT(*historique, creatMaillon(Maillon->joueur, Maillon->position));
-                *actuelH = *historique;
-            }
-            else 
-            {
-                if (*actuelH == NULL)
+                if (*historique == NULL)
                 {
-                    *historique = supprimCoupApres(*historique);
-                    free(*historique);
                     *historique = insTT(*historique, creatMaillon(Maillon->joueur, Maillon->position));
                     *actuelH = *historique;
                 }
-                if (*actuelH != NULL)                   //                                       //
-                {   
-                    if ((*actuelH)->suiv != NULL)   
-                    {                                          //                                       //
-                        *actuelH = supprimCoupApres(*actuelH);  
-                    }    
-                    Move* maillonH = creatMaillon(Maillon->joueur, Maillon->position);
-                    *historique = insTT(*historique, maillonH);
-                    *actuelH = maillonH;                 //                                       //
-                }
-            }                                              //                                       //  
-                                                           // à déplacer en fonction                //          
-            SDL_LockMutex(mutexG);                         // de ce que tu veux faire               //
-            listeG = insTT(listeG, Maillon);               // (au niveau de l'appel de fonction)    //
-            SDL_UnlockMutex(mutexG);                       // référence à ligne 92                  //
-            *actuelG = Maillon;
+                else 
+                {
+                    if (*actuelH == NULL)
+                    {
+                        *historique = supprimCoupApres(*historique);
+                        free(*historique);
+                        *historique = insTT(*historique, creatMaillon(Maillon->joueur, Maillon->position));
+                        *actuelH = *historique;
+                    }
+                    if (*actuelH != NULL)                   //                                       //
+                    {   
+                        if ((*actuelH)->suiv != NULL)   
+                        {                                          //                                       //
+                            *actuelH = supprimCoupApres(*actuelH);  
+                        }    
+                        Move* maillonH = creatMaillon(Maillon->joueur, Maillon->position);
+                        *historique = insTT(*historique, maillonH);
+                        *actuelH = maillonH;                 //                                       //
+                    }
+                }                                              //                                       //  
+                                                            // à déplacer en fonction                //          
+                SDL_LockMutex(mutexG);                         // de ce que tu veux faire               //
+                listeG = insTT(listeG, Maillon);               // (au niveau de l'appel de fonction)    //
+                SDL_UnlockMutex(mutexG);                       // référence à ligne 92                  //
+                *actuelG = Maillon;
+            }
+            else
+            {
+                printf("Cela ne permet de retourner aucun pion, le coup n'a pas été retenu !\n");
+            }
 
          
         }
@@ -277,11 +284,11 @@ void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp)
     }
     if (histoCp != NULL)
     {
-        if (estDans((*actuelG)->position, histoCp) == 0)
+        if (estDans((*actuelG)->position, histoCp) == NULL)
         {
             printf("Vous êtes au début du jeu !\n");
         }
-        else if (estDans((*actuelG)->position, histoCp) == 1)
+        else if (estDans((*actuelG)->position, histoCp) != NULL)
         {
             Move *tmp = *actuelG;
             *actuelG = (*actuelG)->prec;
@@ -292,11 +299,11 @@ void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp)
                 *actuelH = (*actuelH)->prec;
 
             printf("%s\n", (*actuelG)->position);
-            if (estDans((*actuelG)->position, histoCp) == 0)
+            if (estDans((*actuelG)->position, histoCp) == NULL)
             {
                 printf("Vous êtes revenu au début du jeu !\n");
             }
-            else if (estDans((*actuelG)->position, histoCp) == 1)
+            else if (estDans((*actuelG)->position, histoCp) != NULL)
             {
                 printf("Vous êtes revenu au coup : %s\n", (*actuelG)->position);
             }
@@ -336,7 +343,7 @@ void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp)
     }
 }
 
-bool estDans(char pion[3], Move *L)
+Move* estDans(char pion[3], Move *L)
 {
     Move *ptr1 = L;                        
                                              
@@ -344,15 +351,14 @@ bool estDans(char pion[3], Move *L)
     {
         if(strcmp(pion, ptr1->position) == 0)
         {
-            return true;
-            break;
+            return ptr1;
         }
         else
         {
             ptr1 = ptr1->suiv;
         }
     }
-    return false;
+    return NULL;
 }
 
 void printMoveHistory(Move *Liste, Move *End)
@@ -364,11 +370,11 @@ void printMoveHistory(Move *Liste, Move *End)
     }
     else if (Liste != NULL)
     {
-        if (estDans(End->position, Liste) == 0)
+        if (estDans(End->position, Liste) == NULL)
         {
             printf("\n Historique de jeu vide ! \n");
         }
-        else if(estDans(End->position, Liste) == 1)
+        else if(estDans(End->position, Liste) != NULL)
         {
             while (Liste != End)
             {
@@ -442,298 +448,315 @@ Move* retournPions(char suite[3],  Move *Liste, Move *L1, Move *L2){
     return Liste;
 }
 
-bool verifAllie(char rep[3], Move *LN, Move *LB)
+Move* verifAllie(char rep[3], parametres* jeu)
 {
-    Move *L = verifContour(rep, LN, LB);
-    char rech[3];
-    rech[0] = L->position[0];
-    rech[1] = L->position[1];
-    rech[2] = L->position[2];
-    char recl[3];
-    recl[1] = rech[1];
-    char suite[3]; 
-    // Ligne à droite
-    if (rech[0] == (rep[0] + 1) && rech[1] == (rep[1]))
+    Move *L = verifContour(rep, jeu);
+    Move* a_tourner = NULL;
+    char *rech = malloc(3*sizeof(char));
+
+    char *recl = malloc(3*sizeof(char));
+
+    if(L != NULL)
     {
-        for (int i = 1; i < 8; i++)
+        while (L != NULL)
         {
-            recl[0] = rech[0] + i;
-            if (estDans(recl, listeG) == false)
+            rech = L->position;
+            recl = rech;
+            // Si pion adverse en haut à gauche
+            if (rech[0] == (rep[0] - 1) && rech[1] == (rep[1] - 1))
             {
-                printf("position impossible");
-                break;
+                a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                for (int i=1; i<=(rech[0]-96) || i<=(rech[1]-49); i++)
+                {
+                    printf("i = %d\n", i);
+                    recl[0] -= i;
+                    recl[1] -= i;
+
+                    if (estDans(recl, listeG) != NULL)
+                    {
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        {
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            continue;
+                        }
+                        else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (a_tourner != NULL)
+                        {
+                            a_tourner = supprimCoupApres(a_tourner);
+                            free(a_tourner);
+                            a_tourner = NULL;
+                        }
+                        break;
+                    }
+                }
+                
             }
-            else
+            // Si pion adverse au dessus
+            else if (rech[0] == (rep[0]) && rech[1] == (rep[1] - 1))
             {
-                if(estDans(recl, listAllie(listeG, LN, LB))){
-                    return true;
-                   /* Liste = insTT(Liste, creatMaillon(Liste->joueur, rep));
-                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1; // A mettre dans respectregles
-                    while(strcmp(suite, recl) != 0){
-                        retournPions(suite, Liste, LN, LB);
-                        suite[0] = suite[0] + 1;
-                    }*/
+                for (int i=0; i<(rech[1]-49); i++)
+                {
+                    recl[1] -= i;
+
+                    if (estDans(recl, listeG) != NULL)
+                    {
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        {
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            continue;
+                        }
+                        else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (a_tourner != NULL)
+                        {
+                            supprimCoupApres(a_tourner);
+                            free(a_tourner);
+                            a_tourner = NULL;
+                        }
+                        break;
+                    }
                 }
             }
-        }
-    }
-    // Ligne à gauche
-    else if(rech[0] == (rep[0] - 1) && rech[1] == (rep[1])){
-        for (int i = 1; i < 8; i++)
-        {
-            recl[0] = rech[0] - i;
-            if (estDans(recl, listeG) == false)
+            // Si pion adverse en haut à droite
+            else if (rech[0] == (rep[0] + 1) && rech[1] == (rep[1] - 1))
             {
-                printf("position impossible");
-                break;
-            }
-            else
-            {
-                if(estDans(recl, listAllie(listeG, LN, LB))){
-                    return true;
-                    /*Liste = insTT(Liste, creatMaillon(Liste->joueur, rep));
-                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
-                    while(strcmp(suite, recl) != 0){
-                        retournPions(suite, Liste, LN, LB);
-                        suite[0] = suite[0] - 1;
-                    }*/
+                for (int i=0; i<(104-rech[0]) || i<(rech[1]-49); i++)
+                {
+                    recl[0] += i;
+                    recl[1] -= i;
+
+                    if (estDans(recl, listeG) != NULL)
+                    {
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        {
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            continue;
+                        }
+                        else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (a_tourner != NULL)
+                        {
+                            supprimCoupApres(a_tourner);
+                            free(a_tourner);
+                            a_tourner = NULL;
+                        }
+                        break;
+                    }
                 }
             }
-        }
-    }
-    // Colonne dessus
-    else if(rech[0] == (rep[0]) && rech[1] == (rep[1] - 1)){
-        for (int i = 1; i < 8; i++)
-        {
-            recl[1] = rech[1] - i;
-            if (estDans(recl, listeG) == false)
+            // Si pion adverse à gauche
+            else if (rech[0] == (rep[0] - 1) && rech[1] == (rep[1]))
             {
-                printf("position impossible");
-                break;
-            }
-            else
-            {
-                if(estDans(recl, listAllie(listeG, LN, LB))){
-                    return true;
-                    /*Liste = insTT(Liste, creatMaillon(Liste->joueur, rep));
-                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
-                    while(strcmp(suite, recl) != 0){
-                        retournPions(suite, Liste, LN, LB);
-                        suite[1] = suite[1] - 1;
-                    }*/
+                for (int i=0; i<(rech[0]-96); i++)
+                {
+                    recl[0] -= i;
+
+                    if (estDans(recl, listeG) != NULL)
+                    {
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        {
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            continue;
+                        }
+                        else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (a_tourner != NULL)
+                        {
+                            supprimCoupApres(a_tourner);
+                            free(a_tourner);
+                            a_tourner = NULL;
+                        }
+                        break;
+                    }
                 }
             }
-        }
-    }
-    // Colonne dessous
-    else if(rech[0] == (rep[0]) && rech[1] == (rep[1] + 1)){
-        for (int i = 1; i < 8; i++)
-        {
-            recl[1] = rech[1] + i;
-            if (estDans(recl, listeG) == false)
+            // Si pion adverse à droite
+            else if (rech[0] == (rep[0] + 1) && rech[1] == (rep[1]))
             {
-                printf("position impossible");
-                break;
-            }
-            else
-            {
-                if(estDans(recl, listAllie(listeG, LN, LB))){
-                    return true;
-                    /*Liste = insTT(Liste, creatMaillon(Liste->joueur, rep));
-                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
-                    while(strcmp(suite, recl) != 0){
-                        retournPions(suite, Liste, LN, LB);
-                        suite[1] = suite[1] + 1;
-                    }*/
+                for (int i=0; i<(104-rech[0]); i++)
+                {
+                    recl[0] += i;
+
+                    if (estDans(recl, listeG) != NULL)
+                    {
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        {
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            continue;
+                        }
+                        else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (a_tourner != NULL)
+                        {
+                            supprimCoupApres(a_tourner);
+                            free(a_tourner);
+                            a_tourner = NULL;
+                        }
+                        break;
+                    }
                 }
             }
-        }
-    }
-    // Diagonale en haut à gauche
-    else if(rech[0] == (rep[0] - 1) && rech[1] == (rep[1] - 1)){
-        for (int i = 1; i < 8; i++)
-        {
-            recl[0] = rech[0] - i;
-            recl[1] = rech[1] - i;
-            if (estDans(recl, listeG) == false)
+            // Si pion adverse en bas à gauche
+            else if (rech[0] == (rep[0] - 1) && rech[1] == (rep[1] + 1))
             {
-                printf("position impossible");
-                break;
-            }
-            else
-            {
-                if(estDans(recl, listAllie(listeG, LN, LB))){
-                    return true;
-                    /*Liste = insTT(Liste, creatMaillon(Liste->joueur, rep));
-                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
-                    while(strcmp(suite, recl) != 0){
-                        retournPions(suite, Liste, LN, LB);
-                        suite[0] = suite[0] - 1;
-                        suite[1] = suite[1] - 1;
-                    }*/
+                for (int i=0; i<(rech[0]-96) || i<(56-rech[1]); i++)
+                {
+                    recl[0] -= i;
+                    recl[1] += i;
+
+                    if (estDans(recl, listeG) != NULL)
+                    {
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        {
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            continue;
+                        }
+                        else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (a_tourner != NULL)
+                        {
+                            supprimCoupApres(a_tourner);
+                            free(a_tourner);
+                            a_tourner = NULL;
+                        }
+                        break;
+                    }
                 }
             }
-        }
-    }
-    // Diagonale en haut à droite
-    else if(rech[0] == (rep[0] + 1) && rech[1] == (rep[1] - 1)){
-        for (int i = 1; i < 8; i++)
-        {
-            recl[0] = rech[0] + i;
-            recl[1] = rech[1] - i;
-            if (estDans(recl, listeG) == false)
+            // Si pion adverse en dessous
+            else if (rech[0] == (rep[0]) && rech[1] == (rep[1] + 1))
             {
-                printf("position impossible");
-                break;
-            }
-            else
-            {
-                if(estDans(recl, listAllie(listeG, LN, LB))){
-                    return true;
-                    /*Liste = insTT(Liste, creatMaillon(Liste->joueur, rep));
-                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
-                    while(strcmp(suite, recl) != 0){
-                        retournPions(suite, Liste, LN, LB);
-                        suite[0] = suite[0] + 1;
-                        suite[1] = suite[1] -1;
-                    }*/
+                for (int i=0; i<(56-rech[1]); i++)
+                {
+                    recl[1] += i;
+
+                    if (estDans(recl, listeG) != NULL)
+                    {
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        {
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2+1, recl));
+                            continue;
+                        }
+                        else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (a_tourner != NULL)
+                        {
+                            supprimCoupApres(a_tourner);
+                            free(a_tourner);
+                            a_tourner = NULL;
+                        }
+                        break;
+                    }
                 }
             }
-        }
-    }
-    // Diagonale en bas à gauche
-    else if(rech[0] == (rep[0] - 1) && rech[1] == (rep[1] + 1)){
-        for (int i = 1; i < 8; i++)
-        {
-            recl[0] = rech[0] - i;
-            recl[1] = rech[1] + i;
-            if (estDans(recl, listeG) == false)
+            // Si pion adverse en bas à droite
+            else if (rech[0] == (rep[0] + 1) && rech[1] == (rep[1] + 1))
             {
-                printf("position impossible");
-                break;
-            }
-            else
-            {
-                if(estDans(recl, listAllie(listeG, LN, LB))){
-                    return true;
-                    /*Liste = insTT(Liste, creatMaillon(Liste->joueur, rep));
-                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
-                    while(strcmp(suite, recl) != 0){
-                        retournPions(suite, Liste, LN, LB);
-                        suite[0] = suite[0] - 1;
-                        suite[1] = suite[1] + 1;
-                    }*/
+                for (int i=0; i<(104-rech[0]) || i<(56-rech[1]); i++)
+                {
+                    recl[0] += i;
+                    recl[1] += i;
+
+                    if (estDans(recl, listeG) != NULL)
+                    {
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        {
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            continue;
+                        }
+                        else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (a_tourner != NULL)
+                        {
+                            supprimCoupApres(a_tourner);
+                            free(a_tourner);
+                            a_tourner = NULL;
+                        }
+                        break;
+                    }
                 }
             }
+            
+
+            L = L->suiv;
         }
+        return a_tourner;
     }
-    // Diagonale en bas à droite
-    else if(rech[0] == (rep[0] + 1) && rech[1] == (rep[1] + 1)){
-        for (int i = 1; i < 8; i++)
-        {
-            recl[0] = rech[0] + i;
-            recl[1] = rech[1] + i;
-            if (estDans(recl, listeG) == false)
-            {
-                printf("position impossible");
-                break;
-            }
-            else
-            {
-                if(estDans(recl, listAllie(listeG, LN, LB))){
-                    return true;
-                    /*Liste = insTT(Liste, creatMaillon(Liste->joueur, rep));
-                    jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
-                    while(strcmp(suite, recl) != 0){
-                        retournPions(suite, Liste, LN, LB);
-                        suite[0] = suite[0] + 1;
-                        suite[1] = suite[1] + 1;
-                    }*/
-                }
-            }
-        }
+    else
+    {
+        return NULL;
     }
-    rech[0] = L->suiv->position[0];
-    rech[1] = L->suiv->position[1];
-    rech[2] = L->suiv->position[2];
-    return false;
 }
 
-Move* verifContour(char rep[3], parametres* jeu, Move *List_J1, Move *List_J2)
+Move* verifContour(char rep[3], parametres* jeu)
 {
     Move *listadv = NULL;
-    Move* tmp = listeG;
-    int i = 1;
-    int j = 0;
+    Move* tmp;
     char rec[3];
-    rec[0] = rep[0] - 1;
 
+    for ((rec[0]) = ((rep[0]) - 1); (rec[0]) <= ((rep[0]) + 1); (rec[0])++)
+    {
         for ((rec[1]) = ((rep[1]) - 1); (rec[1]) <= ((rep[1]) + 1); (rec[1])++)
         {
-            printf("rec = %s\n", rec);
-            SDL_Delay(1000);
-
-            while (tmp !=NULL)
+            printf("%d\n", jeu->tourJoueur);
+            printf("rec = %s %d\n", rec, (jeu->tourJoueur+1)%2);
+            tmp = listeG;
+            while (tmp != NULL)
             {
-                if (strcmp(rec, tmp->position) == 0)
+                printf("tmp = %s %d\n", tmp->position, tmp->joueur);
+                SDL_Delay(1000);
+                if (strcmp(rec, tmp->position) == 0 && tmp->joueur == (jeu->tourJoueur+1)%2)
                 {
-                    listadv = insTT(listadv, creatMaillon(, rec));
+                    printf("heyo\n");
+                    listadv = insTT(listadv, creatMaillon((jeu->tourJoueur+1)%2, rec));
                 }
                 tmp = tmp->suiv;
             }
-
-
-            if (strcmp(rec, listAdverse(listeG, List_J1, List_J2)->position) == 0)
-            {
-                listadv = insTT(listadv, creatMaillon(2, rec));
-                printf("Emplacement possible\n");
-                verifAllie(rep, List_J1, List_J2);
-                i = 0;
-            }
-            else
-            {
-                i++;
-            }
         }
-        j++;
-        rec[0]++;
-        for ((rec[1]) = ((rep[1]) - 1); (rec[1]) <= ((rep[1]) + 1); (rec[1])++)
-        {
-            printf("rec = %s\n", rec);
-            SDL_Delay(1000);
-            if (strcmp(rec, listAdverse(listeG, List_J1, List_J2)->position) == 0)
-            {
-                listadv = insTT(listadv, creatMaillon(2, rec));
-                printf("Emplacement possible\n");
-                verifAllie(rep, List_J1, List_J2);
-                i = 0;
-            }
-            else
-            {
-                i++;
-            }
-        }
-        j++;
-        rec[0]++;
-        for ((rec[1]) = ((rep[1]) - 1); (rec[1]) <= ((rep[1]) + 1); (rec[1])++)
-        {
-            printf("rec = %s\n", rec);
-            SDL_Delay(1000);
-            if (strcmp(rec, listAdverse(listeG, List_J1, List_J2)->position) == 0)
-            {
-                listadv = insTT(listadv, creatMaillon(2, rec));
-                printf("Emplacement possible\n");
-                verifAllie(rep, List_J1, List_J2);
-                i = 0;
-            }
-            else
-            {
-                i++;
-            }
-        }
-        j++;
+    }
 
-    if (i != 0)
+    if (listadv == NULL)
     {
         printf("Emplacement impossible car aucun pion adverse autour\n");
     }
