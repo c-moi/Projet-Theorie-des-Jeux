@@ -88,7 +88,7 @@ Move* tourJoueur(parametres* jeu)
             }
             else if (jeu->tourJoueur == 2)
             {
-                rep = demandeIA(rep, jeu->lvlOrdi);
+                rep = demandeIA(rep, jeu);
             }
             break;
 

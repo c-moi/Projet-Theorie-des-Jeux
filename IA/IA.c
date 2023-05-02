@@ -2,7 +2,7 @@
 
 
 
-char* demandeIA(char* rep, int lvl)
+char* demandeIA(char* rep, parametres* jeu)
 {
     
     miniMax();
