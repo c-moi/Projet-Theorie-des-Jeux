@@ -258,6 +258,8 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
                 listeG = insTT(listeG, Maillon);               // (au niveau de l'appel de fonction)    //
                 SDL_UnlockMutex(mutexG);                       // référence à ligne 92                  //
                 *actuelG = Maillon;
+
+                jeu->tourJoueur = (jeu->tourJoueur % 2)+ 1;   
             }
             else
             {
@@ -442,11 +444,11 @@ Move* supprimerElement(Move* list, char valeur[3])
 
 // Manon, A compléter, je ne la touche pas 
 
-Move* retournPions(char suite[3],  Move *Liste, Move *L1, Move *L2){
-    supprimerElement(listAdverse(Liste, L1, L2), suite);
-    Liste = insTT(Liste, creatMaillon(Liste->joueur,suite));
-    return Liste;
-}
+// Move* retournPions(char suite[3],  Move *Liste/*, Move *L1, Move *L2*/){
+//     supprimerElement(listAdverse(Liste, L1, L2), suite);
+//     Liste = insTT(Liste, creatMaillon(Liste->joueur,suite));
+//     return Liste;
+// }
 
 Move* verifAllie(char rep[3], parametres* jeu)
 {
@@ -465,18 +467,17 @@ Move* verifAllie(char rep[3], parametres* jeu)
             // Si pion adverse en haut à gauche
             if (rech[0] == (rep[0] - 1) && rech[1] == (rep[1] - 1))
             {
-                a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                 for (int i=1; i<=(rech[0]-96) || i<=(rech[1]-49); i++)
                 {
-                    printf("i = %d\n", i);
                     recl[0] -= i;
                     recl[1] -= i;
 
                     if (estDans(recl, listeG) != NULL)
                     {
-                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -506,9 +507,9 @@ Move* verifAllie(char rep[3], parametres* jeu)
 
                     if (estDans(recl, listeG) != NULL)
                     {
-                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -538,9 +539,9 @@ Move* verifAllie(char rep[3], parametres* jeu)
 
                     if (estDans(recl, listeG) != NULL)
                     {
-                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -569,9 +570,9 @@ Move* verifAllie(char rep[3], parametres* jeu)
 
                     if (estDans(recl, listeG) != NULL)
                     {
-                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -600,9 +601,9 @@ Move* verifAllie(char rep[3], parametres* jeu)
 
                     if (estDans(recl, listeG) != NULL)
                     {
-                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -632,9 +633,9 @@ Move* verifAllie(char rep[3], parametres* jeu)
 
                     if (estDans(recl, listeG) != NULL)
                     {
-                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -663,9 +664,9 @@ Move* verifAllie(char rep[3], parametres* jeu)
 
                     if (estDans(recl, listeG) != NULL)
                     {
-                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2+1, recl));
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -695,9 +696,9 @@ Move* verifAllie(char rep[3], parametres* jeu)
 
                     if (estDans(recl, listeG) != NULL)
                     {
-                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur+1)%2)
+                        if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur+1)%2, recl));
+                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -739,16 +740,11 @@ Move* verifContour(char rep[3], parametres* jeu)
     {
         for ((rec[1]) = ((rep[1]) - 1); (rec[1]) <= ((rep[1]) + 1); (rec[1])++)
         {
-            printf("%d\n", jeu->tourJoueur);
-            printf("rec = %s %d\n", rec, (jeu->tourJoueur+1)%2);
             tmp = listeG;
             while (tmp != NULL)
             {
-                printf("tmp = %s %d\n", tmp->position, tmp->joueur);
-                SDL_Delay(1000);
-                if (strcmp(rec, tmp->position) == 0 && tmp->joueur == (jeu->tourJoueur+1)%2)
+                if (strcmp(rec, tmp->position) == 0 && tmp->joueur == (jeu->tourJoueur % 2)+ 1)
                 {
-                    printf("heyo\n");
                     listadv = insTT(listadv, creatMaillon((jeu->tourJoueur+1)%2, rec));
                 }
                 tmp = tmp->suiv;
@@ -763,24 +759,24 @@ Move* verifContour(char rep[3], parametres* jeu)
     return listadv;
 }
 
-Move* listAdverse(Move *liste, Move *List_J1, Move *List_J2){
-    Move *L;
-    if(liste->joueur == 1){
-        L = List_J2;
-    }
-    else{
-        L = List_J1;
-    }
-    return L;
-}
+// Move* listAdverse(Move *liste, Move *List_J1, Move *List_J2){
+//     Move *L;
+//     if(liste->joueur == 1){
+//         L = List_J2;
+//     }
+//     else{
+//         L = List_J1;
+//     }
+//     return L;
+// }
 
-Move* listAllie(Move *liste, Move *List_J1, Move *List_J2){
-    Move *L;
-    if(liste->joueur == 1){
-        L = List_J1;
-    }
-    else{
-        L = List_J2;
-    }
-    return L;
-}
+// Move* listAllie(Move *liste, Move *List_J1, Move *List_J2){
+//     Move *L;
+//     if(liste->joueur == 1){
+//         L = List_J1;
+//     }
+//     else{
+//         L = List_J2;
+//     }
+//     return L;
+// }
