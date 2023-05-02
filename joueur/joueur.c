@@ -69,3 +69,55 @@ char* lancerPartie(Move *move, char rep[3])
 //         scanf("%s", rep);
 //         return rep;
 // }
+
+
+Move* tourJoueur(parametres* jeu)
+{
+    // initialisation action joueurs
+    char* rep = NULL; 
+    rep = malloc(sizeof(char) * 3);
+
+
+
+    switch(jeu->nbJoueurs)
+    {
+        case 1:
+            if (jeu->tourJoueur == 1)
+            {
+                rep = demandeJoueur(rep);
+            }
+            else if (jeu->tourJoueur == 2)
+            {
+                rep = demandeIA(rep, jeu->lvlOrdi);
+            }
+            break;
+
+        case 2:
+            rep = demandeJoueur(rep);
+            break;
+
+        default:
+            printf("Erreur dans le nombre de joueurs\n");
+    }
+
+    Move* maillon = creatMaillon(jeu->tourJoueur, rep);
+    printf("Le joueur %d joue en %s \n", jeu->tourJoueur, maillon->position);
+
+    return maillon;
+}
+
+
+char* demandeJoueur(char* rep)
+{
+    while (strlen(rep) != 2)
+    {
+        printf("Quel est la position du joueur : ");
+        fgets(rep, 3*sizeof(char), stdin);
+
+        if (strlen(rep) != 2)
+        {
+            printf("La réponse n'est pas conforme...\n");
+        }
+    }
+    return rep;
+}

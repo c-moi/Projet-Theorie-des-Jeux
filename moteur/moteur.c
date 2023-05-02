@@ -19,9 +19,6 @@ int moteurJeu(void* DATA)
     // choix action joueur
     int action = 0;
 
-    // initialisation des joueurs
-    char* rep = NULL; 
-
 
 
 
@@ -51,7 +48,7 @@ int moteurJeu(void* DATA)
                                                                                     // pour l'implémenter, donc pense
         while (actuelG->suiv != NULL)                                               // à le tester (et si tu veux bien,
         {                                                                           // l'optimiser un peu)
-            actuelG = actuelG->suiv;                                                  //
+            actuelG = actuelG->suiv;                                                //
         }                                                                           //
         printf("Vous avez repris la partie depuis l'historique sauvegardé.\n");     //
     }                                                                               //
@@ -62,14 +59,20 @@ int moteurJeu(void* DATA)
 
 
 
+    // *              nom               val
+
+    //                         actuelG
+    // liste -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
+                                
+    //                         actuelH
+    //                historique -> 5 -> 6 -> 7 -> 8
+
 
     // boucle de jeu
     while (action != 6)
     {
         // configuration action du joueur
         action = 0;
-
-        rep = malloc(sizeof(char) * 3);
 
         SDL_Delay(1000);
 
@@ -88,14 +91,7 @@ int moteurJeu(void* DATA)
         switch (action)
         {
             case 1:
-                // il faut faire cette demande dans joueur.
-                while (strlen(rep) != 2)
-                {
-                    printf("Quel est la position du joueur : ");
-                    fgets(rep, 3*sizeof(char), stdin);
-                }
-                maillon = creatMaillon(jeu.tourJoueur, rep);
-                printf("Le joueur %d joue en %s \n", jeu.tourJoueur, maillon->position);
+                maillon = tourJoueur(&jeu);
                 // Manon, soit tu as une fonction de cette longueur si tu fait les changements dans respectRegles
                 // soit tu fais les changements ici mais dans ce cas, il te faut retourner un booléen pour
                 // dire si oui ou non le coup est valide. A toi de voir.
@@ -121,7 +117,6 @@ int moteurJeu(void* DATA)
                 printf("Choix invalide, ceci n'est pas une action possible... \n");
                 break;
         }
-        free(rep);
     }
     exit(0);
 }
@@ -236,15 +231,15 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
                     *historique = insTT(*historique, creatMaillon(Maillon->joueur, Maillon->position));
                     *actuelH = *historique;
                 }
-                if (*actuelH != NULL)                   //                                       //
+                if (*actuelH != NULL)                       //                                       //
                 {   
                     if ((*actuelH)->suiv != NULL)   
-                    {                                          //                                       //
+                    {                                       //                                       //
                         *actuelH = supprimCoupApres(*actuelH);  
                     }    
                     Move* maillonH = creatMaillon(Maillon->joueur, Maillon->position);
                     *historique = insTT(*historique, maillonH);
-                    *actuelH = maillonH;                 //                                       //
+                    *actuelH = maillonH;                   //                                       //
                 }
             }                                              //                                       //  
                                                            // à déplacer en fonction                //          
