@@ -193,28 +193,6 @@ Move *deplacFin(Move *Liste)
     return tmp;
 }
 
-Move* listAdverse(Move *liste, Move *List_J1, Move *List_J2){
-    Move *L;
-    if(liste->joueur == 1){
-        L = List_J2;
-    }
-    else{
-        L = List_J1;
-    }
-    return L;
-}
-
-Move* listAllie(Move *liste, Move *List_J1, Move *List_J2){
-    Move *L;
-    if(liste->joueur == 1){
-        L = List_J1;
-    }
-    else{
-        L = List_J2;
-    }
-    return L;
-}
-
 
 
 void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu)
@@ -241,7 +219,7 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
             // ###### A ADAPTER ######
 
              printf("La case est vide\n");
-             verifContour(Maillon->position, List_J1, List_J2);
+             verifContour(Maillon->position, jeu, List_J1, List_J2);
 
             // ( MANON )
             // Il faudra regler les problèmes de verifContours car le seg fault qui est
@@ -286,70 +264,6 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
     {
         printf("Ceci ne correspond pas à une case du plateau !\n");
     }
-}
-
-Move* verifContour(char rep[3], Move *List_J1, Move *List_J2)
-{
-    Move *listadv = NULL;
-    int i = 1;
-    int j = 0;
-    char rec[3];
-    rec[0] = rep[0] - 1;
-    while (j < 3)
-    {
-        for ((rec[1]) = ((rep[1]) - 1); (rec[1]) = ((rep[1]) + 1); (rec[1])++)
-        {
-            if (strcmp(rec, listAdverse(listeG, List_J1, List_J2)->position) == 0)
-            {
-                listadv = insTT(listadv, creatMaillon(2, rec));
-                printf("Emplacement possible\n");
-                verifAllie(rep, List_J1, List_J2);
-                i = 0;
-            }
-            else
-            {
-                i++;
-            }
-        }
-        j++;
-        rec[0] = rep[0];
-        for ((rec[1]) = ((rep[1]) - 1); (rec[1]) = ((rep[1]) + 1); (rec[1])++)
-        {
-            if (strcmp(rec, listAdverse(listeG, List_J1, List_J2)->position) == 0)
-            {
-                listadv = insTT(listadv, creatMaillon(2, rec));
-                printf("Emplacement possible\n");
-                verifAllie(rep, List_J1, List_J2);
-                i = 0;
-            }
-            else
-            {
-                i++;
-            }
-        }
-        j++;
-        rec[0] = rep[0] + 1;
-        for ((rec[1]) = ((rep[1]) - 1); (rec[1]) = ((rep[1]) + 1); (rec[1])++)
-        {
-            if (strcmp(rec, listAdverse(listeG, List_J1, List_J2)->position))
-            {
-                listadv = insTT(listadv, creatMaillon(2, rec));
-                printf("Emplacement possible\n");
-                verifAllie(rep, List_J1, List_J2);
-                i = 0;
-            }
-            else
-            {
-                i++;
-            }
-        }
-        j++;
-    }
-    if (i != 0)
-    {
-        printf("Emplacement impossible car aucun pion adverse autour\n");
-    }
-    return listadv;
 }
 
 
@@ -745,6 +659,105 @@ bool verifAllie(char rep[3], Move *LN, Move *LB)
     return false;
 }
 
+Move* verifContour(char rep[3], parametres* jeu, Move *List_J1, Move *List_J2)
+{
+    Move *listadv = NULL;
+    Move* tmp = listeG;
+    int i = 1;
+    int j = 0;
+    char rec[3];
+    rec[0] = rep[0] - 1;
+
+        for ((rec[1]) = ((rep[1]) - 1); (rec[1]) <= ((rep[1]) + 1); (rec[1])++)
+        {
+            printf("rec = %s\n", rec);
+            SDL_Delay(1000);
+
+            while (tmp !=NULL)
+            {
+                if (strcmp(rec, tmp->position) == 0)
+                {
+                    listadv = insTT(listadv, creatMaillon(, rec));
+                }
+                tmp = tmp->suiv;
+            }
 
 
+            if (strcmp(rec, listAdverse(listeG, List_J1, List_J2)->position) == 0)
+            {
+                listadv = insTT(listadv, creatMaillon(2, rec));
+                printf("Emplacement possible\n");
+                verifAllie(rep, List_J1, List_J2);
+                i = 0;
+            }
+            else
+            {
+                i++;
+            }
+        }
+        j++;
+        rec[0]++;
+        for ((rec[1]) = ((rep[1]) - 1); (rec[1]) <= ((rep[1]) + 1); (rec[1])++)
+        {
+            printf("rec = %s\n", rec);
+            SDL_Delay(1000);
+            if (strcmp(rec, listAdverse(listeG, List_J1, List_J2)->position) == 0)
+            {
+                listadv = insTT(listadv, creatMaillon(2, rec));
+                printf("Emplacement possible\n");
+                verifAllie(rep, List_J1, List_J2);
+                i = 0;
+            }
+            else
+            {
+                i++;
+            }
+        }
+        j++;
+        rec[0]++;
+        for ((rec[1]) = ((rep[1]) - 1); (rec[1]) <= ((rep[1]) + 1); (rec[1])++)
+        {
+            printf("rec = %s\n", rec);
+            SDL_Delay(1000);
+            if (strcmp(rec, listAdverse(listeG, List_J1, List_J2)->position) == 0)
+            {
+                listadv = insTT(listadv, creatMaillon(2, rec));
+                printf("Emplacement possible\n");
+                verifAllie(rep, List_J1, List_J2);
+                i = 0;
+            }
+            else
+            {
+                i++;
+            }
+        }
+        j++;
 
+    if (i != 0)
+    {
+        printf("Emplacement impossible car aucun pion adverse autour\n");
+    }
+    return listadv;
+}
+
+Move* listAdverse(Move *liste, Move *List_J1, Move *List_J2){
+    Move *L;
+    if(liste->joueur == 1){
+        L = List_J2;
+    }
+    else{
+        L = List_J1;
+    }
+    return L;
+}
+
+Move* listAllie(Move *liste, Move *List_J1, Move *List_J2){
+    Move *L;
+    if(liste->joueur == 1){
+        L = List_J1;
+    }
+    else{
+        L = List_J2;
+    }
+    return L;
+}

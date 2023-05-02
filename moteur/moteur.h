@@ -36,7 +36,7 @@ Move* insTT(Move *L, Move *moves);
 Move* deplacFin(Move *L);
 
 void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu);
-Move* verifContour(char rep[3], Move *List_J1, Move *List_J2);
+Move* verifContour(char rep[3], parametres* jeu, Move *List_J1, Move *List_J2);
 bool verifAllie(char rep[3], Move *LN, Move *LB);
 
 void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp);
