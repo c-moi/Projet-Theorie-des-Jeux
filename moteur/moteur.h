@@ -41,7 +41,7 @@ void verifSuite(char rec[3], char rep[3], Move *Liste, int pre);
 
 void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp);
 void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp);
-int estDans(char pion[3], Move *L); 
+Move* estDans(char pion[3], Move *L); 
 void printMoveHistory(Move *Liste, Move *End);
 Move* supprimCoupApres(Move *actuel);
 

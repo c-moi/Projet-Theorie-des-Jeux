@@ -454,26 +454,22 @@ void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp)
     }
 }
 
-int estDans(char pion[3], Move *L)
+Move* estDans(char pion[3], Move *L)
 {
-    //char *ptr1 = L;                        // Manon Pas besoin de ça puisque L est une copie du pointeur de la liste
-                                             // aucun des changements de ce pointeur de sera retenu puisque pas de return
-                                             // J'ai changé parce que ça causait une boucle infinie
-    int j = 0;
-
-    while(L != NULL)
+    Move *ptr1 = L;                        
+                                             
+    while(ptr1 != NULL)
     {
-        if(strcmp(pion, L->position) == 0)
+        if(strcmp(pion, ptr1->position) == 0)
         {
-            j = 1;
-            break;
+            return ptr1;
         }
         else
         {
-            L = L->suiv->position;
+            ptr1 = ptr1->suiv;
         }
     }
-    return j;
+    return NULL;
 }
 
 void printMoveHistory(Move *Liste, Move *End)
