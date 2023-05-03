@@ -208,64 +208,53 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
         {
             // ###### A ADAPTER ######
 
-             printf("La case est vide\n");
+            printf("La case est vide\n");
+            Maillon->switched = verifAllie(Maillon->position, jeu);
 
             // ( MANON )
-            // pour le moment, on va se contenter de ces tests la pour les autres parties
-            // ("cela correspond à une case du tableau" et "la case est vide")
             // Il faudra regler les problèmes de verifContours car le seg fault qui est
             // produit est dû au fait que list_j1 et list_j2 sont nulles
             
             // en attendant :
-            if (*historique == NULL)
+            if (Maillon->switched != NULL)
             {
-                *historique = insTT(*historique, creatMaillon(Maillon->joueur, Maillon->position));
-                *actuelH = *historique;
-            }
-            else 
-            {
-                if (*actuelH == NULL)
+                if (*historique == NULL)
                 {
-                    *historique = supprimCoupApres(*historique);
-                    free(*historique);
                     *historique = insTT(*historique, creatMaillon(Maillon->joueur, Maillon->position));
                     *actuelH = *historique;
                 }
-                if (*actuelH != NULL)                       //                                       //
-                {   
-                    if ((*actuelH)->suiv != NULL)   
-                    {                                       //                                       //
-                        *actuelH = supprimCoupApres(*actuelH);  
-                    }    
-                    Move* maillonH = creatMaillon(Maillon->joueur, Maillon->position);
-                    *historique = insTT(*historique, maillonH);
-                    *actuelH = maillonH;                   //                                       //
-                }
-            }                                              //                                       //  
-                                                           // à déplacer en fonction                //          
-            SDL_LockMutex(mutexG);                         // de ce que tu veux faire               //
-            listeG = insTT(listeG, Maillon);               // (au niveau de l'appel de fonction)    //
-            SDL_UnlockMutex(mutexG);                       // référence à ligne 92                  //
-            *actuelG = Maillon;
-                                                           //                                       //
-                                                           //                                       //
-                                                           //                                       //         
-                                                           //                                       // il faudra que tu testes
-            jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;   //                                       // tout ça après ton verifContour
-                                                                                                    //
-                                                                                                    //
-            // if(jeu->tourJoueur==1)                      //                                       //
-            // {                                           //                                       //
-            //     insTT(List_J1, move);                   //                                       //
-            // }                                           // J'imagine que ça va la ca             //
-            // else                                        //                                       //
-            // {                                           //                                       //
-            //     insTT(List_J2, move);                   //                                       //
-            // }                                           //                                       //     
+                else 
+                {
+                    if (*actuelH == NULL)
+                    {
+                        *historique = supprimCoupApres(*historique);
+                        free(*historique);
+                        *historique = insTT(*historique, creatMaillon(Maillon->joueur, Maillon->position));
+                        *actuelH = *historique;
+                    }
+                    if (*actuelH != NULL)                   //                                       //
+                    {   
+                        if ((*actuelH)->suiv != NULL)   
+                        {                                          //                                       //
+                            *actuelH = supprimCoupApres(*actuelH);  
+                        }    
+                        Move* maillonH = creatMaillon(Maillon->joueur, Maillon->position);
+                        *historique = insTT(*historique, maillonH);
+                        *actuelH = maillonH;                 //                                       //
+                    }
+                }                                              //                                       //  
+                                                            // à déplacer en fonction                //          
+                SDL_LockMutex(mutexG);                         // de ce que tu veux faire               //
+                listeG = insTT(listeG, Maillon);               // (au niveau de l'appel de fonction)    //
+                SDL_UnlockMutex(mutexG);                       // référence à ligne 92                  //
+                *actuelG = Maillon;
 
-            // fonction qui fait le tour de rep
-            //verifContour(Maillon->position, Liste, List_J1, List_J2, pre);
-            // L->suiv=rep; à mettre à la fin si tt les conditions sont vérifiées
+                jeu->tourJoueur = (jeu->tourJoueur % 2)+ 1;   
+            }
+            else
+            {
+                printf("Cela ne permet de retourner aucun pion, le coup n'a pas été retenu !\n");
+            }
         }
     }
     else
