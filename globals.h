@@ -8,8 +8,8 @@ typedef struct move {
     char position[3]; 
     int joueur; // joueur qui a joué le coup (1 jeton noir ou 2 jeton blanc)
 
-    struct move *switched;
-    
+    struct move *switched; // liste des pions retournés par le coup
+
     struct move *suiv;
     struct move *prec;
 } Move;
