@@ -48,6 +48,7 @@ char* configPlayers(Move *move, char rep[3]);
 char* lancerPartie(Move *move, char rep[3]);
 
 Move* tourJoueur(parametres* jeu);
+char* demandeJoueur(char* rep);
 
 #endif
 
