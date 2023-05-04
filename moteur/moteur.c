@@ -35,7 +35,7 @@ int moteurJeu(void* DATA)
 
     // rep[3] = configPlayers(listeG, rep); // à modifier                           // Manon, Il faut changer ça
     // En attendant :                                                               //
-    parametres jeu = {2, 0, 1};                                                     //
+    parametres jeu = {2, 0, 1};    // remplacer par configPlayers                                                    //
 
     //Chargement de partie si souhaité                                              //
     char choix_reprendre;                                                           //
@@ -130,7 +130,11 @@ void initPlto(Move** LN, Move** LB)
     listeG = insTT(listeG, creatMaillon(2, "e4"));
     SDL_UnlockMutex(mutexG);
 
-    // Manon, insére listesN et B
+    *LN = insTT(*LN, creatMaillon(1, "d4"));
+    *LN = insTT(*LN, creatMaillon(1, "d5"));
+    *LB = insTT(*LB, creatMaillon(2, "e4"));
+    *LB = insTT(*LB, creatMaillon(2, "e5"));
+
 }
 
 Move *creatMaillon(int joueur, char position[3])
@@ -185,6 +189,7 @@ Move *deplacFin(Move *Liste)
 }
 
 
+
 void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu)
 {
     int pre = 0;
@@ -223,7 +228,7 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
                     *historique = insTT(*historique, creatMaillon(Maillon->joueur, Maillon->position));
                     *actuelH = *historique;
                 }
-                else 
+                else
                 {
                     if (*actuelH == NULL)
                     {
@@ -254,7 +259,7 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
             else
             {
                 printf("Cela ne permet de retourner aucun pion, le coup n'a pas été retenu !\n");
-            }
+            }         
         }
     }
     else
@@ -262,7 +267,6 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
         printf("Ceci ne correspond pas à une case du plateau !\n");
     }
 }
-
 
 void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp)
 {
@@ -272,11 +276,11 @@ void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp)
     }
     if (histoCp != NULL)
     {
-        if (estDans((*actuelG)->position, histoCp) == 0)
+        if (estDans((*actuelG)->position, histoCp) == NULL)
         {
             printf("Vous êtes au début du jeu !\n");
         }
-        else if (estDans((*actuelG)->position, histoCp) == 1)
+        else if (estDans((*actuelG)->position, histoCp) != NULL)
         {
             Move *tmp = *actuelG;
             *actuelG = (*actuelG)->prec;
@@ -287,11 +291,11 @@ void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp)
                 *actuelH = (*actuelH)->prec;
 
             printf("%s\n", (*actuelG)->position);
-            if (estDans((*actuelG)->position, histoCp) == 0)
+            if (estDans((*actuelG)->position, histoCp) == NULL)
             {
                 printf("Vous êtes revenu au début du jeu !\n");
             }
-            else if (estDans((*actuelG)->position, histoCp) == 1)
+            else if (estDans((*actuelG)->position, histoCp) != NULL)
             {
                 printf("Vous êtes revenu au coup : %s\n", (*actuelG)->position);
             }
@@ -358,11 +362,11 @@ void printMoveHistory(Move *Liste, Move *End)
     }
     else if (Liste != NULL)
     {
-        if (estDans(End->position, Liste) == 0)
+        if (estDans(End->position, Liste) == NULL)
         {
             printf("\n Historique de jeu vide ! \n");
         }
-        else if(estDans(End->position, Liste) == 1)
+        else if(estDans(End->position, Liste) != NULL)
         {
             while (Liste != End)
             {
@@ -412,7 +416,7 @@ Move* supprimerElement(Move* list, char valeur[3])
     return (list);
     }
     tmp = previous->suiv; // le cas n est gere on se place donc sur le cas n+1
-    while(tmp != NULL) // On Mouline est on supprime si on trouve l'element
+    while(tmp != NULL) // On continue est on supprime si on trouve l'element
     {
     if (tmp->position == valeur)
     {
@@ -435,7 +439,6 @@ Move* supprimerElement(Move* list, char valeur[3])
 //     Liste = insTT(Liste, creatMaillon(Liste->joueur,suite));
 //     return Liste;
 // }
-
 
 Move* verifAllie(char rep[3], parametres* jeu)
 {

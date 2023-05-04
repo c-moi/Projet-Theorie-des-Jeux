@@ -39,7 +39,11 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
 
 void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp);
 void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp);
-Move* estDans(char pion[3], Move *L); 
+
+Move* estDans(char pion[3], Move *L);
+//Move* listAdverse(Move *liste, Move *List_J1, Move *List_J2);
+//Move* listAllie(Move *liste, Move *List_J1, Move *List_J2);
+
 void printMoveHistory(Move *Liste, Move *End);
 Move* supprimCoupApres(Move *actuel);
 
