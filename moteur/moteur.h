@@ -36,8 +36,6 @@ Move* insTT(Move *L, Move *moves);
 Move* deplacFin(Move *L);
 
 void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu);
-Move* verifContour(char rep[3], parametres* jeu);
-Move* verifAllie(char rep[3], parametres* jeu);
 
 void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp);
 void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp);
@@ -49,8 +47,11 @@ Move* estDans(char pion[3], Move *L);
 void printMoveHistory(Move *Liste, Move *End);
 Move* supprimCoupApres(Move *actuel);
 
-Move* retournPions(char suite[3], Move *Liste, Move *L1, Move *L2);
 Move* supprimerElement(Move* list, char valeur[3]);
+
+// Move* retournPions(char suite[3],  Move *Liste/*, Move *L1, Move *L2*/)
+Move* verifAllie(char rep[3], parametres* jeu);
+Move* verifContour(char rep[3], parametres* jeu);
 
 
 #endif

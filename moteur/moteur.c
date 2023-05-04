@@ -259,9 +259,7 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
             else
             {
                 printf("Cela ne permet de retourner aucun pion, le coup n'a pas été retenu !\n");
-            }
-
-         
+            }         
         }
     }
     else
@@ -269,7 +267,6 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
         printf("Ceci ne correspond pas à une case du plateau !\n");
     }
 }
-               
 
 void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp)
 {
@@ -434,10 +431,10 @@ Move* supprimerElement(Move* list, char valeur[3])
 }
 
 
-
 // Manon, A compléter, je ne la touche pas 
 
-// Move* retournPions(char suite[3],  Move *Liste/*, Move *L1, Move *L2*/){
+// Move* retournPions(char suite[3],  Move *Liste/*, Move *L1, Move *L2*/)
+// {
 //     supprimerElement(listAdverse(Liste, L1, L2), suite);
 //     Liste = insTT(Liste, creatMaillon(Liste->joueur,suite));
 //     return Liste;
