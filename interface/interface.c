@@ -1,5 +1,13 @@
 #include "interface.h"
 
+
+// SDL_Renderer *creercroix(SDL_Renderer *rend,int x2, int y2)
+// {
+//     int size = 50;
+//     SDL_RenderDrawLine(rend, x2 - size, y2 - size, x2 + size, y2 +size);
+//     SDL_RenderDrawLine(rend, x2 -size , y2 + size, x2 + size , y2 - size);
+// }
+
 void Display(void)
 {
     SDL_Window *window;
@@ -8,53 +16,177 @@ void Display(void)
     SDL_Texture *texture;
     SDL_Event event;
     TTF_Font *font;
-    SDL_Color color = {255, 255, 255};
+    //SDL_Color color = {255, 255, 255};
     int quit = 0;
 
     //Initialisation test maj
-    // Move* printed_SDL = NULL;
-    // printed_SDL = listeG;
+    Move* printed_SDL = NULL;
+    printed_SDL = listeG;
 
     SDL_Thread* Debug = SDL_CreateThread(debug, "Débug", NULL);
 
     // Initialisation de SDL2
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
+    IMG_Init(IMG_INIT_PNG);
 
     // Création de la fenêtre
-    window = SDL_CreateWindow("OTHELLO", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
-    renderer = SDL_CreateRenderer(window, -1, 0);
+    window = SDL_CreateWindow("OTHELLO", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 900, 590, SDL_WINDOW_SHOWN);
+    renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_ACCELERATED);
 
     // // Chargement de la police d'écriture
-    //  font = TTF_OpenFont("Desktop/nice_sugar/Nice Sugar.ttf", 32);
+    font = TTF_OpenFont("/Users/jade/Desktop/ALgo/Projet_Algo_2/Projet-Theorie-des-Jeux/nice_sugar/Nice Sugar.ttf", 27);
+        if (!font) 
+         {
+            printf("Erreur lors du chargement de la police : %s", TTF_GetError());
+            exit(EXIT_FAILURE);
+        }
 
-    // // Création de la surface de rendu du texte
-    // surface = TTF_RenderText_Solid(font, "Bonjour, comment ça va ?", color);
+    // Charger l'image du plateau d'échec
+    SDL_Surface* imtableau = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/plateau_img/plateaurose.png");
+    if (!imtableau) 
+        {
+            printf("Erreur image nulle ");
+            exit(EXIT_FAILURE);
+        }
+    
+    // Charger l'image des boutons
+    SDL_Surface* boutonOff = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/boutonOff/boutonOff.png");
+    if (!boutonOff) 
+        {
+            printf("Erreur image nulle ");
+            exit(EXIT_FAILURE);
+        }
+    
+    // Charger l'image des pions BLANCS
+    SDL_Surface* pBlanc = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/pion/pionBlanc.png");
+    if (!pBlanc) 
+        {
+            printf("Erreur image nulle ");
+            exit(EXIT_FAILURE);
+        }
 
-    // // Création de la texture à partir de la surface de rendu du texte
-    //  texture = SDL_CreateTextureFromSurface(renderer, surface);
+    // Charger l'image des pions BLANCS
+    SDL_Surface* pNoir = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/pion/pionNoir.png");
+    if (!pNoir) 
+        {
+            printf("Erreur image nulle ");
+            exit(EXIT_FAILURE);
+        }
 
     // Boucle principale
     while (!quit)
     {
-        // Chargement de la police d'écriture
-        // font = TTF_OpenFont("Desktop/nice_sugar/Nice Sugar.ttf", 32);
+        // if (strcmp(listCpy,listeG)!= 0)
+        // {
+        //     listCpy = listeG;
+        // }
+        
+        
+        
+        // // dessin d'un cercle 
+        // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        // int x1 = 275;
+        // int y1 = 325;
+        // int x3 = 325;
+        // int y3 = 275;
+        // int radius = 10;
+        // int thickness = 1;
+        // for (int w = 0; w < radius * 2; w++)
+        // {
+        //     for (int h = 0; h < radius * 2; h++) 
+        //     {
+        //         int dx = radius - w; // horizontal offset
+        //         int dy = radius - h; // vertical offset
+        //         int distance = dx*dx + dy*dy;
+        //         if (distance >= (radius - thickness) * (radius - thickness) && distance <= (radius + thickness) * (radius + thickness))
+        //         {
+        //             SDL_RenderDrawPoint(renderer, x1 + dx, y1 + dy);
+        //             SDL_RenderDrawPoint(renderer, x3 + dx, y3 + dy);
+        //         }
+        //     }
+        // }
+
+        // // Dessin d'une croix
+        // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        // int x2=325;
+        // int y2=325;
+        // int x4=275;
+        // int y4=275;
+        // int size = 10;
+        // SDL_RenderDrawLine(renderer, x2 - size, y2 - size, x2 + size, y2 +size);
+        // SDL_RenderDrawLine(renderer, x2 -size , y2 + size, x2 + size , y2 - size);  
+        // SDL_RenderDrawLine(renderer, x4 - size, y4 - size, x4 + size, y4 +size);
+        // SDL_RenderDrawLine(renderer, x4 -size , y4 + size, x4 + size , y4 - size);
+
+        // //dessin tableau
+        // int table[8][8] = {{0}};
+        // // Determine the size of each cell in the table
+        // int cell_size = 50;
+        // // Draw each cell in the table
+        // for (int i = 2; i < 10; i++) 
+        // {
+        //     for (int j = 2; j < 10; j++) 
+        //     {
+        //         SDL_Rect cell = {j * cell_size, i * cell_size, cell_size, cell_size};
+        //         SDL_RenderDrawRect(renderer, &cell);
+        //     }
+        // }
+
+        
+
+
+        
+
+        
+        // Affichage de l'écran
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        
 
         // Création de la surface de rendu du texte
-        //surface = TTF_RenderText_Solid(font, "Bonjour, comment ça va ?", color);
-
+        surface = TTF_RenderText_Solid(font, "Bienvenue sur Othello ", (SDL_Color){255,255,255,255}); 
         // Création de la texture à partir de la surface de rendu du texte
-        //texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-        // Effacement de l'écran
-        //SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-        //SDL_RenderClear(renderer);
-
+        texture = SDL_CreateTextureFromSurface(renderer, surface);
         // Affichage de la texture contenant le texte
-        //SDL_RenderCopy(renderer, texture, NULL, NULL);
+        SDL_Rect destRect = {600, 0, 0, 0};
+        SDL_QueryTexture(texture, NULL, NULL, &destRect.w, &destRect.h);
+        SDL_RenderCopy(renderer, texture, NULL, &destRect);
 
+        
+
+        //Afficher Tableau
+        //Afficher la texture
+        SDL_Texture* imtexture = SDL_CreateTextureFromSurface(renderer, imtableau);
+        // Afficher la surface sur la fenêtre
+        SDL_Rect rect = {0, 0, imtableau->w, imtableau->h};
+        SDL_QueryTexture(imtexture, NULL, NULL, &rect.w, &rect.h);
+        SDL_RenderCopy(renderer, imtexture, NULL, &rect);
+        SDL_UpdateWindowSurface(window);
+
+        //Afficher Bouton
+        //Afficher la texture
+        SDL_Texture* btexture = SDL_CreateTextureFromSurface(renderer, boutonOff);
+        // Afficher la surface sur la fenêtre
+        SDL_Rect brect = {600, 125, boutonOff->w, boutonOff->h};
+        SDL_QueryTexture(btexture, NULL, NULL, &brect.w, &brect.h);
+        SDL_RenderCopy(renderer, boutonOff, NULL, &brect);
+        SDL_UpdateWindowSurface(window);
+
+        //afficher menu
+        // Création de la surface de rendu du texte
+        SDL_Surface* msurface = TTF_RenderText_Solid(font, "Menu", (SDL_Color){255,255,255,255}); 
+        // Création de la texture à partir de la surface de rendu du texte
+        SDL_Texture* mtexture = SDL_CreateTextureFromSurface(renderer, msurface);
+        // Affichage de la texture contenant le texte
+        SDL_Rect mRect = {600, 125, 0, 0};
+        SDL_QueryTexture(mtexture, NULL, NULL, &mRect.w, &mRect.h);
+        SDL_RenderCopy(renderer, mtexture, NULL, &mRect);
+
+        
         // Affichage du rendu à l'écran
-        // SDL_RenderPresent(renderer);
+        SDL_RenderPresent(renderer);
+
+    
 
         // Gestion des événements
         while (SDL_PollEvent(&event))
@@ -64,17 +196,40 @@ void Display(void)
             case SDL_QUIT:
                 quit = 1;
                 break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_RIGHT)
+                {
+                    
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                                         "Clic de souris",
+                                         "Vous avez cliqué avec le bouton droit de la souris !",
+                                         NULL);
+                }
+            
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    int x = event.button.x;
+                    int y = event.button.y;
+                    //Afficher la texture
+                    SDL_Texture* pbtexture = SDL_CreateTextureFromSurface(renderer, pBlanc);
+                    // Afficher la surface sur la fenêtre
+                    SDL_Rect pbrect = {x, y, pBlanc->w, pBlanc->h};
+                    SDL_QueryTexture(pbtexture, NULL, NULL, &pbrect.w, &pbrect.h);
+                    SDL_RenderCopy(renderer, pbtexture, NULL, &pbrect);
+                    SDL_UpdateWindowSurface(window);
+                    
+                    
+                    
+                }
+                break;
+            
             }
         }
-        // // Effacement de l'écran
-        // SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-        // SDL_RenderClear(renderer);
+        
 
-        // // Affichage de la texture contenant le texte
-        // SDL_RenderCopy(renderer, texture, NULL, NULL);
-
-        // // Affichage du rendu à l'écran
-        SDL_RenderPresent(renderer);
+        // réinitialiser  l'écran
+        SDL_RenderClear(renderer);
+        SDL_FreeSurface(surface);
     }
     exit(0);
 
@@ -85,6 +240,7 @@ void Display(void)
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     TTF_Quit();
+    IMG_Quit();
     SDL_Quit();
 
     SDL_WaitThread(Debug, NULL);
