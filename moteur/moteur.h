@@ -35,12 +35,12 @@ Move* creatMaillon(int joueur, char position[3]);
 Move* insTT(Move *L, Move *moves);
 Move* deplacFin(Move *L);
 
-void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu);
+void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu, int* tour);
 void verifContour(char rep[3],Move *LG, Move *List_J1, Move *List_J2, int pre);
 void verifSuite(char rec[3], char rep[3], Move *Liste, int pre);
 
-void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp);
-void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp);
+void deplacArriere(Move** actuelG, Move** actuelH, Move** histoCp, parametres jeu);
+void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp, parametres jeu);
 int estDans(char pion[3], Move *L); 
 void printMoveHistory(Move *Liste, Move *End);
 Move* supprimCoupApres(Move *actuel);

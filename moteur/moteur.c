@@ -1,28 +1,38 @@
 #include "moteur.h"
 
+void viderBuffer()
+{
+    int c = 0;
+    while (c != '\n' && c != EOF)
+    {
+        c = getchar();
+    }
+}
 
 int moteurJeu(void* DATA)
 {
 
-    Move* maillon = NULL;
+    Move* maillon=NULL;
     // init historique coups
-    Move *histoCp = NULL;
+    Move *histoCp=NULL;
     // init pions noirs
-    Move *List_J1 = NULL;
+    Move *List_J1=NULL;
     // init pions blancs
-    Move *List_J2 = NULL;
+    Move *List_J2=NULL;
 
     // position dans l'historique
-    Move *actuelG = NULL;
-    Move* actuelH = NULL;
+    Move *actuelG=NULL;
+    Move* actuelH=NULL;
 
     // choix action joueur
-    int action = 0;
+    int action;
 
     // initialisation des joueurs
-    char* rep = NULL; 
+    char* rep; 
 
+    int tour=60;
 
+    parametres jeu;
 
 
 
@@ -30,98 +40,169 @@ int moteurJeu(void* DATA)
 
     // On s'assure que l'affichage de bienvenu s'est affiché
     SDL_Delay(1000);
-
-    // initialisation du jeu
-    initPlto(&List_J1, &List_J2);
-    actuelG = deplacFin(listeG);
-
-
-    // rep[3] = configPlayers(listeG, rep); // à modifier                           // Manon, Il faut changer ça
-    // En attendant :                                                               //
-    parametres jeu = {2, 0, 1};                                                     //
-
-    //Chargement de partie si souhaité                                              //
-    char choix_reprendre;                                                           //
-    printf("\nVoulez-vous reprendre la partie sauvegardée ? (O/N) : ");             //
-    scanf("%c", &choix_reprendre);                                                  //
-    if (choix_reprendre == 'O' || choix_reprendre == 'o')                           //
-    {                                                                               //
-        histoCp = chargerHistorique(histoCp);                                       //
-        actuelG->suiv = histoCp;                                                    // Latifa, j'ai pas fait de modif
-                                                                                    // pour l'implémenter, donc pense
-        while (actuelG->suiv != NULL)                                               // à le tester (et si tu veux bien,
-        {                                                                           // l'optimiser un peu)
-            actuelG = actuelG->suiv;                                                  //
-        }                                                                           //
-        printf("Vous avez repris la partie depuis l'historique sauvegardé.\n");     //
-    }                                                                               //
-    else                                                                            //
-    {                                                                               //
-        printf("Nouvelle partie démarrée.\n");                                      //
-    }                                                                               //
-
-
-
+                                            //
 
     // boucle de jeu
     while (action != 6)
     {
-        // configuration action du joueur
-        action = 0;
+        if(tour<60){
+            // configuration action du joueur
+            action = 0;
 
-        rep = malloc(sizeof(char) * 3);
+            rep = malloc(sizeof(char) * 3);
 
-        SDL_Delay(1000);
+            SDL_Delay(1000);
 
-        // demande à l'utilisateur ce qu'il veut faire
-        printf("\n Menu :\n");
-        printf("1. Jouer un coup \n");
-        printf("2. Se déplacer vers le coup précédent \n");
-        printf("3. Se déplacer vers l'avant \n");
-        printf("4. Afficher l'historique des coups joués \n");
-        printf("5. Sauvegarder la partie en cours\n");
-        printf("6. Quitter \n");
-        printf("\nQuel est votre choix : ");
-        scanf("%d", &action);
-        printf("\n");
+            // demande à l'utilisateur ce qu'il veut faire
+            printf("\n Menu :\n");
+            printf("1. Jouer un coup \n");
+            printf("2. Se déplacer vers le coup précédent \n");
+            printf("3. Se déplacer vers l'avant \n");
+            printf("4. Afficher l'historique des coups joués \n");
+            printf("5. Sauvegarder la partie en cours\n");
+            printf("6. Quitter \n");
+            printf("\nQuel est votre choix : ");
+            scanf("%d", &action);
+            printf("\n");
 
-        switch (action)
-        {
-            case 1:
-                // il faut faire cette demande dans joueur.
-                while (strlen(rep) != 2)
-                {
-                    printf("Quel est la position du joueur : ");
-                    fgets(rep, 3*sizeof(char), stdin);
-                }
-                maillon = creatMaillon(jeu.tourJoueur, rep);
-                printf("Le joueur %d joue en %s \n", jeu.tourJoueur, maillon->position);
-                // Manon, soit tu as une fonction de cette longueur si tu fait les changements dans respectRegles
-                // soit tu fais les changements ici mais dans ce cas, il te faut retourner un booléen pour
-                // dire si oui ou non le coup est valide. A toi de voir.
-                respectRegles(&histoCp, &actuelG, &actuelH, maillon, List_J1, List_J2, &jeu);
-                break;
-            case 2:
-                deplacArriere(&actuelG, &actuelH, histoCp);
-                break;
-            case 3:
-                deplacAvant(&actuelG, &actuelH, histoCp);
-                break;
-            case 4:
-                printMoveHistory(histoCp, actuelH);
-                break;
-            case 5:
-                // sauvegarderHistorique(histoCp, actuelG); Latifa, il faut que tu adaptes pour qu'on 
-                break;                                  // soit entre de début de histo et fin avecactuelG
-            case 6:                                     // Attention à bien faire tes tests !
-                printf("Au revoir ! \n");
-                break;
-
-            default:
-                printf("Choix invalide, ceci n'est pas une action possible... \n");
-                break;
+            switch (action)
+            {
+                case 1:
+                    // il faut faire cette demande dans joueur.
+                    while (strlen(rep) != 2)
+                    {
+                        printf("Quel est la position du joueur : ");
+                        fgets(rep, 3*sizeof(char), stdin);
+                    }
+                    maillon = creatMaillon(jeu.tourJoueur, rep);
+                    printf("Le joueur %d joue en %s \n", maillon->joueur, maillon->position);
+                    // Manon, soit tu as une fonction de cette longueur si tu fait les changements dans respectRegles
+                    // soit tu fais les changements ici mais dans ce cas, il te faut retourner un booléen pour
+                    // dire si oui ou non le coup est valide. A toi de voir.
+                    respectRegles(&histoCp, &actuelG, &actuelH, maillon, List_J1, List_J2, &jeu, &tour);
+                    break;
+                case 2:
+                    deplacArriere(&actuelG, &actuelH, &histoCp, jeu);
+                    break;
+                case 3:
+                    deplacAvant(&actuelG, &actuelH, histoCp, jeu);
+                    break;
+                case 4:
+                    printMoveHistory(histoCp, actuelH);
+                    break;
+                case 5:
+                    sauvegarderHistorique(histoCp, actuelH);   
+                    break;                                  
+                case 6:                                      
+                    printf("Au revoir ! \n");
+                    break;
+                default:
+                    printf("Choix invalide, ceci n'est pas une action possible... \n");
+                    break;
+            }
+            free(rep);
+            viderBuffer();
         }
-        free(rep);
+        else 
+        {
+            printf("bdfbhdv\n");
+            char restart;
+            printf("La partie est fini. Voulez vous recommencer une partie ? (O/N)");
+            scanf("%c", &restart);
+            if (restart=='O' || restart=='o')
+            {
+                tour=0;
+                printf("hdhfbhdf\n");
+                if(maillon!=NULL)
+                {
+                    free(maillon);
+                }  
+                maillon = NULL;
+                
+                if(listeG!=NULL)
+                {
+                    supprimCoupApres(listeG);
+                    free(listeG);
+                }
+                listeG=NULL;
+                
+                // init historique coups
+                if(histoCp!=NULL)
+                {
+                    
+                    supprimCoupApres(histoCp);
+                    free(histoCp);
+                    
+                }  
+                
+                histoCp = NULL;
+                // init pions noirs
+                //List_J1 = NULL;
+                // init pions blancs
+                //List_J2 = NULL;
+                
+
+                // position dans l'historique
+                actuelG = NULL;
+                actuelH = NULL;
+
+                // choix action joueur
+                action = 0;
+
+                // initialisation des joueurs
+                rep = NULL; 
+
+                char choix_reprendre;
+
+
+
+
+
+                // On s'assure que l'affichage de bienvenu s'est affiché
+                SDL_Delay(1000);
+
+                // initialisation du jeu
+                initPlto(&List_J1, &List_J2);
+                actuelG = deplacFin(listeG);
+
+
+                // rep[3] = configPlayers(listeG, rep); // à modifier                           // Manon, Il faut changer ça
+                // En attendant :                                                               //
+                jeu.nbJoueurs=1;
+                jeu.lvlOrdi=0;
+                jeu.tourJoueur=1;                                                     //
+
+                //Chargement de partie si souhaité                                              //      
+                if (access("fichier/historique.bin", F_OK) ==0)
+                {                                                                     //
+                    printf("\nVoulez-vous reprendre la partie sauvegardée ? (O/N) : "); 
+                    viderBuffer();            //
+                    scanf("%c", &choix_reprendre);                                                  //
+                    if (choix_reprendre == 'O' || choix_reprendre == 'o')                           //
+                    {                    
+                        printf("tour2: %d\n", tour);                                                        //
+                        chargerHistorique(&listeG, &actuelG, &histoCp, &actuelH, &tour);  
+
+                        printf("Vous avez repris la partie depuis l'historique sauvegardé.\n");     //
+                    }                                                                               //
+                    else                                                                            //
+                    {                                                                               //
+                        printf("Nouvelle partie démarrée.\n");                                     //
+                    } 
+                    remove("fichier/historique.bin");
+                }    
+                else 
+                {
+                    printf("Le fichier n'existe pas!\n");
+                }       
+            }
+            else
+            {
+                action=6;
+                
+            }
+        }
+        
     }
     exit(0);
 }
@@ -190,7 +271,7 @@ Move *deplacFin(Move *Liste)
 }
 
 
-void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu)
+void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu, int* tour)
 {
     int pre = 0;
     Move* tst = listeG;
@@ -271,6 +352,8 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
             // fonction qui fait le tour de rep
             //verifContour(Maillon->position, Liste, List_J1, List_J2, pre);
             // L->suiv=rep; à mettre à la fin si tt les conditions sont vérifiées
+            (*tour)++;
+            printf("tour:%d\n", *tour);
         }
     }
     else
@@ -403,42 +486,45 @@ void verifSuite(char rec[3], char rep[3], Move *Liste, int pre)
     }
 }
 
-void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp)
+void deplacArriere(Move** actuelG, Move** actuelH, Move** histoCp, parametres jeu)
 {
-    if (histoCp == NULL)
+    if (*histoCp == NULL)
     {
         printf("Vous ne pouvez pas revenir à un coup joué, aucune action n'a été faite au préalable !\n");
     }
-    if (histoCp != NULL)
+    else if (*histoCp != NULL)
     {
-        if (estDans((*actuelG)->position, histoCp) == 0)
-        {
-            printf("Vous êtes au début du jeu !\n");
-        }
-        else if (estDans((*actuelG)->position, histoCp) == 1)
-        {
-            Move *tmp = *actuelG;
-            *actuelG = (*actuelG)->prec;
-            (*actuelG)->suiv = NULL;
-            free(tmp);
-
-            if (*actuelH != NULL)
-                *actuelH = (*actuelH)->prec;
-
-            printf("%s\n", (*actuelG)->position);
-            if (estDans((*actuelG)->position, histoCp) == 0)
+        for(int i=0 ; i<((jeu.nbJoueurs%2)+1); i++){
+            if (estDans((*actuelG)->position, *histoCp) == 0)
             {
-                printf("Vous êtes revenu au début du jeu !\n");
+                printf("Vous êtes au début du jeu !\n");
             }
-            else if (estDans((*actuelG)->position, histoCp) == 1)
+            else if (estDans((*actuelG)->position, *histoCp) == 1)
             {
-                printf("Vous êtes revenu au coup : %s\n", (*actuelG)->position);
+                Move *tmp = *actuelG;
+                *actuelG = (*actuelG)->prec;
+                (*actuelG)->suiv = NULL;
+                free(tmp);
+
+                if (*actuelH != NULL)
+                    *actuelH = (*actuelH)->prec;
+
+                printf("%s\n", (*actuelG)->position);
+                if (estDans((*actuelG)->position, *histoCp) == 0)
+                {
+                    printf("Vous êtes revenu au début du jeu !\n");
+                }
+                else if (estDans((*actuelG)->position, *histoCp) == 1)
+                {
+                    printf("Vous êtes revenu au coup : %s\n", (*actuelG)->position);
+                }
             }
         }
+    
     }
 }
 
-void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp)
+void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp, parametres jeu)
 {
     if (histoCp == NULL)
     {
@@ -446,26 +532,28 @@ void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp)
     }
     else if (histoCp != NULL)
     {
-        if (*actuelH != NULL)
-        {
-            if ((*actuelH)->suiv != NULL)
+        for(int i=0 ; i<((jeu.nbJoueurs%2)+1);i++){
+            if (*actuelH != NULL)
             {
-                *actuelH = (*actuelH)->suiv;
-                *actuelG = insTT(*actuelG, creatMaillon((*actuelH)->joueur, (*actuelH)->position));
-                *actuelG = (*actuelG)->suiv;
-                printf("Vous êtes revenu au coup : %s\n", (*actuelH)->position);
+                if ((*actuelH)->suiv != NULL)
+                {
+                    *actuelH = (*actuelH)->suiv;
+                    *actuelG = insTT(*actuelG, creatMaillon((*actuelH)->joueur, (*actuelH)->position));
+                    *actuelG = (*actuelG)->suiv;
+                    printf("Vous êtes revenu au coup : %s\n", (*actuelH)->position);
+                }
+                else
+                {
+                    printf("Vous êtes à votre dernier coup joué !\n");
+                }
             }
             else
             {
-                printf("Vous êtes à votre dernier coup joué !\n");
+                *actuelH = histoCp;
+                *actuelG = insTT(*actuelG, creatMaillon(histoCp->joueur, histoCp->position));
+                *actuelG = (*actuelG)->suiv;
+                printf("Vous êtes revenu au coup : %s\n", (*actuelH)->position);
             }
-        }
-        else
-        {
-            *actuelH = histoCp;
-            *actuelG = insTT(*actuelG, creatMaillon(histoCp->joueur, histoCp->position));
-            *actuelG = (*actuelG)->suiv;
-            printf("Vous êtes revenu au coup : %s\n", (*actuelH)->position);
         }
     }
 }
@@ -486,7 +574,7 @@ int estDans(char pion[3], Move *L)
         }
         else
         {
-            L = L->suiv->position;
+            L = L->suiv;
         }
     }
     return j;
@@ -692,7 +780,3 @@ void retournPions(char pionallie[3], char rep[3], char tour[3], Move *LG, Move *
         }
     }
 }
-
-
-
-
