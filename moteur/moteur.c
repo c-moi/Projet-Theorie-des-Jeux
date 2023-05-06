@@ -7,10 +7,6 @@ int moteurJeu(void* DATA)
     Move* maillon = NULL;
     // init historique coups
     Move *histoCp = NULL;
-    // init pions noirs
-    Move *List_J1 = NULL;
-    // init pions blancs
-    Move *List_J2 = NULL;
 
     // position dans l'historique
     Move *actuelG = NULL;
@@ -32,13 +28,9 @@ int moteurJeu(void* DATA)
     SDL_Delay(1000);
 
     // initialisation du jeu
-    initPlto(&List_J1, &List_J2);
+    initPlto();
     actuelG = deplacFin(listeG);
 
-
-    // rep[3] = configPlayers(listeG, rep); // à modifier                           // Manon, Il faut changer ça
-    // En attendant :                                                               //
-    parametres jeu = {2, 0, 1};    // remplacer par configPlayers                                                    //
 
     //Chargement de partie si souhaité                                              //
     char choix_reprendre;                                                           //
@@ -61,7 +53,8 @@ int moteurJeu(void* DATA)
     }                                                                               //
 
 
-
+    parametres jeu;                                               
+    jeu = configPlayers(jeu);
 
     // boucle de jeu
     while (action != 6)
@@ -96,10 +89,7 @@ int moteurJeu(void* DATA)
                 }
                 maillon = creatMaillon(jeu.tourJoueur, rep);
                 printf("Le joueur %d joue en %s \n", jeu.tourJoueur, maillon->position);
-                // Manon, soit tu as une fonction de cette longueur si tu fait les changements dans respectRegles
-                // soit tu fais les changements ici mais dans ce cas, il te faut retourner un booléen pour
-                // dire si oui ou non le coup est valide. A toi de voir.
-                respectRegles(&histoCp, &actuelG, &actuelH, maillon, List_J1, List_J2, &jeu);
+                respectRegles(&histoCp, &actuelG, &actuelH, maillon, &jeu);
                 break;
             case 2:
                 deplacArriere(&actuelG, &actuelH, histoCp);
@@ -126,7 +116,7 @@ int moteurJeu(void* DATA)
     exit(0);
 }
 
-void initPlto(Move** LN, Move** LB)
+void initPlto()
 {
     SDL_LockMutex(mutexG);
     listeG = insTT(listeG, creatMaillon(1, "d4"));
@@ -134,11 +124,6 @@ void initPlto(Move** LN, Move** LB)
     listeG = insTT(listeG, creatMaillon(1, "e5"));
     listeG = insTT(listeG, creatMaillon(2, "e4"));
     SDL_UnlockMutex(mutexG);
-
-    *LN = insTT(*LN, creatMaillon(1, "d4"));
-    *LN = insTT(*LN, creatMaillon(1, "d5"));
-    *LB = insTT(*LB, creatMaillon(2, "e4"));
-    *LB = insTT(*LB, creatMaillon(2, "e5"));
 
 }
 
@@ -195,7 +180,7 @@ Move *deplacFin(Move *Liste)
 
 
 
-void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu)
+void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, parametres *jeu)
 {
     int pre = 0;
     Move* tst = listeG;
@@ -216,14 +201,10 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
         }
         else
         {
-            // ###### A ADAPTER ######
 
             printf("La case est vide\n");
             Maillon->switched = verifAllie(Maillon->position, jeu);
 
-            // ( MANON )
-            // Il faudra regler les problèmes de verifContours car le seg fault qui est
-            // produit est dû au fait que list_j1 et list_j2 sont nulles
             
             // en attendant :
             if (Maillon->switched != NULL)
@@ -252,7 +233,9 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
                         *historique = insTT(*historique, maillonH);
                         *actuelH = maillonH;                 //                                       //
                     }
-                }                                              //                                       //  
+                }
+                retournPions(Maillon->switched);
+                                                              //                                       //  
                                                             // à déplacer en fonction                //          
                 SDL_LockMutex(mutexG);                         // de ce que tu veux faire               //
                 listeG = insTT(listeG, Maillon);               // (au niveau de l'appel de fonction)    //
@@ -276,7 +259,6 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
 }
 
 
-// Manon, A compléter et tester, je ne la touche pas
 
 void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp)
 {
@@ -410,45 +392,13 @@ Move* supprimCoupApres(Move *liste)
 }
 
 
-//Supprimer un élément d'une liste
-Move* supprimerElement(Move* list, char valeur[3])
-{
-    Move  *tmp;
-    Move  *previous;
-    
-    if (list == NULL) // si la liste est NULL on s'arrete tout de suite
-    return (list);
-    previous = list;
-    if (previous->position == valeur) // Verifie la tete de liste, cas particulier
-    {
-    list = previous->suiv;
-    free(previous);
-    return (list);
-    }
-    tmp = previous->suiv; // le cas n est gere on se place donc sur le cas n+1
-    while(tmp != NULL) // On continue est on supprime si on trouve l'element
-    {
-    if (tmp->position == valeur)
-    {
-        previous->suiv = tmp->suiv;
-        free(tmp);
-        return (list);
-    }
-    previous = tmp; // pour ce souvenir dans la prochaine iteration du precedent
-    tmp = tmp->suiv;
-    }
-    return list;
-}
+
 
 
 
 // Manon, A compléter, je ne la touche pas 
 
-// Move* retournPions(char suite[3],  Move *Liste/*, Move *L1, Move *L2*/){
-//     supprimerElement(listAdverse(Liste, L1, L2), suite);
-//     Liste = insTT(Liste, creatMaillon(Liste->joueur,suite));
-//     return Liste;
-// }
+
 
 Move* verifAllie(char rep[3], parametres* jeu)
 {
@@ -457,7 +407,6 @@ Move* verifAllie(char rep[3], parametres* jeu)
     char *rech = malloc(3*sizeof(char));
 
     char *recl = malloc(3*sizeof(char));
-
     if(L != NULL)
     {
         while (L != NULL)
@@ -608,6 +557,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
                         {
+                            //printf("a droite\n");  ici ?
                             break;
                         }
                     }
@@ -626,6 +576,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
             // Si pion adverse en bas à gauche
             else if (rech[0] == (rep[0] - 1) && rech[1] == (rep[1] + 1))
             {
+                
                 for (int i=0; i<(rech[0]-96) || i<(56-rech[1]); i++)
                 {
                     recl[0] -= i;
@@ -745,7 +696,7 @@ Move* verifContour(char rep[3], parametres* jeu)
             {
                 if (strcmp(rec, tmp->position) == 0 && tmp->joueur == (jeu->tourJoueur % 2)+ 1)
                 {
-                    listadv = insTT(listadv, creatMaillon((jeu->tourJoueur+1)%2, rec));
+                    listadv = insTT(listadv, creatMaillon((jeu->tourJoueur % 2)+ 1, rec));
                 }
                 tmp = tmp->suiv;
             }
@@ -759,24 +710,22 @@ Move* verifContour(char rep[3], parametres* jeu)
     return listadv;
 }
 
-// Move* listAdverse(Move *liste, Move *List_J1, Move *List_J2){
-//     Move *L;
-//     if(liste->joueur == 1){
-//         L = List_J2;
-//     }
-//     else{
-//         L = List_J1;
-//     }
-//     return L;
-// }
+void retournPions(Move *a_retourner){
+    Move *ptr = listeG;
+    while(ptr != NULL){
+        if(strcmp(a_retourner->position, ptr->position) == 0){
+            ptr->joueur = (ptr->joueur %2) + 1;
+        }
+        ptr = ptr->suiv;
+    }
+    AfficheListe(ptr);
+}
 
-// Move* listAllie(Move *liste, Move *List_J1, Move *List_J2){
-//     Move *L;
-//     if(liste->joueur == 1){
-//         L = List_J1;
-//     }
-//     else{
-//         L = List_J2;
-//     }
-//     return L;
-// }
+void AfficheListe(const Move * l)
+{
+    for ( ; l != NULL; l = l->suiv)
+    {
+        printf("%s " "%d", l->position, l->joueur);
+    }
+    printf("\n");
+}
