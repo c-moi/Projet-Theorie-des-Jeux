@@ -81,9 +81,9 @@ int moteurJeu(void* DATA)
         switch (action)
         {
             case 1:
-                // il faut faire cette demande dans joueur.
                 while (strlen(rep) != 2)
                 {
+                    //fonction qui verifie que le joueur puisse jouer
                     printf("Quel est la position du joueur : ");
                     fgets(rep, 3*sizeof(char), stdin);
                 }
@@ -93,6 +93,7 @@ int moteurJeu(void* DATA)
                 break;
             case 2:
                 deplacArriere(&actuelG, &actuelH, histoCp);
+                //retourArriere(maillon->switched);
                 break;
             case 3:
                 deplacAvant(&actuelG, &actuelH, histoCp);
@@ -120,8 +121,8 @@ void initPlto()
 {
     SDL_LockMutex(mutexG);
     listeG = insTT(listeG, creatMaillon(1, "d4"));
-    listeG = insTT(listeG, creatMaillon(2, "d5"));
     listeG = insTT(listeG, creatMaillon(1, "e5"));
+    listeG = insTT(listeG, creatMaillon(2, "d5"));
     listeG = insTT(listeG, creatMaillon(2, "e4"));
     SDL_UnlockMutex(mutexG);
 
@@ -205,8 +206,7 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
             printf("La case est vide\n");
             Maillon->switched = verifAllie(Maillon->position, jeu);
 
-            
-            // en attendant :
+           
             if (Maillon->switched != NULL)
             {
                 if (*historique == NULL)
@@ -223,23 +223,25 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
                         *historique = insTT(*historique, creatMaillon(Maillon->joueur, Maillon->position));
                         *actuelH = *historique;
                     }
-                    if (*actuelH != NULL)                   //                                       //
+                    if (*actuelH != NULL)                                                          
                     {   
                         if ((*actuelH)->suiv != NULL)   
-                        {                                          //                                       //
+                        {                                                                                 
                             *actuelH = supprimCoupApres(*actuelH);  
                         }    
                         Move* maillonH = creatMaillon(Maillon->joueur, Maillon->position);
                         *historique = insTT(*historique, maillonH);
-                        *actuelH = maillonH;                 //                                       //
+                        *actuelH = maillonH;                                                        
                     }
                 }
+
+                //AfficheListe(Maillon->switched);
+
                 retournPions(Maillon->switched);
-                                                              //                                       //  
-                                                            // à déplacer en fonction                //          
-                SDL_LockMutex(mutexG);                         // de ce que tu veux faire               //
-                listeG = insTT(listeG, Maillon);               // (au niveau de l'appel de fonction)    //
-                SDL_UnlockMutex(mutexG);                       // référence à ligne 92                  //
+
+                SDL_LockMutex(mutexG);                         
+                listeG = insTT(listeG, Maillon);               
+                SDL_UnlockMutex(mutexG);                       
                 *actuelG = Maillon;
 
                 jeu->tourJoueur = (jeu->tourJoueur % 2)+ 1;   
@@ -393,17 +395,11 @@ Move* supprimCoupApres(Move *liste)
 
 
 
-
-
-
-// Manon, A compléter, je ne la touche pas 
-
-
-
 Move* verifAllie(char rep[3], parametres* jeu)
 {
     Move *L = verifContour(rep, jeu);
     Move* a_tourner = NULL;
+    Move *test = NULL;
     char *rech = malloc(3*sizeof(char));
 
     char *recl = malloc(3*sizeof(char));
@@ -412,21 +408,30 @@ Move* verifAllie(char rep[3], parametres* jeu)
         while (L != NULL)
         {
             rech = L->position;
-            recl = rech;
+            strcpy(recl, rech);
             // Si pion adverse en haut à gauche
             if (rech[0] == (rep[0] - 1) && rech[1] == (rep[1] - 1))
             {
-                a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
-                for (int i=1; i<=(rech[0]-96) || i<=(rech[1]-49); i++)
+                for (int i=0; i<=(rech[0]-97) || i<=(rech[1]-49); i++)
                 {
-                    recl[0] -= i;
-                    recl[1] -= i;
+
+                    recl[0] = (rech[0] - i);
+                    recl[1] = (rech[1] - i);
 
                     if (estDans(recl, listeG) != NULL)
                     {
                         if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
+                            if(recl[0] == 97 || recl[1] == 49){
+                                if (test != NULL)
+                                {
+                                    supprimCoupApres(test);
+                                    free(test);
+                                    test = NULL;
+                                }
+                                break;
+                            }
+                            test = insTT(test, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -436,11 +441,11 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     }
                     else
                     {
-                        if (a_tourner != NULL)
+                        if (test != NULL)
                         {
-                            a_tourner = supprimCoupApres(a_tourner);
-                            free(a_tourner);
-                            a_tourner = NULL;
+                            test = supprimCoupApres(test);
+                            free(test);
+                            test = NULL;
                         }
                         break;
                     }
@@ -448,17 +453,27 @@ Move* verifAllie(char rep[3], parametres* jeu)
                 
             }
             // Si pion adverse au dessus
-            else if (rech[0] == (rep[0]) && rech[1] == (rep[1] - 1))
+            else if (rech[0] == (rep[0] - 1) && rech[1] == (rep[1]))
             {
-                for (int i=0; i<(rech[1]-49); i++)
+                for (int i=0; i<=(rech[0]-97); i++)
                 {
-                    recl[1] -= i;
+
+                    recl[0] = (rech[0] - i);
 
                     if (estDans(recl, listeG) != NULL)
                     {
                         if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
+                            if(recl[0] == 97){
+                                if (test != NULL)
+                                {
+                                    supprimCoupApres(test);
+                                    free(test);
+                                    test = NULL;
+                                }
+                                break;
+                            }
+                            test = insTT(test, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -468,29 +483,39 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     }
                     else
                     {
-                        if (a_tourner != NULL)
+                        if (test != NULL)
                         {
-                            supprimCoupApres(a_tourner);
-                            free(a_tourner);
-                            a_tourner = NULL;
+                            supprimCoupApres(test);
+                            free(test);
+                            test = NULL;
                         }
                         break;
                     }
+
                 }
             }
             // Si pion adverse en haut à droite
-            else if (rech[0] == (rep[0] + 1) && rech[1] == (rep[1] - 1))
+            else if (rech[0] == (rep[0] - 1) && rech[1] == (rep[1] + 1))
             {
-                for (int i=0; i<(104-rech[0]) || i<(rech[1]-49); i++)
+                for (int i=0; i<=(rech[0] - 97) || i<=(56 - rech[1]); i++)
                 {
-                    recl[0] += i;
-                    recl[1] -= i;
+                    recl[0] = (rech[0] - i);
+                    recl[1] = (rech[1] + i);
 
                     if (estDans(recl, listeG) != NULL)
                     {
                         if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
+                            if(recl[0] == 97 || recl[1] == 56){
+                                if (test != NULL)
+                                {
+                                    supprimCoupApres(test);
+                                    free(test);
+                                    test = NULL;
+                                }
+                                break;
+                            }
+                            test = insTT(test, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -500,28 +525,38 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     }
                     else
                     {
-                        if (a_tourner != NULL)
+                        if (test != NULL)
                         {
-                            supprimCoupApres(a_tourner);
-                            free(a_tourner);
-                            a_tourner = NULL;
+                            supprimCoupApres(test);
+                            free(test);
+                            test = NULL;
                         }
                         break;
                     }
                 }
             }
             // Si pion adverse à gauche
-            else if (rech[0] == (rep[0] - 1) && rech[1] == (rep[1]))
+            else if (rech[0] == (rep[0]) && rech[1] == (rep[1] - 1))
             {
-                for (int i=0; i<(rech[0]-96); i++)
+                for (int i=0; i<=(rech[1]-49); i++)
                 {
-                    recl[0] -= i;
+
+                    recl[1] =rech[1] - i;
 
                     if (estDans(recl, listeG) != NULL)
                     {
                         if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
+                            if(recl[1] == 49){
+                                if (test != NULL)
+                                {
+                                    supprimCoupApres(test);
+                                    free(test);
+                                    test = NULL;
+                                }
+                                break;
+                            }
+                            test = insTT(test, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -531,62 +566,80 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     }
                     else
                     {
-                        if (a_tourner != NULL)
+                        if (test != NULL)
                         {
-                            supprimCoupApres(a_tourner);
-                            free(a_tourner);
-                            a_tourner = NULL;
+                            supprimCoupApres(test);
+                            free(test);
+                            test = NULL;
                         }
                         break;
                     }
                 }
             }
             // Si pion adverse à droite
-            else if (rech[0] == (rep[0] + 1) && rech[1] == (rep[1]))
+            else if (rech[0] == (rep[0]) && rech[1] == (rep[1] + 1))
             {
-                for (int i=0; i<(104-rech[0]); i++)
+                for (int i=0; i<=(56-rech[1]); i++)
                 {
-                    recl[0] += i;
+                    recl[1] = (rech[1]+i);
 
                     if (estDans(recl, listeG) != NULL)
                     {
                         if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
+                            if(recl[1] == 56){
+                                if (test != NULL)
+                                {
+                                    supprimCoupApres(test);
+                                    free(test);
+                                    test = NULL;
+                                }
+                                break;
+                            }
+                            test = insTT(test, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
                         {
-                            //printf("a droite\n");  ici ?
                             break;
                         }
                     }
                     else
                     {
-                        if (a_tourner != NULL)
+                        if (test != NULL)
                         {
-                            supprimCoupApres(a_tourner);
-                            free(a_tourner);
-                            a_tourner = NULL;
+                            supprimCoupApres(test);
+                            free(test);
+                            test = NULL;
                         }
                         break;
                     }
                 }
             }
             // Si pion adverse en bas à gauche
-            else if (rech[0] == (rep[0] - 1) && rech[1] == (rep[1] + 1))
+            else if (rech[0] == (rep[0] + 1) && rech[1] == (rep[1] - 1))
             {
                 
-                for (int i=0; i<(rech[0]-96) || i<(56-rech[1]); i++)
+                for (int i=0; i<=(104-rech[0]) || i<=(rech[1] - 49); i++)
                 {
-                    recl[0] -= i;
-                    recl[1] += i;
+
+                    recl[0] = (rech[0] + i);
+                    recl[1] = (rech[1] - i);
 
                     if (estDans(recl, listeG) != NULL)
                     {
                         if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
+                            if(recl[0] == 104 || recl[1] == 49){
+                                if (test != NULL)
+                                {
+                                    supprimCoupApres(test);
+                                    free(test);
+                                    test = NULL;
+                                }
+                                break;
+                            }
+                            test = insTT(test, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -596,28 +649,37 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     }
                     else
                     {
-                        if (a_tourner != NULL)
+                        if (test != NULL)
                         {
-                            supprimCoupApres(a_tourner);
-                            free(a_tourner);
-                            a_tourner = NULL;
+                            supprimCoupApres(test);
+                            free(test);
+                            test = NULL;
                         }
                         break;
                     }
                 }
             }
             // Si pion adverse en dessous
-            else if (rech[0] == (rep[0]) && rech[1] == (rep[1] + 1))
+            else if (rech[0] == (rep[0] + 1) && rech[1] == (rep[1]))
             {
-                for (int i=0; i<(56-rech[1]); i++)
+                for (int i=0; i<=(104-rech[0]); i++)
                 {
-                    recl[1] += i;
 
+                    recl[0] = (rech[0] + i);
                     if (estDans(recl, listeG) != NULL)
                     {
                         if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
+                            if(recl[0] == 104){
+                                if (test != NULL)
+                                {
+                                    supprimCoupApres(test);
+                                    free(test);
+                                    test = NULL;
+                                }
+                                break;
+                            }
+                            test = insTT(test, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -627,11 +689,11 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     }
                     else
                     {
-                        if (a_tourner != NULL)
+                        if (test != NULL)
                         {
-                            supprimCoupApres(a_tourner);
-                            free(a_tourner);
-                            a_tourner = NULL;
+                            supprimCoupApres(test);
+                            free(test);
+                            test = NULL;
                         }
                         break;
                     }
@@ -640,16 +702,26 @@ Move* verifAllie(char rep[3], parametres* jeu)
             // Si pion adverse en bas à droite
             else if (rech[0] == (rep[0] + 1) && rech[1] == (rep[1] + 1))
             {
-                for (int i=0; i<(104-rech[0]) || i<(56-rech[1]); i++)
+                for (int i=0; i<=(104-rech[0]) || i<=(56-rech[1]); i++)
                 {
-                    recl[0] += i;
-                    recl[1] += i;
+
+                    recl[0] = (rech[0] + i);
+                    recl[1] = (rech[1] + i);
 
                     if (estDans(recl, listeG) != NULL)
                     {
                         if (estDans(recl, listeG)->joueur == (jeu->tourJoueur % 2)+ 1)
                         {
-                            a_tourner = insTT(a_tourner, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
+                            if(recl[0] == 104 || recl[1] == 56){
+                                if (test != NULL)
+                                {
+                                    supprimCoupApres(test);
+                                    free(test);
+                                    test = NULL;
+                                }
+                                break;
+                            }
+                            test = insTT(test, creatMaillon((jeu->tourJoueur % 2)+ 1, recl));
                             continue;
                         }
                         else if (estDans(recl, listeG)->joueur == jeu->tourJoueur)
@@ -659,18 +731,22 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     }
                     else
                     {
-                        if (a_tourner != NULL)
+                        if (test != NULL)
                         {
-                            supprimCoupApres(a_tourner);
-                            free(a_tourner);
-                            a_tourner = NULL;
+                            supprimCoupApres(test);
+                            free(test);
+                            test = NULL;
                         }
                         break;
                     }
+
                 }
             }
-            
-
+            while(test != NULL){
+                
+                a_tourner = insTT(a_tourner, creatMaillon(test->joueur, test->position));
+                test = test->suiv;
+            }
             L = L->suiv;
         }
         return a_tourner;
@@ -712,20 +788,37 @@ Move* verifContour(char rep[3], parametres* jeu)
 
 void retournPions(Move *a_retourner){
     Move *ptr = listeG;
+    Move *ptr2 = a_retourner;
     while(ptr != NULL){
-        if(strcmp(a_retourner->position, ptr->position) == 0){
-            ptr->joueur = (ptr->joueur %2) + 1;
+        ptr2 = a_retourner;
+        while(ptr2 != NULL){
+            if(strcmp(ptr2->position, ptr->position) == 0){
+                ptr->joueur = (ptr->joueur %2) + 1;
+            }
+            ptr2 = ptr2->suiv;
         }
         ptr = ptr->suiv;
     }
-    AfficheListe(ptr);
 }
+
+// void retourArriere(Move *a_retourner){
+//     Move *ptr = listeG;
+//     retournPions(ptr->switched);
+//     ptr = ptr->prec;
+//     supprimCoupApres(ptr->suiv);
+//     while(a_retourner != NULL){
+//         supprimCoupApres(a_retourner);
+//     }
+//     free(a_retourner);
+// }
+
+
 
 void AfficheListe(const Move * l)
 {
     for ( ; l != NULL; l = l->suiv)
     {
-        printf("%s " "%d", l->position, l->joueur);
+        printf("%d \n" " %s\n", l->joueur, l->position);
     }
     printf("\n");
 }

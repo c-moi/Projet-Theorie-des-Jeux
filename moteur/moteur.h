@@ -46,7 +46,7 @@ void printMoveHistory(Move *Liste, Move *End);
 Move* supprimCoupApres(Move *actuel);
 
 void retournPions(Move *a_retorner);
-Move* supprimerElement(Move* list, char valeur[3]);
+//void retourArriere(Move *a_retourner);
 
 void AfficheListe(const Move *l);
 #endif
