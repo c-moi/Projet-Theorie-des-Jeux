@@ -92,8 +92,7 @@ int moteurJeu(void* DATA)
                 respectRegles(&histoCp, &actuelG, &actuelH, maillon, &jeu);
                 break;
             case 2:
-                deplacArriere(&actuelG, &actuelH, histoCp);
-                //retourArriere(maillon->switched);
+                deplacArriere(&actuelG, &actuelH, histoCp, &jeu);
                 break;
             case 3:
                 deplacAvant(&actuelG, &actuelH, histoCp);
@@ -235,8 +234,6 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
                     }
                 }
 
-                //AfficheListe(Maillon->switched);
-
                 retournPions(Maillon->switched);
 
                 SDL_LockMutex(mutexG);                         
@@ -262,7 +259,7 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
 
 
 
-void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp)
+void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp, parametres *jeu)
 {
     if (histoCp == NULL)
     {
@@ -276,15 +273,26 @@ void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp)
         }
         else if (estDans((*actuelG)->position, histoCp) != NULL)
         {
+            Move *ptr = (*actuelG); 
+            retournPions((*actuelG)->switched);
+            while((*actuelG) != NULL){
+                (*actuelG)= (*actuelG)->prec;
+                //AfficheListe(*actuelG);
+                (*actuelG)->suiv = NULL;
+            }
+            free(ptr->switched);
+
+
             Move *tmp = *actuelG;
             *actuelG = (*actuelG)->prec;
             (*actuelG)->suiv = NULL;
             free(tmp);
+            //jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
 
             if (*actuelH != NULL)
                 *actuelH = (*actuelH)->prec;
 
-            printf("%s\n", (*actuelG)->position);
+            //printf("%s\n", (*actuelG)->position);
             if (estDans((*actuelG)->position, histoCp) == NULL)
             {
                 printf("Vous êtes revenu au début du jeu !\n");
@@ -800,17 +808,6 @@ void retournPions(Move *a_retourner){
         ptr = ptr->suiv;
     }
 }
-
-// void retourArriere(Move *a_retourner){
-//     Move *ptr = listeG;
-//     retournPions(ptr->switched);
-//     ptr = ptr->prec;
-//     supprimCoupApres(ptr->suiv);
-//     while(a_retourner != NULL){
-//         supprimCoupApres(a_retourner);
-//     }
-//     free(a_retourner);
-// }
 
 
 

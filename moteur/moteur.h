@@ -39,14 +39,13 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
 Move* verifContour(char rep[3], parametres* jeu);
 Move* verifAllie(char rep[3], parametres* jeu);
 
-void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp);
+void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp, parametres *jeu);
 void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp);
 Move* estDans(char pion[3], Move *L);
 void printMoveHistory(Move *Liste, Move *End);
 Move* supprimCoupApres(Move *actuel);
 
 void retournPions(Move *a_retorner);
-//void retourArriere(Move *a_retourner);
 
 void AfficheListe(const Move *l);
 #endif
