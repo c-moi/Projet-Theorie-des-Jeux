@@ -9,7 +9,7 @@ m = moteur/moteur
 
 
 
-all: main.o fichier.o IA.o interface.o joueur.o moteur.o main run clean
+all: main.o fichier.o interface.o joueur.o moteur.o main run clean
 
 main: main.o fichier.o IA.o interface.o joueur.o moteur.o
 	gcc -o main main.o fichier.o IA.o interface.o joueur.o moteur.o ${LDFLAGS}

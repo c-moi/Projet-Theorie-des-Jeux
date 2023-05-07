@@ -28,6 +28,9 @@ typedef struct paramJeu
 
 } parametres;
 
+extern parametres* jeu;
+extern SDL_mutex* mutexJ;
+
 int moteurJeu(void* DATA);
 void initPlto();
 
@@ -41,6 +44,7 @@ Move* verifAllie(char rep[3], parametres* jeu);
 
 void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp);
 void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp);
+
 Move* estDans(char pion[3], Move *L);
 void printMoveHistory(Move *Liste, Move *End);
 Move* supprimCoupApres(Move *actuel);
@@ -48,7 +52,9 @@ Move* supprimCoupApres(Move *actuel);
 void retournPions(Move *a_retorner);
 //void retourArriere(Move *a_retourner);
 
+Move* supprimerElement(Move* list, char valeur[3]);
 void AfficheListe(const Move *l);
+
 #endif
 
 // ----------------------------------------------------------------------------------------------

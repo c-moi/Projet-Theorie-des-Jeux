@@ -51,7 +51,7 @@ Move* tourJoueur(parametres* jeu)
         case 1:
             if (jeu->tourJoueur == 1)
             {
-                rep = demandeJoueur(rep);
+                demandeJoueur(&rep);
             }
             else if (jeu->tourJoueur == 2)
             {
@@ -60,7 +60,7 @@ Move* tourJoueur(parametres* jeu)
             break;
 
         case 2:
-            rep = demandeJoueur(rep);
+            demandeJoueur(&rep);
             break;
 
         default:
@@ -68,23 +68,32 @@ Move* tourJoueur(parametres* jeu)
     }
 
     Move* maillon = creatMaillon(jeu->tourJoueur, rep);
-    printf("Le joueur %d joue en %s \n", jeu->tourJoueur, maillon->position);
+    printf("Le joueur %d joue en %s \n", maillon->joueur, maillon->position);
 
     return maillon;
 }
 
 
-char* demandeJoueur(char* rep)
+void demandeJoueur(char** rep)
 {
-    while (strlen(rep) != 2)
+    clean_stdin();
+    while (strlen(*rep) != 2)
     {
         printf("Quel est la position du joueur : ");
-        fgets(rep, 3*sizeof(char), stdin);
+        fgets(*rep, 3*sizeof(char), stdin);
 
-        if (strlen(rep) != 2)
+        if (strlen(*rep) != 2)
         {
             printf("La réponse n'est pas conforme...\n");
         }
     }
-    return rep;
+}
+
+void clean_stdin(void)
+{
+    int c;
+ 
+    do {
+        c = getchar();
+    } while (c != '\n' && c != EOF);
 }

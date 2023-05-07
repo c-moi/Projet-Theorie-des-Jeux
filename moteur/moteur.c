@@ -1,6 +1,9 @@
 #include "moteur.h"
 
 
+parametres* jeu = NULL;
+SDL_mutex* mutexJ = NULL;
+
 int moteurJeu(void* DATA)
 {
 
@@ -15,9 +18,6 @@ int moteurJeu(void* DATA)
     // choix action joueur
     int action = 0;
 
-    // initialisation des joueurs
-    char* rep = NULL; 
-
 
 
 
@@ -31,7 +31,6 @@ int moteurJeu(void* DATA)
     initPlto();
     actuelG = deplacFin(listeG);
 
-
     //Chargement de partie si souhaité                                              //
     char choix_reprendre;                                                           //
     printf("\nVoulez-vous reprendre la partie sauvegardée ? (O/N) : ");             //
@@ -43,7 +42,7 @@ int moteurJeu(void* DATA)
                                                                                     // pour l'implémenter, donc pense
         while (actuelG->suiv != NULL)                                               // à le tester (et si tu veux bien,
         {                                                                           // l'optimiser un peu)
-            actuelG = actuelG->suiv;                                                  //
+            actuelG = actuelG->suiv;                                                //
         }                                                                           //
         printf("Vous avez repris la partie depuis l'historique sauvegardé.\n");     //
     }                                                                               //
@@ -55,14 +54,22 @@ int moteurJeu(void* DATA)
 
     parametres jeu;                                               
     jeu = configPlayers(jeu);
+    
+
+    // *              nom               val
+
+    //                         actuelG
+    // liste -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
+                                
+    //                         actuelH
+    //                historique -> 5 -> 6 -> 7 -> 8
+
 
     // boucle de jeu
     while (action != 6)
     {
         // configuration action du joueur
         action = 0;
-
-        rep = malloc(sizeof(char) * 3);
 
         SDL_Delay(1000);
 
@@ -81,15 +88,11 @@ int moteurJeu(void* DATA)
         switch (action)
         {
             case 1:
-                while (strlen(rep) != 2)
-                {
-                    //fonction qui verifie que le joueur puisse jouer
-                    printf("Quel est la position du joueur : ");
-                    fgets(rep, 3*sizeof(char), stdin);
-                }
-                maillon = creatMaillon(jeu.tourJoueur, rep);
-                printf("Le joueur %d joue en %s \n", jeu.tourJoueur, maillon->position);
-                respectRegles(&histoCp, &actuelG, &actuelH, maillon, &jeu);
+                maillon = tourJoueur(jeu);
+                // Manon, soit tu as une fonction de cette longueur si tu fait les changements dans respectRegles
+                // soit tu fais les changements ici mais dans ce cas, il te faut retourner un booléen pour
+                // dire si oui ou non le coup est valide. A toi de voir.
+                respectRegles(&histoCp, &actuelG, &actuelH, maillon, List_J1, List_J2);
                 break;
             case 2:
                 deplacArriere(&actuelG, &actuelH, histoCp);
@@ -103,7 +106,7 @@ int moteurJeu(void* DATA)
                 break;
             case 5:
                 // sauvegarderHistorique(histoCp, actuelG); Latifa, il faut que tu adaptes pour qu'on 
-                break;                                  // soit entre de début de histo et fin avecactuelG
+                break;                                  // soit entre de début de histo et fin avec actuelG
             case 6:                                     // Attention à bien faire tes tests !
                 printf("Au revoir ! \n");
                 break;
@@ -112,7 +115,6 @@ int moteurJeu(void* DATA)
                 printf("Choix invalide, ceci n'est pas une action possible... \n");
                 break;
         }
-        free(rep);
     }
     exit(0);
 }
@@ -204,7 +206,7 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
         {
 
             printf("La case est vide\n");
-            Maillon->switched = verifAllie(Maillon->position, jeu);
+            Maillon->switched = verifAllie(Maillon->position);
 
            
             if (Maillon->switched != NULL)
@@ -214,7 +216,7 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
                     *historique = insTT(*historique, creatMaillon(Maillon->joueur, Maillon->position));
                     *actuelH = *historique;
                 }
-                else 
+                else
                 {
                     if (*actuelH == NULL)
                     {
@@ -249,9 +251,7 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
             else
             {
                 printf("Cela ne permet de retourner aucun pion, le coup n'a pas été retenu !\n");
-            }
-
-         
+            }         
         }
     }
     else
@@ -259,8 +259,6 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
         printf("Ceci ne correspond pas à une case du plateau !\n");
     }
 }
-
-
 
 void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp)
 {
@@ -394,10 +392,9 @@ Move* supprimCoupApres(Move *liste)
 }
 
 
-
-Move* verifAllie(char rep[3], parametres* jeu)
+Move* verifAllie(char rep[3])
 {
-    Move *L = verifContour(rep, jeu);
+    Move *L = verifContour(rep);
     Move* a_tourner = NULL;
     Move *test = NULL;
     char *rech = malloc(3*sizeof(char));
@@ -757,7 +754,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
     }
 }
 
-Move* verifContour(char rep[3], parametres* jeu)
+Move* verifContour(char rep[3])
 {
     Move *listadv = NULL;
     Move* tmp;

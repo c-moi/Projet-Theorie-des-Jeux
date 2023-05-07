@@ -28,6 +28,7 @@ typedef struct paramJeu
 } parametres;
 
 Move *creatMaillon(int joueur, char position[3]);
+
 #endif
 
 
@@ -46,7 +47,9 @@ Move *creatMaillon(int joueur, char position[3]);
 parametres configPlayers(parametres jeu);
 
 Move* tourJoueur(parametres* jeu);
-char* demandeJoueur(char* rep);
+void demandeJoueur(char** rep);
+
+void clean_stdin(void);
 
 #endif
 
