@@ -3,11 +3,14 @@
 Move* listeG = NULL;
 SDL_mutex* mutexG = NULL;
 
+Ordre* input = NULL;
+SDL_mutex* mutexI = NULL;
 
 int main(int argc, char **argv)
 {
     // initialisatio du mutex
     mutexG = SDL_CreateMutex();
+    mutexI = SDL_CreateMutex();
 
     SDL_Thread* MoteurJeu = SDL_CreateThread(moteurJeu, "moteurJeu", NULL);
 
@@ -26,3 +29,4 @@ int main(int argc, char **argv)
     return 0;
 
 }
+

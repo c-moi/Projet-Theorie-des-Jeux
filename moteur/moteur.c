@@ -41,31 +41,39 @@ int moteurJeu(void* DATA)
     parametres jeu = {2, 0, 1};                                                     //
 
     //Chargement de partie si souhaité                                              //
-    char choix_reprendre;                                                           //
-    printf("\nVoulez-vous reprendre la partie sauvegardée ? (O/N) : ");             //
-    scanf("%c", &choix_reprendre);                                                  //
-    if (choix_reprendre == 'O' || choix_reprendre == 'o')                           //
-    {                                                                               //
-        histoCp = chargerHistorique(histoCp);                                       //
-        actuelG->suiv = histoCp;                                                    // Latifa, j'ai pas fait de modif
-                                                                                    // pour l'implémenter, donc pense
-        while (actuelG->suiv != NULL)                                               // à le tester (et si tu veux bien,
-        {                                                                           // l'optimiser un peu)
-            actuelG = actuelG->suiv;                                                  //
-        }                                                                           //
-        printf("Vous avez repris la partie depuis l'historique sauvegardé.\n");     //
-    }                                                                               //
-    else                                                                            //
-    {                                                                               //
-        printf("Nouvelle partie démarrée.\n");                                      //
-    }                                                                               //
+    // char choix_reprendre;                                                           //
+    // printf("\nVoulez-vous reprendre la partie sauvegardée ? (O/N) : ");             //
+    // scanf("%c", &choix_reprendre);                                                  //
+    // if (choix_reprendre == 'O' || choix_reprendre == 'o')                           //
+    // {                                                                               //
+    //     histoCp = chargerHistorique(histoCp);                                       //
+    //     actuelG->suiv = histoCp;                                                    // Latifa, j'ai pas fait de modif
+    //                                                                                 // pour l'implémenter, donc pense
+    //     while (actuelG->suiv != NULL)                                               // à le tester (et si tu veux bien,
+    //     {                                                                           // l'optimiser un peu)
+    //         actuelG = actuelG->suiv;                                                  //
+    //     }                                                                           //
+    //     printf("Vous avez repris la partie depuis l'historique sauvegardé.\n");     //
+    // }                                                                               //
+    // else                                                                            //
+    // {                                                                               //
+    //     printf("Nouvelle partie démarrée.\n");                                      //
+    // }                                                                               //
 
 
 
-
+    SDL_Delay(1000);
     // boucle de jeu
-    while (action != 6)
-    {
+    while (input->action != 6)
+
+    {   
+        
+        if(input->action == 0)
+        {
+        printf("input action = %d\n",input->action);
+        printf("input position = %s\n",input->position);
+        }
+        
         // configuration action du joueur
         action = 0;
 
@@ -74,51 +82,106 @@ int moteurJeu(void* DATA)
         SDL_Delay(1000);
 
         // demande à l'utilisateur ce qu'il veut faire
-        printf("\n Menu :\n");
-        printf("1. Jouer un coup \n");
-        printf("2. Se déplacer vers le coup précédent \n");
-        printf("3. Se déplacer vers l'avant \n");
-        printf("4. Afficher l'historique des coups joués \n");
-        printf("5. Sauvegarder la partie en cours\n");
-        printf("6. Quitter \n");
-        printf("\nQuel est votre choix : ");
-        scanf("%d", &action);
-        printf("\n");
+        // printf("\n Menu :\n");
+        // printf("1. Jouer un coup \n");
+        // printf("2. Se déplacer vers le coup précédent \n");
+        // printf("3. Se déplacer vers l'avant \n");
+        // printf("4. Afficher l'historique des coups joués \n");
+        // printf("5. Sauvegarder la partie en cours\n");
+        // printf("6. Quitter \n");
+        // printf("\nQuel est votre choix : ");
+        // //scanf("%d", &action);
+        // printf("\n");
 
-        switch (action)
+        switch (input->action)
         {
             case 1:
                 // il faut faire cette demande dans joueur.
-                while (strlen(rep) != 2)
-                {
-                    printf("Quel est la position du joueur : ");
-                    fgets(rep, 3*sizeof(char), stdin);
-                }
+                // while (strlen(rep) != 2)
+                // {
+                //     printf("Quel est la position du joueur : ");
+                //     fgets(rep, 3*sizeof(char), stdin);
+                // }
                 maillon = creatMaillon(jeu.tourJoueur, rep);
                 printf("Le joueur %d joue en %s \n", jeu.tourJoueur, maillon->position);
                 // Manon, soit tu as une fonction de cette longueur si tu fait les changements dans respectRegles
                 // soit tu fais les changements ici mais dans ce cas, il te faut retourner un booléen pour
                 // dire si oui ou non le coup est valide. A toi de voir.
                 respectRegles(&histoCp, &actuelG, &actuelH, maillon, List_J1, List_J2, &jeu);
+                SDL_LockMutex(mutexI);
+                if(input->suiv ==NULL)
+                {
+                    free(input);
+                }
+                else{
+                    Ordre* ptr=input;
+                    input=input->suiv;
+                    free(ptr);
+                }
+                SDL_UnlockMutex(mutexI);  
                 break;
             case 2:
                 deplacArriere(&actuelG, &actuelH, histoCp);
+                SDL_LockMutex(mutexI);
+                if(input->suiv ==NULL)
+                {
+                    free(input);
+                }
+                else{
+                    Ordre* ptr=input;
+                    input=input->suiv;
+                    free(ptr);
+                }
+                SDL_UnlockMutex(mutexI);  
                 break;
             case 3:
                 deplacAvant(&actuelG, &actuelH, histoCp);
+                SDL_LockMutex(mutexI);
+                if(input->suiv ==NULL)
+                {
+                    free(input);
+                }
+                else{
+                    Ordre* ptr=input;
+                    input=input->suiv;
+                    free(ptr);
+                }
+                SDL_UnlockMutex(mutexI);  
                 break;
             case 4:
                 printMoveHistory(histoCp, actuelH);
+                SDL_LockMutex(mutexI);
+                if(input->suiv ==NULL)
+                {
+                    free(input);
+                }
+                else{
+                    Ordre* ptr=input;
+                    input=input->suiv;
+                    free(ptr);
+                }
+                SDL_UnlockMutex(mutexI);  
                 break;
             case 5:
                 // sauvegarderHistorique(histoCp, actuelG); Latifa, il faut que tu adaptes pour qu'on 
+                SDL_LockMutex(mutexI);
+                if(input->suiv ==NULL)
+                {
+                    free(input);
+                }
+                else{
+                    Ordre* ptr=input;
+                    input=input->suiv;
+                    free(ptr);
+                }
+                SDL_UnlockMutex(mutexI);  
                 break;                                  // soit entre de début de histo et fin avecactuelG
             case 6:                                     // Attention à bien faire tes tests !
                 printf("Au revoir ! \n");
                 break;
 
             default:
-                printf("Choix invalide, ceci n'est pas une action possible... \n");
+                //printf("Choix invalide, ceci n'est pas une action possible... \n");
                 break;
         }
         free(rep);

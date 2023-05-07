@@ -27,12 +27,16 @@
 
 
 
+
+
 typedef struct listes {
     Move *new;
     Move *affiche;
 } A_Comparer;
 
 void Display(void);
+void transDonne(char input[3], int *outputX, int *outputY);
+char* transCoord( int inputX, int inputY);
 
 int debug(void* DATA);
 bool listCmp (Move* liste_printed);

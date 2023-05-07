@@ -1,12 +1,7 @@
 #include "interface.h"
 
 
-// SDL_Renderer *creercroix(SDL_Renderer *rend,int x2, int y2)
-// {
-//     int size = 50;
-//     SDL_RenderDrawLine(rend, x2 - size, y2 - size, x2 + size, y2 +size);
-//     SDL_RenderDrawLine(rend, x2 -size , y2 + size, x2 + size , y2 - size);
-// }
+
 
 void Display(void)
 {
@@ -18,6 +13,7 @@ void Display(void)
     TTF_Font *font;
     //SDL_Color color = {255, 255, 255};
     int quit = 0;
+    input= malloc(sizeof(Ordre));
 
     //Initialisation test maj
     Move* printed_SDL = NULL;
@@ -31,7 +27,7 @@ void Display(void)
     IMG_Init(IMG_INIT_PNG);
 
     // Création de la fenêtre
-    window = SDL_CreateWindow("OTHELLO", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 900, 590, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("OTHELLO", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1000, 590, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_ACCELERATED);
 
     // // Chargement de la police d'écriture
@@ -46,7 +42,7 @@ void Display(void)
     SDL_Surface* imtableau = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/plateau_img/plateaurose.png");
     if (!imtableau) 
         {
-            printf("Erreur image nulle ");
+            printf("Erreur image plateau nulle ");
             exit(EXIT_FAILURE);
         }
     
@@ -54,7 +50,7 @@ void Display(void)
     SDL_Surface* boutonOff = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/boutonOff/boutonOff.png");
     if (!boutonOff) 
         {
-            printf("Erreur image nulle ");
+            printf("Erreur image btOff nulle ");
             exit(EXIT_FAILURE);
         }
     
@@ -62,15 +58,15 @@ void Display(void)
     SDL_Surface* pBlanc = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/pion/pionBlanc.png");
     if (!pBlanc) 
         {
-            printf("Erreur image nulle ");
+            printf("Erreur image pBlanc nulle ");
             exit(EXIT_FAILURE);
         }
 
-    // Charger l'image des pions BLANCS
+    // Charger l'image des pions NOIR
     SDL_Surface* pNoir = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/pion/pionNoir.png");
     if (!pNoir) 
         {
-            printf("Erreur image nulle ");
+            printf("Erreur image pNoir nulle ");
             exit(EXIT_FAILURE);
         }
 
@@ -81,6 +77,12 @@ void Display(void)
         // {
         //     listCpy = listeG;
         // }
+        if (listCmp(printed_SDL) == false)
+        {
+            printed_SDL = listCpy();
+
+            // aff(printed_term);
+        }
         
         
         
@@ -139,6 +141,73 @@ void Display(void)
         
 
         
+        
+
+        
+       
+
+    
+
+        // Gestion des événements
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                quit = 1;
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_RIGHT)
+                {
+                    
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                                         "Clic de souris",
+                                         "Vous avez cliqué avec le bouton droit de la souris !",
+                                         NULL);
+                }
+            
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    int mouseX;
+                    int mouseY;
+                    SDL_GetMouseState(&mouseX, &mouseY); 
+                    printf("x = %d",mouseX);
+                    printf("y = %d",mouseY);
+                    
+                    if(mouseX>=10 && mouseX<=585 && mouseY>=10 && mouseY<=585)
+                    {
+
+                        SDL_LockMutex(mutexI); 
+                        
+                        if(input->suiv!=NULL)
+                        {
+                            Ordre* ptr=input;
+                            while(ptr->suiv != NULL)
+                            {
+                                
+                                ptr=ptr->suiv;
+                            }
+                            
+                        }
+                        input->action = 1;                           
+                        strcpy(input->position, transCoord(mouseX, mouseY));                           
+                        SDL_UnlockMutex(mutexI);  
+                        
+                    }
+                    
+                    
+                    
+                }
+                break;
+            
+            }
+            if(input ==1)
+        {
+            printf("input action %d",input->action);
+            printf("input position %s", input->position);
+        }
+        }
+        
         // Affichage de l'écran
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         
@@ -163,18 +232,44 @@ void Display(void)
         SDL_RenderCopy(renderer, imtexture, NULL, &rect);
         SDL_UpdateWindowSurface(window);
 
-        //Afficher Bouton
+        int posX, posY;
+        //Afficher pion blanc & pion noir
+        SDL_Texture* pbtexture = SDL_CreateTextureFromSurface(renderer, pBlanc);
+        SDL_Texture* pntexture = SDL_CreateTextureFromSurface(renderer, pNoir);
+        while(printed_SDL != NULL)
+        {
+            transDonne(printed_SDL->position, &posX, &posY);
+            SDL_Rect prect = {posY+5, posX+5, 50, 50};
+            if (printed_SDL->joueur == 2)
+            {
+                SDL_QueryTexture(pbtexture, NULL, NULL, &prect.w, &prect.h);
+                SDL_RenderCopy(renderer, pbtexture, NULL, &prect);
+            }
+            else 
+            {
+                SDL_QueryTexture(pntexture, NULL, NULL, &prect.w, &prect.h);
+                SDL_RenderCopy(renderer, pntexture, NULL, &prect);
+            }
+            
+            printed_SDL = printed_SDL->suiv;
+    
+        }
+        
+        // Afficher la surface sur la fenêtre
+        SDL_UpdateWindowSurface(window);
+
+        //Afficher Bouton Off
         //Afficher la texture
         SDL_Texture* btexture = SDL_CreateTextureFromSurface(renderer, boutonOff);
         // Afficher la surface sur la fenêtre
-        SDL_Rect brect = {600, 125, boutonOff->w, boutonOff->h};
+        SDL_Rect brect = {600, 125, 100, 100};
         SDL_QueryTexture(btexture, NULL, NULL, &brect.w, &brect.h);
-        SDL_RenderCopy(renderer, boutonOff, NULL, &brect);
+        SDL_RenderCopy(renderer, btexture, NULL, &brect);
         SDL_UpdateWindowSurface(window);
 
         //afficher menu
         // Création de la surface de rendu du texte
-        SDL_Surface* msurface = TTF_RenderText_Solid(font, "Menu", (SDL_Color){255,255,255,255}); 
+        SDL_Surface* msurface = TTF_RenderText_Solid(font, "Menu :", (SDL_Color){255,255,255,255}); 
         // Création de la texture à partir de la surface de rendu du texte
         SDL_Texture* mtexture = SDL_CreateTextureFromSurface(renderer, msurface);
         // Affichage de la texture contenant le texte
@@ -182,55 +277,29 @@ void Display(void)
         SDL_QueryTexture(mtexture, NULL, NULL, &mRect.w, &mRect.h);
         SDL_RenderCopy(renderer, mtexture, NULL, &mRect);
 
+        //afficher Jouer un coup
+        // Création de la surface de rendu du texte
+        SDL_Surface* josurface = TTF_RenderText_Solid(font, "1. Jouer un coup", (SDL_Color){255,255,255,255}); 
+        // Création de la texture à partir de la surface de rendu du texte
+        SDL_Texture* jotexture = SDL_CreateTextureFromSurface(renderer, josurface);
+        // Affichage de la texture contenant le texte
+        SDL_Rect joRect = {625, 175, 0, 0};
+        SDL_QueryTexture(jotexture, NULL, NULL, &joRect.w, &joRect.h);
+        SDL_RenderCopy(renderer, jotexture, NULL, &joRect);
+
         
-        // Affichage du rendu à l'écran
+        
+         // Affichage du rendu à l'écran
         SDL_RenderPresent(renderer);
-
-    
-
-        // Gestion des événements
-        while (SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-            case SDL_QUIT:
-                quit = 1;
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                if (event.button.button == SDL_BUTTON_RIGHT)
-                {
-                    
-                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
-                                         "Clic de souris",
-                                         "Vous avez cliqué avec le bouton droit de la souris !",
-                                         NULL);
-                }
-            
-                if (event.button.button == SDL_BUTTON_LEFT)
-                {
-                    int x = event.button.x;
-                    int y = event.button.y;
-                    //Afficher la texture
-                    SDL_Texture* pbtexture = SDL_CreateTextureFromSurface(renderer, pBlanc);
-                    // Afficher la surface sur la fenêtre
-                    SDL_Rect pbrect = {x, y, pBlanc->w, pBlanc->h};
-                    SDL_QueryTexture(pbtexture, NULL, NULL, &pbrect.w, &pbrect.h);
-                    SDL_RenderCopy(renderer, pbtexture, NULL, &pbrect);
-                    SDL_UpdateWindowSurface(window);
-                    
-                    
-                    
-                }
-                break;
-            
-            }
-        }
-        
 
         // réinitialiser  l'écran
         SDL_RenderClear(renderer);
         SDL_FreeSurface(surface);
+
+        
+        
     }
+
     exit(0);
 
     //Libération des ressources
@@ -277,14 +346,28 @@ void Display(void)
 //     }
 }
 
+void transDonne(char input[3], int *outputX, int *outputY)
+{
+    
+    *outputX = (input[0]-97)*71.87+10;
+    *outputY = (input[1]-49)*71.87+10;
+}
 
+char* transCoord( int inputX, int inputY)
+{
+    char *output=malloc(sizeof(char)*3);
+    output[0] = ((inputX - 10)/71)+97;
+    output[1] = ((inputY - 10)/71)+49;
+    
+    return output;
+}
 
 
 void aff(Move* liste_debug)
 {
     if(liste_debug != NULL)
         {
-            while (liste_debug != NULL)
+            while (liste_debug != NULL) 
             {
                 printf("Liste 2 : %d %s\n", liste_debug->joueur, liste_debug->position);
                 liste_debug = liste_debug->suiv;
