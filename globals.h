@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <SDL2/SDL.h>
+#include <time.h>
 
 typedef struct move {
     char position[3]; 

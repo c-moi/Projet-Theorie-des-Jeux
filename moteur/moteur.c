@@ -1,6 +1,9 @@
 #include "moteur.h"
 
 
+parametres* jeu = NULL;
+SDL_mutex* mutexJ = NULL;
+
 int moteurJeu(void* DATA)
 {
 
@@ -34,8 +37,13 @@ int moteurJeu(void* DATA)
 
 
     // rep[3] = configPlayers(listeG, rep); // à modifier                           // Manon, Il faut changer ça
-    // En attendant :                                                               //
-    parametres jeu = {2, 0, 1};    // remplacer par configPlayers                                                    //
+    // En attendant :  
+    SDL_LockMutex(mutexJ);
+    jeu = malloc(sizeof(parametres));
+    jeu->nbJoueurs = 2&;                                                            //
+    jeu->lvlOrdi = 2;                           // remplacer par configPlayers      
+    jeu->tourJoueur = 1;                                              //
+    SDL_UnlockMutex(mutexJ);                                                           //
 
     //Chargement de partie si souhaité                                              //
     char choix_reprendre;                                                           //
@@ -91,11 +99,11 @@ int moteurJeu(void* DATA)
         switch (action)
         {
             case 1:
-                maillon = tourJoueur(&jeu);
+                maillon = tourJoueur(jeu);
                 // Manon, soit tu as une fonction de cette longueur si tu fait les changements dans respectRegles
                 // soit tu fais les changements ici mais dans ce cas, il te faut retourner un booléen pour
                 // dire si oui ou non le coup est valide. A toi de voir.
-                respectRegles(&histoCp, &actuelG, &actuelH, maillon, List_J1, List_J2, &jeu);
+                respectRegles(&histoCp, &actuelG, &actuelH, maillon, List_J1, List_J2);
                 break;
             case 2:
                 deplacArriere(&actuelG, &actuelH, histoCp);
@@ -108,7 +116,7 @@ int moteurJeu(void* DATA)
                 break;
             case 5:
                 // sauvegarderHistorique(histoCp, actuelG); Latifa, il faut que tu adaptes pour qu'on 
-                break;                                  // soit entre de début de histo et fin avecactuelG
+                break;                                  // soit entre de début de histo et fin avec actuelG
             case 6:                                     // Attention à bien faire tes tests !
                 printf("Au revoir ! \n");
                 break;
@@ -190,7 +198,7 @@ Move *deplacFin(Move *Liste)
 
 
 
-void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu)
+void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2)
 {
     int pre = 0;
     Move* tst = listeG;
@@ -214,7 +222,7 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
             // ###### A ADAPTER ######
 
             printf("La case est vide\n");
-            Maillon->switched = verifAllie(Maillon->position, jeu);
+            Maillon->switched = verifAllie(Maillon->position);
 
             // ( MANON )
             // Il faudra regler les problèmes de verifContours car le seg fault qui est
@@ -440,9 +448,9 @@ Move* supprimerElement(Move* list, char valeur[3])
 //     return Liste;
 // }
 
-Move* verifAllie(char rep[3], parametres* jeu)
+Move* verifAllie(char rep[3])
 {
-    Move *L = verifContour(rep, jeu);
+    Move *L = verifContour(rep);
     Move* a_tourner = NULL;
     char *rech = malloc(3*sizeof(char));
 
@@ -720,7 +728,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
     }
 }
 
-Move* verifContour(char rep[3], parametres* jeu)
+Move* verifContour(char rep[3])
 {
     Move *listadv = NULL;
     Move* tmp;
