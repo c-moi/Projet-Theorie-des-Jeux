@@ -18,7 +18,6 @@ extern SDL_mutex* mutexG;
 typedef struct ordre {
     int action;
     char position[3];
-    struct ordre *suiv;
 }Ordre;
 
 extern Ordre *input;

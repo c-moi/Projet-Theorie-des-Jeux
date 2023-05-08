@@ -92,7 +92,7 @@ int moteurJeu(void* DATA)
         // printf("\nQuel est votre choix : ");
         // //scanf("%d", &action);
         // printf("\n");
-
+        
         switch (input->action)
         {
             case 1:
@@ -102,79 +102,31 @@ int moteurJeu(void* DATA)
                 //     printf("Quel est la position du joueur : ");
                 //     fgets(rep, 3*sizeof(char), stdin);
                 // }
-                maillon = creatMaillon(jeu.tourJoueur, rep);
+                maillon = creatMaillon(jeu.tourJoueur, input->position);
                 printf("Le joueur %d joue en %s \n", jeu.tourJoueur, maillon->position);
                 // Manon, soit tu as une fonction de cette longueur si tu fait les changements dans respectRegles
                 // soit tu fais les changements ici mais dans ce cas, il te faut retourner un booléen pour
                 // dire si oui ou non le coup est valide. A toi de voir.
                 respectRegles(&histoCp, &actuelG, &actuelH, maillon, List_J1, List_J2, &jeu);
-                SDL_LockMutex(mutexI);
-                if(input->suiv ==NULL)
-                {
-                    free(input);
-                }
-                else{
-                    Ordre* ptr=input;
-                    input=input->suiv;
-                    free(ptr);
-                }
-                SDL_UnlockMutex(mutexI);  
+                input->action=0;
                 break;
             case 2:
                 deplacArriere(&actuelG, &actuelH, histoCp);
-                SDL_LockMutex(mutexI);
-                if(input->suiv ==NULL)
-                {
-                    free(input);
-                }
-                else{
-                    Ordre* ptr=input;
-                    input=input->suiv;
-                    free(ptr);
-                }
-                SDL_UnlockMutex(mutexI);  
+                input->action=0;
+                  
                 break;
             case 3:
                 deplacAvant(&actuelG, &actuelH, histoCp);
-                SDL_LockMutex(mutexI);
-                if(input->suiv ==NULL)
-                {
-                    free(input);
-                }
-                else{
-                    Ordre* ptr=input;
-                    input=input->suiv;
-                    free(ptr);
-                }
-                SDL_UnlockMutex(mutexI);  
+                input->action=0;
+               
                 break;
             case 4:
                 printMoveHistory(histoCp, actuelH);
-                SDL_LockMutex(mutexI);
-                if(input->suiv ==NULL)
-                {
-                    free(input);
-                }
-                else{
-                    Ordre* ptr=input;
-                    input=input->suiv;
-                    free(ptr);
-                }
-                SDL_UnlockMutex(mutexI);  
+                  
                 break;
             case 5:
                 // sauvegarderHistorique(histoCp, actuelG); Latifa, il faut que tu adaptes pour qu'on 
-                SDL_LockMutex(mutexI);
-                if(input->suiv ==NULL)
-                {
-                    free(input);
-                }
-                else{
-                    Ordre* ptr=input;
-                    input=input->suiv;
-                    free(ptr);
-                }
-                SDL_UnlockMutex(mutexI);  
+                input->action=0;
                 break;                                  // soit entre de début de histo et fin avecactuelG
             case 6:                                     // Attention à bien faire tes tests !
                 printf("Au revoir ! \n");

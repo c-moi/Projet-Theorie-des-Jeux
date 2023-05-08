@@ -39,7 +39,7 @@ void Display(void)
         }
 
     // Charger l'image du plateau d'échec
-    SDL_Surface* imtableau = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/plateau_img/plateaurose.png");
+    SDL_Surface* imtableau = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/plateau_img/damier.png");
     if (!imtableau) 
         {
             printf("Erreur image plateau nulle ");
@@ -53,6 +53,38 @@ void Display(void)
             printf("Erreur image btOff nulle ");
             exit(EXIT_FAILURE);
         }
+    // Charger l'image des boutons retour
+    SDL_Surface* retourAr = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/Retour/RetourAr.png");
+    if (!retourAr) 
+        {
+            printf("Erreur image bouton retourAr nulle ");
+            exit(EXIT_FAILURE);
+        }
+
+    // Charger l'image des boutons retour
+    SDL_Surface* retourAv = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/Retour/RetourAv.png");
+    if (!retourAv) 
+        {
+            printf("Erreur image bouton retourAv nulle ");
+            exit(EXIT_FAILURE);
+        }
+
+    // Charger l'image des boutons enregistrer
+    SDL_Surface* save = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/boutonOff/save.png");
+    if (!save) 
+        {
+            printf("Erreur image save nulle ");
+            exit(EXIT_FAILURE);
+        } 
+    
+    // Charger l'image des boutons enregistrer
+    SDL_Surface* history = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/boutonOff/history.png");
+    if (!history) 
+        {
+            printf("Erreur image history nulle ");
+            exit(EXIT_FAILURE);
+        } 
+    
     
     // Charger l'image des pions BLANCS
     SDL_Surface* pBlanc = IMG_Load("/Users/jade/Desktop/Algo/Projet_Algo_2/Projet-Theorie-des-Jeux/pion/pionBlanc.png");
@@ -84,68 +116,7 @@ void Display(void)
             // aff(printed_term);
         }
         
-        
-        
-        // // dessin d'un cercle 
-        // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-        // int x1 = 275;
-        // int y1 = 325;
-        // int x3 = 325;
-        // int y3 = 275;
-        // int radius = 10;
-        // int thickness = 1;
-        // for (int w = 0; w < radius * 2; w++)
-        // {
-        //     for (int h = 0; h < radius * 2; h++) 
-        //     {
-        //         int dx = radius - w; // horizontal offset
-        //         int dy = radius - h; // vertical offset
-        //         int distance = dx*dx + dy*dy;
-        //         if (distance >= (radius - thickness) * (radius - thickness) && distance <= (radius + thickness) * (radius + thickness))
-        //         {
-        //             SDL_RenderDrawPoint(renderer, x1 + dx, y1 + dy);
-        //             SDL_RenderDrawPoint(renderer, x3 + dx, y3 + dy);
-        //         }
-        //     }
-        // }
-
-        // // Dessin d'une croix
-        // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-        // int x2=325;
-        // int y2=325;
-        // int x4=275;
-        // int y4=275;
-        // int size = 10;
-        // SDL_RenderDrawLine(renderer, x2 - size, y2 - size, x2 + size, y2 +size);
-        // SDL_RenderDrawLine(renderer, x2 -size , y2 + size, x2 + size , y2 - size);  
-        // SDL_RenderDrawLine(renderer, x4 - size, y4 - size, x4 + size, y4 +size);
-        // SDL_RenderDrawLine(renderer, x4 -size , y4 + size, x4 + size , y4 - size);
-
-        // //dessin tableau
-        // int table[8][8] = {{0}};
-        // // Determine the size of each cell in the table
-        // int cell_size = 50;
-        // // Draw each cell in the table
-        // for (int i = 2; i < 10; i++) 
-        // {
-        //     for (int j = 2; j < 10; j++) 
-        //     {
-        //         SDL_Rect cell = {j * cell_size, i * cell_size, cell_size, cell_size};
-        //         SDL_RenderDrawRect(renderer, &cell);
-        //     }
-        // }
-
-        
-
-
-        
-
-        
-        
-
-        
-       
-
+  
     
 
         // Gestion des événements
@@ -178,34 +149,46 @@ void Display(void)
                     {
 
                         SDL_LockMutex(mutexI); 
-                        
-                        if(input->suiv!=NULL)
-                        {
-                            Ordre* ptr=input;
-                            while(ptr->suiv != NULL)
-                            {
-                                
-                                ptr=ptr->suiv;
-                            }
-                            
-                        }
                         input->action = 1;                           
                         strcpy(input->position, transCoord(mouseX, mouseY));                           
                         SDL_UnlockMutex(mutexI);  
                         
                     }
-                    
+                    else if(mouseX>=600 && mouseX<=650 && mouseY>=10 && mouseY<=35)
+                    {
+                        //retour arrière
+                        SDL_LockMutex(mutexI);
+                        input->action = 2; 
+                        SDL_UnlockMutex(mutexI);
+                    }
+                    else if(mouseX>=940 && mouseX<=990 && mouseY>=10 && mouseY<=35)
+                    {
+                        //retour avant
+                        SDL_LockMutex(mutexI);
+                        input->action = 3; 
+                        SDL_UnlockMutex(mutexI);
+                    }
+                    else if(mouseX>=600 && mouseX<=650 && mouseY>=60 && mouseY<=110)
+                    {
+                        //save
+                        SDL_LockMutex(mutexI);
+                        input->action = 4; 
+                        SDL_UnlockMutex(mutexI);
+                    }
+                    else if(mouseX>=660 && mouseX<=710 && mouseY>=55 && mouseY<=105)
+                    {
+                        //history
+                        SDL_LockMutex(mutexI); 
+                        input->action = 5;
+                        SDL_UnlockMutex(mutexI);
+                    }
                     
                     
                 }
                 break;
             
             }
-            if(input ==1)
-        {
-            printf("input action %d",input->action);
-            printf("input position %s", input->position);
-        }
+           
         }
         
         // Affichage de l'écran
@@ -213,11 +196,11 @@ void Display(void)
         
 
         // Création de la surface de rendu du texte
-        surface = TTF_RenderText_Solid(font, "Bienvenue sur Othello ", (SDL_Color){255,255,255,255}); 
+        surface = TTF_RenderText_Solid(font, " Othello ", (SDL_Color){255,255,255,255}); 
         // Création de la texture à partir de la surface de rendu du texte
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         // Affichage de la texture contenant le texte
-        SDL_Rect destRect = {600, 0, 0, 0};
+        SDL_Rect destRect = {740, 10, 0, 0};
         SDL_QueryTexture(texture, NULL, NULL, &destRect.w, &destRect.h);
         SDL_RenderCopy(renderer, texture, NULL, &destRect);
 
@@ -239,7 +222,7 @@ void Display(void)
         while(printed_SDL != NULL)
         {
             transDonne(printed_SDL->position, &posX, &posY);
-            SDL_Rect prect = {posY+5, posX+5, 50, 50};
+            SDL_Rect prect = {posY, posX, 50, 50};
             if (printed_SDL->joueur == 2)
             {
                 SDL_QueryTexture(pbtexture, NULL, NULL, &prect.w, &prect.h);
@@ -250,7 +233,21 @@ void Display(void)
                 SDL_QueryTexture(pntexture, NULL, NULL, &prect.w, &prect.h);
                 SDL_RenderCopy(renderer, pntexture, NULL, &prect);
             }
-            
+            if(printed_SDL->suiv ==NULL)
+            {
+                SDL_Rect prect ={765,50,50,50};
+                if (printed_SDL->joueur == 1)
+                {
+                    SDL_QueryTexture(pbtexture, NULL, NULL, &prect.w, &prect.h);
+                    SDL_RenderCopy(renderer, pbtexture, NULL, &prect);
+                }
+                else 
+                {
+                    SDL_QueryTexture(pntexture, NULL, NULL, &prect.w, &prect.h);
+                    SDL_RenderCopy(renderer, pntexture, NULL, &prect);
+                }
+
+            }
             printed_SDL = printed_SDL->suiv;
     
         }
@@ -258,34 +255,72 @@ void Display(void)
         // Afficher la surface sur la fenêtre
         SDL_UpdateWindowSurface(window);
 
-        //Afficher Bouton Off
+        // //Afficher Bouton Off
+        // //Afficher la texture
+        // SDL_Texture* btexture = SDL_CreateTextureFromSurface(renderer, boutonOff);
+        // // Afficher la surface sur la fenêtre
+        // SDL_Rect brect = {600, 125, 100, 100};
+        // SDL_QueryTexture(btexture, NULL, NULL, &brect.w, &brect.h);
+        // SDL_RenderCopy(renderer, btexture, NULL, &brect);
+        // SDL_UpdateWindowSurface(window);
+
+        //Afficher Bouton Retour Ar
         //Afficher la texture
-        SDL_Texture* btexture = SDL_CreateTextureFromSurface(renderer, boutonOff);
+        SDL_Texture* reArtexture = SDL_CreateTextureFromSurface(renderer, retourAr);
         // Afficher la surface sur la fenêtre
-        SDL_Rect brect = {600, 125, 100, 100};
-        SDL_QueryTexture(btexture, NULL, NULL, &brect.w, &brect.h);
-        SDL_RenderCopy(renderer, btexture, NULL, &brect);
+        SDL_Rect reArect = {700, 70, 100, 100};//880
+        SDL_QueryTexture(reArtexture, NULL, NULL, &reArect.w, &reArect.h);
+        SDL_RenderCopy(renderer, reArtexture, NULL, &reArect);
         SDL_UpdateWindowSurface(window);
 
-        //afficher menu
-        // Création de la surface de rendu du texte
-        SDL_Surface* msurface = TTF_RenderText_Solid(font, "Menu :", (SDL_Color){255,255,255,255}); 
-        // Création de la texture à partir de la surface de rendu du texte
-        SDL_Texture* mtexture = SDL_CreateTextureFromSurface(renderer, msurface);
-        // Affichage de la texture contenant le texte
-        SDL_Rect mRect = {600, 125, 0, 0};
-        SDL_QueryTexture(mtexture, NULL, NULL, &mRect.w, &mRect.h);
-        SDL_RenderCopy(renderer, mtexture, NULL, &mRect);
+        //Afficher Bouton Retour Av
+        //Afficher la texture
+        SDL_Texture* reAvtexture = SDL_CreateTextureFromSurface(renderer, retourAv);
+        // Afficher la surface sur la fenêtre
+        SDL_Rect reAvrect = {842, 68, 100, 100}; //940
+        SDL_QueryTexture(reAvtexture, NULL, NULL, &reAvrect.w, &reAvrect.h);
+        SDL_RenderCopy(renderer, reAvtexture, NULL, &reAvrect);
+        SDL_UpdateWindowSurface(window);
 
-        //afficher Jouer un coup
-        // Création de la surface de rendu du texte
-        SDL_Surface* josurface = TTF_RenderText_Solid(font, "1. Jouer un coup", (SDL_Color){255,255,255,255}); 
-        // Création de la texture à partir de la surface de rendu du texte
-        SDL_Texture* jotexture = SDL_CreateTextureFromSurface(renderer, josurface);
-        // Affichage de la texture contenant le texte
-        SDL_Rect joRect = {625, 175, 0, 0};
-        SDL_QueryTexture(jotexture, NULL, NULL, &joRect.w, &joRect.h);
-        SDL_RenderCopy(renderer, jotexture, NULL, &joRect);
+        //Afficher Bouton save
+        //Afficher la texture
+        SDL_Texture* savetexture = SDL_CreateTextureFromSurface(renderer, save);
+        // Afficher la surface sur la fenêtre
+        SDL_Rect saverect = {600, 100, 100, 100}; //820
+        SDL_QueryTexture(savetexture, NULL, NULL, &saverect.w, &saverect.h);
+        SDL_RenderCopy(renderer, savetexture, NULL, &saverect);
+        SDL_UpdateWindowSurface(window);
+
+        //Afficher Bouton history
+        //Afficher la texture
+        SDL_Texture* histotexture = SDL_CreateTextureFromSurface(renderer, history);
+        // Afficher la surface sur la fenêtre
+        SDL_Rect hisrect = {660, 103, 100, 100};
+        SDL_QueryTexture(histotexture, NULL, NULL, &hisrect.w, &hisrect.h);
+        SDL_RenderCopy(renderer, histotexture, NULL, &hisrect);
+        SDL_UpdateWindowSurface(window);
+
+        
+
+        // //afficher menu
+        // // Création de la surface de rendu du texte
+        // SDL_Surface* msurface = TTF_RenderText_Solid(font, "Menu :", (SDL_Color){255,255,255,255}); 
+        // // Création de la texture à partir de la surface de rendu du texte
+        // SDL_Texture* mtexture = SDL_CreateTextureFromSurface(renderer, msurface);
+        // // Affichage de la texture contenant le texte
+        // SDL_Rect mRect = {600, 125, 0, 0};
+        // SDL_QueryTexture(mtexture, NULL, NULL, &mRect.w, &mRect.h);
+        // SDL_RenderCopy(renderer, mtexture, NULL, &mRect);
+
+        // //afficher Jouer un coup
+        // // Création de la surface de rendu du texte
+        // SDL_Surface* josurface = TTF_RenderText_Solid(font, "1. Jouer un coup", (SDL_Color){255,255,255,255}); 
+        // // Création de la texture à partir de la surface de rendu du texte
+        // SDL_Texture* jotexture = SDL_CreateTextureFromSurface(renderer, josurface);
+        // // Affichage de la texture contenant le texte
+        // SDL_Rect joRect = {625, 175, 0, 0};
+        // SDL_QueryTexture(jotexture, NULL, NULL, &joRect.w, &joRect.h);
+        // SDL_RenderCopy(renderer, jotexture, NULL, &joRect);
 
         
         
@@ -348,7 +383,6 @@ void Display(void)
 
 void transDonne(char input[3], int *outputX, int *outputY)
 {
-    
     *outputX = (input[0]-97)*71.87+10;
     *outputY = (input[1]-49)*71.87+10;
 }
@@ -356,8 +390,8 @@ void transDonne(char input[3], int *outputX, int *outputY)
 char* transCoord( int inputX, int inputY)
 {
     char *output=malloc(sizeof(char)*3);
-    output[0] = ((inputX - 10)/71)+97;
-    output[1] = ((inputY - 10)/71)+49;
+    output[0] = ((inputY - 10)/71)+97;
+    output[1] = ((inputX - 10)/71)+49;
     
     return output;
 }
