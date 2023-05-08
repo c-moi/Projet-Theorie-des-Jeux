@@ -154,8 +154,7 @@ int moteurJeu(void* DATA)
             initPlto();
             actuelG = deplacFin(listeG);
 
-
-             jeu = configPlayers(jeu);                        
+            jeu = configPlayers(jeu);                        
                                                                     
 
             //Chargement de partie si souhaité                                              //      
@@ -176,7 +175,7 @@ int moteurJeu(void* DATA)
                 } 
                 remove("fichier/historique.bin");
             }
-            tour = 0;        
+            tour = 0;
         }
     }
     exit(0);
@@ -321,8 +320,6 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
         printf("Ceci ne correspond pas à une case du plateau !\n");
     }
 } 
-
-
 
 void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp, parametres *jeu)
 {
@@ -490,8 +487,6 @@ Move* supprimCoupApres(Move *liste)
     }
     return actuel;
 }
-
-
 
 Move* verifAllie(char rep[3], parametres* jeu)
 {
