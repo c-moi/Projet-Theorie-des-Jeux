@@ -13,7 +13,6 @@
 
 
 
-
 // ----------------------------------------------------------------------------------------------
 // - import du moteur ---------------------------------------------------------------------------
 
@@ -27,10 +26,11 @@ typedef struct paramJeu
     int tourJoueur;
 
 } parametres;
+void viderBuffer(void);
 
-#include "../moteur/moteur.h"
-
+Move *creatMaillon(int joueur, char position[3]);
 #endif
+
 
 // ----------------------------------------------------------------------------------------------
 
@@ -44,8 +44,7 @@ typedef struct paramJeu
 #ifndef H_PA_JOUEUR
 #define H_PA_JOUEUR
 
-char* configPlayers(Move *move, char rep[3]);
-char* lancerPartie(Move *move, char rep[3]);
+parametres configPlayers(parametres jeu);
 
 Move* tourJoueur(parametres* jeu);
 char* demandeJoueur(char* rep);
