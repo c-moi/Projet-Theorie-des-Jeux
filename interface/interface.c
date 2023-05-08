@@ -631,9 +631,9 @@ void rempTab (Move* liste)
     {
         for(int i=0;i<=7;i++)
         {
-            if (strlen(val[j][i]) == 2)
+            if (strlen(val[i][j]) == 2)
             {
-                val[j][i]=" ";
+                val[i][j]=" ";
             }
         }
     }

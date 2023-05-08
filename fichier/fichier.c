@@ -1,39 +1,58 @@
 #include "fichier.h"
 
+//version beta n'est capable que de charger une liste depuis un fichier sans retourner les pions adverses
 
-Move *chargerHistorique(Move* Liste)
+void chargerHistorique(Move** liste, Move** actuelG, Move** histo, Move** actuelH, int* fin)
 {
-    FILE *fichier;
-    char ligne[10];
+    FILE *fichier=NULL;
     int joueur;
     char position[3];
-    fichier = fopen("historique.bin", "rb");
-
+    Move* moves=NULL;
+    Move* dernierCoup=NULL;
+    fichier = fopen("fichier/historique.bin", "rb");
     if (fichier != NULL)
     {
-        while (fgets(ligne, 10, fichier) != NULL)
+        fseek(fichier, 0, SEEK_END);
+        long int tailleFichier = ftell(fichier);
+        fseek(fichier, 0, SEEK_SET);
+
+        while (ftell(fichier) < tailleFichier)
         {
-            sscanf(ligne, "%d;%s", &joueur, position);
-            Move *moves = creatMaillon(joueur, position);
-            Liste = insTT(Liste, moves);
+            fread(&joueur, sizeof(int), 1, fichier);
+            fread(position, sizeof(char), 3 , fichier);
+
+            *histo = insTT(*histo, creatMaillon(joueur, position));
+            *actuelH = deplacFin(*histo);
+            
+            *liste = insTT(*liste, creatMaillon(joueur, position));
+            *actuelG = deplacFin(*liste);
+            (*fin)++;
         }
     }
     fclose(fichier);
-    return Liste;
 }
 
 void sauvegarderHistorique (Move *L, Move *actuel)
 {
     FILE *fichier;
-    fichier = fopen("historique.bin", "wb");
+    fichier = fopen("fichier/historique.bin", "wb");
     if (fichier != NULL)
     {
-        while (L != actuel)
+        if (L != NULL && actuel != NULL)
         {
-            fprintf(fichier, "%d;%s\n", L->joueur, L->position);
-            L=L->suiv;
+            while (L != actuel)
+            {
+                fwrite(&(L->joueur),sizeof(int), 1, fichier);
+                fwrite(L->position,sizeof(char), 3, fichier);
+                L=L->suiv;
+            }
+            fwrite(&(L->joueur),sizeof(int), 1, fichier);
+            fwrite(L->position,sizeof(char), 3, fichier);
         }
-        fprintf(fichier, "%d;%s\n", L->joueur, L->position);
+        else 
+        {
+            printf("Une des liste est nulle!\n");
+        }
     }
     fclose(fichier);
 }

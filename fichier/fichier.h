@@ -19,8 +19,7 @@
 
 #ifndef H_PA_FICHIER
 #define H_PA_FICHIER
-
-Move *chargerHistorique(Move* Liste);
+void chargerHistorique(Move** liste, Move** actuelG, Move** histo, Move** actuelH, int* fin);
 void sauvegarderHistorique (Move *L, Move *actuel);
 
 
@@ -37,7 +36,7 @@ void sauvegarderHistorique (Move *L, Move *actuel);
 
 #ifndef H_PA_MOTEUR
 #define H_PA_MOTEUR
-
+Move* deplacFin(Move *L);
 Move* creatMaillon(int joueur, char position[3]);
 Move* insTT(Move *L, Move *moves);
 

@@ -29,26 +29,26 @@ typedef struct paramJeu
 } parametres;
 
 int moteurJeu(void* DATA);
-void initPlto(Move** LN, Move** LB);
+void initPlto();
 
 Move* creatMaillon(int joueur, char position[3]);
 Move* insTT(Move *L, Move *moves);
 Move* deplacFin(Move *L);
 
-void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, Move* List_J1, Move* List_J2, parametres *jeu);
-void verifContour(char rep[3],Move *LG, Move *List_J1, Move *List_J2, int pre);
-void verifSuite(char rec[3], char rep[3], Move *Liste, int pre);
+void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, parametres *jeu, int* tour);
+Move* verifContour(char rep[3], parametres* jeu);
+Move* verifAllie(char rep[3], parametres* jeu);
 
-void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp);
-void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp);
-int estDans(char pion[3], Move *L); 
+void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp, parametres *jeu);
+void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp, parametres *jeu);
+Move* estDans(char pion[3], Move *L);
+
 void printMoveHistory(Move *Liste, Move *End);
 Move* supprimCoupApres(Move *actuel);
 
-void retournPions(char pionallie[3], char rep[3], char tour[3], Move *LG, Move *L1, Move *L2);
-Move* supprimerElement(Move* list, char valeur[3]);
+void retournPions(Move *a_retorner);
 
-
+void AfficheListe(const Move *l);
 #endif
 
 // ----------------------------------------------------------------------------------------------

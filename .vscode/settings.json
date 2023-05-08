@@ -2,5 +2,13 @@
     "C_Cpp.errorSquiggles": "enabled",
     "files.associations": {
         "sdl.h": "c"
-    }
+    },
+    "terminal.integrated.profiles.osx": {
+        "x86 bash" : {
+            "path": "/usr/bin/arch",
+            "args": ["-arch", "x86_64", "/bin/bash"]
+        }
+    },
+    "terminal.integrated.defaultProfile.osx": "x86 bash"
 }
+
