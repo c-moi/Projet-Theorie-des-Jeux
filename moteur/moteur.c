@@ -273,21 +273,15 @@ void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp, parametres *je
         }
         else if (estDans((*actuelG)->position, histoCp) != NULL)
         {
-            Move *ptr = (*actuelG); 
-            retournPions((*actuelG)->switched);
-            while((*actuelG) != NULL){
-                (*actuelG)= (*actuelG)->prec;
-                //AfficheListe(*actuelG);
-                (*actuelG)->suiv = NULL;
-            }
-            free(ptr->switched);
-
-
             Move *tmp = *actuelG;
+            
+            retournPions((*tmp)->switched);
+            supprimCoupApres((*tmp)->switched);
+            free((*tmp)->switched);
+            
             *actuelG = (*actuelG)->prec;
             (*actuelG)->suiv = NULL;
             free(tmp);
-            //jeu->tourJoueur = (jeu->tourJoueur % 2) + 1;
 
             if (*actuelH != NULL)
                 *actuelH = (*actuelH)->prec;
@@ -394,9 +388,26 @@ Move* supprimCoupApres(Move *liste)
             {
                 actuel->suiv->prec = actuel;
             }
+            
+            if (suivant->switched != NULL)
+            {
+                Move* tmp_swtch = suivant->switched->suiv;
+                while(tmp->swtch != NULL)
+                {
+                    suivant->switched->suiv = tmp->swtch->suiv;
+                    if (suivant->switched->suiv != NULL)
+                    {
+                        suivant->switched->suiv->prec = suivant->switched;
+                    }
+                    free(tmp->swtch);
+                    tmp_swtch = suivant->switched->suiv;
+                }
+                free(suivant->switched);
+            }
+            
             free(suivant);
             suivant = actuel->suiv;
-        }
+         }
     }
     return actuel;
 }
