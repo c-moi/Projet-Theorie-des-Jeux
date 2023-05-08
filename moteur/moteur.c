@@ -95,7 +95,7 @@ int moteurJeu(void* DATA)
                 deplacArriere(&actuelG, &actuelH, histoCp, &jeu);
                 break;
             case 3:
-                deplacAvant(&actuelG, &actuelH, histoCp);
+                deplacAvant(&actuelG, &actuelH, histoCp, &jeu);
                 break;
             case 4:
                 printMoveHistory(histoCp, actuelH);
@@ -204,13 +204,14 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
 
             printf("La case est vide\n");
             Maillon->switched = verifAllie(Maillon->position, jeu);
+            
 
            
             if (Maillon->switched != NULL)
             {
                 if (*historique == NULL)
                 {
-                    *historique = insTT(*historique, creatMaillon(Maillon->joueur, Maillon->position));
+                    *historique = insTT(*historique, Maillon);
                     *actuelH = *historique;
                 }
                 else 
@@ -218,28 +219,30 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
                     if (*actuelH == NULL)
                     {
                         *historique = supprimCoupApres(*historique);
+                        (*historique)->switched = supprimCoupApres((*historique)->switched);
+                        free((*historique)->switched);
                         free(*historique);
-                        *historique = insTT(*historique, creatMaillon(Maillon->joueur, Maillon->position));
+                        *historique = insTT(*historique, Maillon);
                         *actuelH = *historique;
                     }
                     if (*actuelH != NULL)                                                          
                     {   
                         if ((*actuelH)->suiv != NULL)   
                         {                                                                                 
-                            *actuelH = supprimCoupApres(*actuelH);  
+                            *actuelH = supprimCoupApres(*actuelH);
                         }    
-                        Move* maillonH = creatMaillon(Maillon->joueur, Maillon->position);
-                        *historique = insTT(*historique, maillonH);
-                        *actuelH = maillonH;                                                        
+                        *historique = insTT(*historique, Maillon);
+                        *actuelH = Maillon;                                                        
                     }
                 }
 
                 retournPions(Maillon->switched);
 
+                Move* MaillonG = creatMaillon(Maillon->joueur, Maillon->position);
                 SDL_LockMutex(mutexG);                         
-                listeG = insTT(listeG, Maillon);               
+                listeG = insTT(listeG, MaillonG);               
                 SDL_UnlockMutex(mutexG);                       
-                *actuelG = Maillon;
+                *actuelG = MaillonG;
 
                 jeu->tourJoueur = (jeu->tourJoueur % 2)+ 1;   
             }
@@ -275,16 +278,19 @@ void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp, parametres *je
         {
             Move *tmp = *actuelG;
             
-            retournPions((*tmp)->switched);
-            supprimCoupApres((*tmp)->switched);
-            free((*tmp)->switched);
+            tmp->switched = supprimCoupApres(tmp->switched);
+            free(tmp->switched);
+            jeu->tourJoueur = (jeu->tourJoueur % 2)+ 1;
             
             *actuelG = (*actuelG)->prec;
             (*actuelG)->suiv = NULL;
             free(tmp);
 
             if (*actuelH != NULL)
+            {
+                retournPions((*actuelH)->switched);
                 *actuelH = (*actuelH)->prec;
+            }
 
             //printf("%s\n", (*actuelG)->position);
             if (estDans((*actuelG)->position, histoCp) == NULL)
@@ -299,7 +305,7 @@ void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp, parametres *je
     }
 }
 
-void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp)
+void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp, parametres *jeu)
 {
     if (histoCp == NULL)
     {
@@ -313,6 +319,8 @@ void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp)
             {
                 *actuelH = (*actuelH)->suiv;
                 *actuelG = insTT(*actuelG, creatMaillon((*actuelH)->joueur, (*actuelH)->position));
+                retournPions((*actuelH)->switched);
+                jeu->tourJoueur = (jeu->tourJoueur % 2)+ 1;
                 *actuelG = (*actuelG)->suiv;
                 printf("Vous êtes revenu au coup : %s\n", (*actuelH)->position);
             }
@@ -325,6 +333,8 @@ void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp)
         {
             *actuelH = histoCp;
             *actuelG = insTT(*actuelG, creatMaillon(histoCp->joueur, histoCp->position));
+            retournPions((*actuelH)->switched);
+            jeu->tourJoueur = (jeu->tourJoueur % 2)+ 1;
             *actuelG = (*actuelG)->suiv;
             printf("Vous êtes revenu au coup : %s\n", (*actuelH)->position);
         }
@@ -392,14 +402,14 @@ Move* supprimCoupApres(Move *liste)
             if (suivant->switched != NULL)
             {
                 Move* tmp_swtch = suivant->switched->suiv;
-                while(tmp->swtch != NULL)
+                while(tmp_swtch != NULL)
                 {
-                    suivant->switched->suiv = tmp->swtch->suiv;
+                    suivant->switched->suiv = tmp_swtch->suiv;
                     if (suivant->switched->suiv != NULL)
                     {
                         suivant->switched->suiv->prec = suivant->switched;
                     }
-                    free(tmp->swtch);
+                    free(tmp_swtch);
                     tmp_swtch = suivant->switched->suiv;
                 }
                 free(suivant->switched);
@@ -407,7 +417,7 @@ Move* supprimCoupApres(Move *liste)
             
             free(suivant);
             suivant = actuel->suiv;
-         }
+        }
     }
     return actuel;
 }
@@ -444,7 +454,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                             if(recl[0] == 97 || recl[1] == 49){
                                 if (test != NULL)
                                 {
-                                    supprimCoupApres(test);
+                                    test = supprimCoupApres(test);
                                     free(test);
                                     test = NULL;
                                 }
@@ -486,7 +496,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                             if(recl[0] == 97){
                                 if (test != NULL)
                                 {
-                                    supprimCoupApres(test);
+                                    test = supprimCoupApres(test);
                                     free(test);
                                     test = NULL;
                                 }
@@ -504,7 +514,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     {
                         if (test != NULL)
                         {
-                            supprimCoupApres(test);
+                            test = supprimCoupApres(test);
                             free(test);
                             test = NULL;
                         }
@@ -528,7 +538,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                             if(recl[0] == 97 || recl[1] == 56){
                                 if (test != NULL)
                                 {
-                                    supprimCoupApres(test);
+                                    test = supprimCoupApres(test);
                                     free(test);
                                     test = NULL;
                                 }
@@ -546,7 +556,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     {
                         if (test != NULL)
                         {
-                            supprimCoupApres(test);
+                            test = supprimCoupApres(test);
                             free(test);
                             test = NULL;
                         }
@@ -569,7 +579,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                             if(recl[1] == 49){
                                 if (test != NULL)
                                 {
-                                    supprimCoupApres(test);
+                                    test = supprimCoupApres(test);
                                     free(test);
                                     test = NULL;
                                 }
@@ -587,7 +597,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     {
                         if (test != NULL)
                         {
-                            supprimCoupApres(test);
+                            test = supprimCoupApres(test);
                             free(test);
                             test = NULL;
                         }
@@ -609,7 +619,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                             if(recl[1] == 56){
                                 if (test != NULL)
                                 {
-                                    supprimCoupApres(test);
+                                    test = supprimCoupApres(test);
                                     free(test);
                                     test = NULL;
                                 }
@@ -627,7 +637,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     {
                         if (test != NULL)
                         {
-                            supprimCoupApres(test);
+                            test = supprimCoupApres(test);
                             free(test);
                             test = NULL;
                         }
@@ -652,7 +662,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                             if(recl[0] == 104 || recl[1] == 49){
                                 if (test != NULL)
                                 {
-                                    supprimCoupApres(test);
+                                    test = supprimCoupApres(test);
                                     free(test);
                                     test = NULL;
                                 }
@@ -670,7 +680,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     {
                         if (test != NULL)
                         {
-                            supprimCoupApres(test);
+                            test = supprimCoupApres(test);
                             free(test);
                             test = NULL;
                         }
@@ -692,7 +702,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                             if(recl[0] == 104){
                                 if (test != NULL)
                                 {
-                                    supprimCoupApres(test);
+                                    test = supprimCoupApres(test);
                                     free(test);
                                     test = NULL;
                                 }
@@ -710,7 +720,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     {
                         if (test != NULL)
                         {
-                            supprimCoupApres(test);
+                            test = supprimCoupApres(test);
                             free(test);
                             test = NULL;
                         }
@@ -734,7 +744,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                             if(recl[0] == 104 || recl[1] == 56){
                                 if (test != NULL)
                                 {
-                                    supprimCoupApres(test);
+                                    test = supprimCoupApres(test);
                                     free(test);
                                     test = NULL;
                                 }
@@ -752,7 +762,7 @@ Move* verifAllie(char rep[3], parametres* jeu)
                     {
                         if (test != NULL)
                         {
-                            supprimCoupApres(test);
+                            test = supprimCoupApres(test);
                             free(test);
                             test = NULL;
                         }
@@ -805,7 +815,8 @@ Move* verifContour(char rep[3], parametres* jeu)
     return listadv;
 }
 
-void retournPions(Move *a_retourner){
+void retournPions(Move *a_retourner)
+{
     Move *ptr = listeG;
     Move *ptr2 = a_retourner;
     while(ptr != NULL){
