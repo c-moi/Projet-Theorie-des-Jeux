@@ -14,6 +14,7 @@ void Display(void)
     //SDL_Color color = {255, 255, 255};
     int quit = 0;
     input= malloc(sizeof(Ordre));
+    input->error=0;
 
     //Initialisation test maj
     Move* printed_SDL = NULL;
@@ -154,14 +155,14 @@ void Display(void)
                         SDL_UnlockMutex(mutexI);  
                         
                     }
-                    else if(mouseX>=600 && mouseX<=650 && mouseY>=10 && mouseY<=35)
+                    else if(mouseX>=703 && mouseX<=750 && mouseY>=72 && mouseY<=92)
                     {
                         //retour arrière
                         SDL_LockMutex(mutexI);
                         input->action = 2; 
                         SDL_UnlockMutex(mutexI);
                     }
-                    else if(mouseX>=940 && mouseX<=990 && mouseY>=10 && mouseY<=35)
+                    else if(mouseX>=845 && mouseX<=892 && mouseY>=70 && mouseY<=92)
                     {
                         //retour avant
                         SDL_LockMutex(mutexI);
@@ -190,6 +191,86 @@ void Display(void)
             }
            
         }
+        while(input->error !=0)
+        {
+            switch(input->error)
+            {
+                case 1 : 
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                                             "",
+                                             "Vous ne pouvez pas revenir à un coup joué, aucune action n'a été faite au préalable !",
+                                             NULL);
+                    break;
+                case 2 :
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                                            "",
+                                             "Vous êtes au début du jeu !",
+                                             NULL);
+                    break;
+                case 3 :
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                                             "",
+                                             "Vous êtes revenu au début du jeu !",
+                                             NULL);
+
+                    break;
+                case 4 :
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                                             "",
+                                             "Vous êtes à votre dernier coup joué !",
+                                             NULL);
+                    break;
+                case 5 :
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                                             "",
+                                             "Position impossible car la case est déjà occupée",
+                                             NULL);
+                    break;
+                case 6 :
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                                             "",
+                                             "Cela ne permet de retourner aucun pion, le coup n'a pas été retenu !",
+                                             NULL);
+                    break;
+                case 7 :
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                                             "",
+                                             "Ceci ne correspond pas à une case du plateau !",
+                                             NULL);
+                    break;
+                case 8 :
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                                             "",
+                                             "Vous êtes à votre dernier coup joué !",
+                                             NULL);
+                    break;
+                
+                case 9 :
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                                             "",
+                                             " Historique de jeu vide ! ",
+                                             NULL);
+                case 10 :
+                    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                                             "",
+                                             "Emplacement impossible car aucun pion adverse autour",
+                                             NULL);
+
+                
+
+
+                
+                
+
+            }
+            
+            
+            
+            //SDL_Delay(1000) ;
+            input->error=0;
+        }
+        
+
         
         // Affichage de l'écran
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
@@ -383,15 +464,15 @@ void Display(void)
 
 void transDonne(char input[3], int *outputX, int *outputY)
 {
-    *outputX = (input[0]-97)*71.87+10;
-    *outputY = (input[1]-49)*71.87+10;
+    *outputX = (input[0]-97)*73.12+5;
+    *outputY = (input[1]-49)*73.12+5;
 }
 
 char* transCoord( int inputX, int inputY)
 {
     char *output=malloc(sizeof(char)*3);
-    output[0] = ((inputY - 10)/71)+97;
-    output[1] = ((inputX - 10)/71)+49;
+    output[0] = ((inputY -5)/73)+97;
+    output[1] = ((inputX -5)/73)+49;
     
     return output;
 }

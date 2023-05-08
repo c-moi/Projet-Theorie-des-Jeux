@@ -2,16 +2,16 @@
 
 
 
-char* demandeIA(char* rep, parametres* jeu)
-{
+// char* demandeIA(char* rep, parametres* jeu)
+// {
     
-    miniMax();
+//     miniMax();
 
-    return rep;
-}
+//     return rep;
+// }
 
 
-void miniMax(void)
-{
+// void miniMax(void)
+// {
     
-}
+// }
