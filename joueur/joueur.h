@@ -13,6 +13,29 @@
 
 
 
+// ----------------------------------------------------------------------------------------------
+// - import du moteur ---------------------------------------------------------------------------
+
+#ifndef H_PA_MOTEUR
+#define H_PA_MOTEUR
+
+typedef struct paramJeu
+{
+    int nbJoueurs;
+    int lvlOrdi;
+    int tourJoueur;
+
+} parametres;
+
+Move *creatMaillon(int joueur, char position[3]);
+#endif
+
+
+// ----------------------------------------------------------------------------------------------
+
+
+
+
 
 // ----------------------------------------------------------------------------------------------
 // - prototypes configuration du/des joueurs ----------------------------------------------------
@@ -20,8 +43,10 @@
 #ifndef H_PA_JOUEUR
 #define H_PA_JOUEUR
 
-char* configPlayers(Move *move, char rep[3]);
-char* lancerPartie(Move *move, char rep[3]);
+parametres configPlayers(parametres jeu);
+
+Move* tourJoueur(parametres* jeu);
+char* demandeJoueur(char* rep);
 
 #endif
 
