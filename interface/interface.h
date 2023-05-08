@@ -22,6 +22,11 @@
 
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_thread.h>
+#include <SDL2/SDL_image.h>
+
+
+
+
 
 
 typedef struct listes {
@@ -30,6 +35,8 @@ typedef struct listes {
 } A_Comparer;
 
 void Display(void);
+void transDonne(char input[3], int *outputX, int *outputY);
+char* transCoord( int inputX, int inputY);
 
 int debug(void* DATA);
 bool listCmp (Move* liste_printed);

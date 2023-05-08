@@ -37,7 +37,7 @@ int moteurJeu(void* DATA)
     SDL_Delay(1000);
 
     // boucle de jeu
-    while (action != 6)
+    while (input->action != 6)
     {
         if(tour < 60)
         {
@@ -49,36 +49,45 @@ int moteurJeu(void* DATA)
             SDL_Delay(1000);
 
             // demande à l'utilisateur ce qu'il veut faire
-            printf("\n Menu :\n");
-            printf("1. Jouer un coup \n");
-            printf("2. Se déplacer vers le coup précédent \n");
-            printf("3. Se déplacer vers l'avant \n");
-            printf("4. Afficher l'historique des coups joués \n");
-            printf("5. Sauvegarder la partie en cours\n");
-            printf("6. Quitter \n");
-            printf("\nQuel est votre choix : ");
-            viderBuffer();
-            scanf("%d", &action);
-            printf("\n");
+            // printf("\n Menu :\n");
+            // printf("1. Jouer un coup \n");
+            // printf("2. Se déplacer vers le coup précédent \n");
+            // printf("3. Se déplacer vers l'avant \n");
+            // printf("4. Afficher l'historique des coups joués \n");
+            // printf("5. Sauvegarder la partie en cours\n");
+            // printf("6. Quitter \n");
+            // printf("\nQuel est votre choix : ");
+            // viderBuffer();
+            // scanf("%d", &(input->action);
+            // printf("\n");
 
-            switch (action)
+            switch (input->action)
             {      
                 case 1:
-                    maillon = tourJoueur(&jeu);
+                    // sert pour débug
+                    // maillon = tourJoueur(&jeu);
+                    // printf("Le joueur %d joue en %s \n", jeu.tourJoueur, maillon->position);
+                
+                
+                    maillon = creatMaillon(jeu.tourJoueur, input->position);
                     printf("Le joueur %d joue en %s \n", jeu.tourJoueur, maillon->position);
                     respectRegles(&histoCp, &actuelG, &actuelH, maillon, &jeu, &tour);
+                    input->action = 0;
                     break;
                 case 2:
                     deplacArriere(&actuelG, &actuelH, histoCp, &jeu);
+                    input->action = 0;
                     break;
                 case 3:
                     deplacAvant(&actuelG, &actuelH, histoCp, &jeu);
+                    input->action = 0;
                     break;
                 case 4:
                     printMoveHistory(histoCp, actuelH);
                     break;
                 case 5:
                     sauvegarderHistorique(histoCp, actuelH);
+                    input->action=0;
                     break;
                 case 6:
                     printf("Au revoir ! \n");
@@ -91,7 +100,8 @@ int moteurJeu(void* DATA)
             free(rep);
             viderBuffer();
 
-            if(tour == 60){
+            if(tour == 60)
+            {
                 char restart;
                 printf("La partie est fini. Voulez vous recommencer une partie ? (O/N)");
                 viderBuffer();

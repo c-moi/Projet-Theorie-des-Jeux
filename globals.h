@@ -17,3 +17,11 @@ typedef struct move {
 
 extern Move* listeG;
 extern SDL_mutex* mutexG;
+
+typedef struct ordre {
+    int action;
+    char position[3];
+}Ordre;
+
+extern Ordre *input;
+extern SDL_mutex* mutexI;

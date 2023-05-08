@@ -1,5 +1,5 @@
 CFLAGS = -W -Wall `sdl2-config --cflags`
-LDFLAGS = `sdl2-config --libs` -lSDL2_ttf
+LDFLAGS = `sdl2-config --libs` -lSDL2_ttf -lSDL2_image
 
 fic = fichier/fichier
 ia = IA/IA
