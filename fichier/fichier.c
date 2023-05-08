@@ -1,5 +1,7 @@
 #include "fichier.h"
 
+//version beta n'est capable que de charger une liste depuis un fichier sans retourner les pions adverses
+
 void chargerHistorique(Move** liste, Move** actuelG, Move** histo, Move** actuelH, int* fin)
 {
     FILE *fichier=NULL;

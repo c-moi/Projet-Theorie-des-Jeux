@@ -57,19 +57,14 @@ int moteurJeu(void* DATA)
             printf("5. Sauvegarder la partie en cours\n");
             printf("6. Quitter \n");
             printf("\nQuel est votre choix : ");
+            viderBuffer();
             scanf("%d", &action);
             printf("\n");
 
             switch (action)
             {      
                 case 1:
-                    while (strlen(rep) != 2)
-                    {
-                        //fonction qui verifie que le joueur puisse jouer
-                        printf("Quel est la position du joueur : ");
-                        fgets(rep, 3*sizeof(char), stdin);
-                    }
-                    maillon = creatMaillon(jeu.tourJoueur, rep);
+                    maillon = tourJoueur(&jeu);
                     printf("Le joueur %d joue en %s \n", jeu.tourJoueur, maillon->position);
                     respectRegles(&histoCp, &actuelG, &actuelH, maillon, &jeu, &tour);
                     break;
@@ -83,7 +78,7 @@ int moteurJeu(void* DATA)
                     printMoveHistory(histoCp, actuelH);
                     break;
                 case 5:
-                    // sauvegarderHistorique(histoCp, actuelG);
+                    sauvegarderHistorique(histoCp, actuelH);
                     break;
                 case 6:
                     printf("Au revoir ! \n");
@@ -95,98 +90,94 @@ int moteurJeu(void* DATA)
             }
             free(rep);
             viderBuffer();
+
+            if(tour == 60){
+                char restart;
+                printf("La partie est fini. Voulez vous recommencer une partie ? (O/N)");
+                viderBuffer();
+                scanf("%c", &restart);
+                
+                if (restart == 'O' || restart == 'o')
+                {
+                    tour = 0;
+                    
+                    // reinit liste générale
+                    if(listeG != NULL)
+                    {
+                        supprimCoupApres(listeG);
+                        free(listeG);
+                    }
+                    listeG = NULL;
+                    
+                    // reinit historique coups
+                    if(histoCp!=NULL)
+                    {
+                        histoCp = supprimCoupApres(histoCp);
+                        histoCp->switched = supprimCoupApres(histoCp->switched);
+                        free(histoCp);
+                    }
+                    histoCp = NULL;
+                    
+                    if(maillon != NULL)
+                    {
+                        maillon->switched = supprimCoupApres(maillon->switched);
+                        free(maillon);
+                    }  
+                    maillon = NULL;
+                        
+                    // position dans l'historique
+                    actuelG = NULL;
+                    actuelH = NULL;
+                }
+                else
+                {
+                    action=6;
+                    
+                }
+            }
         }
         else 
         {
-            char restart;
-            printf("La partie est fini. Voulez vous recommencer une partie ? (O/N)");
-            scanf("%c", &restart);
-            
-            if (restart == 'O' || restart == 'o')
-            {
-                tour = 0;
-                
-                // reinit liste générale
-                if(listeG != NULL)
-                {
-                    supprimCoupApres(listeG);
-                    free(listeG);
-                }
-                listeG = NULL;
-                
-                // reinit historique coups
-                if(histoCp!=NULL)
-                {
-                    histoCp = supprimCoupApres(histoCp);
-                    histoCp->switched = supprimCoupApres(histoCp->switched)
-                    free(histoCp);
-                }
-                histoCp = NULL;
-                
-                if(maillon != NULL)
-                {
-                    maillon->switched = supprimCoupApres(maillon->switched)
-                    free(maillon);
-                }  
-                maillon = NULL;
-                     
-                // position dans l'historique
-                actuelG = NULL;
-                actuelH = NULL;
 
-                // choix action joueur
-                action = 0;
+             // choix action joueur
+            action = 0;
 
-                // initialisation des joueurs
-                rep = NULL; 
+            // initialisation des joueurs
+            rep = NULL; 
 
-                char choix_reprendre;
+            char choix_reprendre;
 
-                // On s'assure que l'affichage de bienvenu s'est affiché
-                SDL_Delay(1000);
+            // On s'assure que l'affichage de bienvenu s'est affiché
+            SDL_Delay(1000);
 
-                // initialisation du jeu
-                initPlto();
-                actuelG = deplacFin(listeG);
+            // initialisation du jeu
+            initPlto();
+            actuelG = deplacFin(listeG);
 
 
-                // rep[3] = configPlayers(listeG, rep); // à modifier                           // Manon, Il faut changer ça
-                // En attendant :                                                               //
-                jeu.nbJoueurs=2;
-                jeu.lvlOrdi=0;
-                jeu.tourJoueur=1;                                                     //
+             jeu = configPlayers(jeu);                        
+                                                                    
 
-                //Chargement de partie si souhaité                                              //      
-                if (access("fichier/historique.bin", F_OK) == 0)
-                {                                                                     //
-                    printf("\nVoulez-vous reprendre la partie sauvegardée ? (O/N) : "); 
-                    viderBuffer();            //
-                    scanf("%c", &choix_reprendre);                                                  //
-                    if (choix_reprendre == 'O' || choix_reprendre == 'o')                           //
-                    {                    
-                        printf("tour2: %d\n", tour);                                                        //
-                        chargerHistorique(&listeG, &actuelG, &histoCp, &actuelH, &tour);  
+            //Chargement de partie si souhaité                                              //      
+            if (access("fichier/historique.bin", F_OK) == 0)
+            {                                                                     //
+                printf("\nVoulez-vous reprendre la partie sauvegardée ? (O/N) : "); 
+                viderBuffer();            //
+                scanf("%c", &choix_reprendre);                                                  //
+                if (choix_reprendre == 'O' || choix_reprendre == 'o')                           //
+                {                                                      //
+                    chargerHistorique(&listeG, &actuelG, &histoCp, &actuelH, &tour);  
 
-                        printf("Vous avez repris la partie depuis l'historique sauvegardé.\n");     //
-                    }                                                                               //
-                    else                                                                            //
-                    {                                                                               //
-                        printf("Nouvelle partie démarrée.\n");                                     //
-                    } 
-                    remove("fichier/historique.bin");
-                }    
-                else 
-                {
-                    printf("Le fichier n'existe pas!\n");
-                }       
+                    printf("Vous avez repris la partie depuis l'historique sauvegardé.\n");     //
+                }                                                                               //
+                else                                                                            //
+                {                                                                               //
+                    printf("Nouvelle partie démarrée.\n");                                     //
+                } 
+                remove("fichier/historique.bin");
             }
-            else
-            {
-                action=6;
-                
-            }
+            tour = 0;        
         }
-        
     }
     exit(0);
 }
@@ -329,6 +320,7 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
     {
         printf("Ceci ne correspond pas à une case du plateau !\n");
     }
+} 
 
 
 
@@ -341,7 +333,7 @@ void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp, parametres *je
     }
     else if (histoCp != NULL)
     {
-        for(int i=0 ; i<((jeu.nbJoueurs%2)+1); i++)
+        for(int i=0 ; i<((jeu->nbJoueurs%2)+1); i++)
         {
             if (estDans((*actuelG)->position, histoCp) == NULL)
             {
@@ -365,11 +357,11 @@ void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp, parametres *je
                     *actuelH = (*actuelH)->prec;
                 }
 
-                if (estDans((*actuelG)->position, *histoCp) == 0)
+                if (estDans((*actuelG)->position, histoCp) == NULL)
                 {
                     printf("Vous êtes revenu au début du jeu !\n");
                 }
-                else if (estDans((*actuelG)->position, *histoCp) == 1)
+                else if (estDans((*actuelG)->position, histoCp) != NULL)
                 {
                     printf("Vous êtes revenu au coup : %s\n", (*actuelG)->position);
                 }
@@ -387,7 +379,7 @@ void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp, parametres *jeu)
     }
     else if (histoCp != NULL)
     {
-        for(int i=0 ; i<((jeu.nbJoueurs%2)+1);i++)
+        for(int i=0 ; i<((jeu->nbJoueurs%2)+1);i++)
         {
             if (*actuelH != NULL)
             {
@@ -909,6 +901,7 @@ void retournPions(Move *a_retourner)
         }
         ptr = ptr->suiv;
     }
+}    
 
 void AfficheListe(const Move * l)
 {

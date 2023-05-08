@@ -26,6 +26,7 @@ typedef struct paramJeu
     int tourJoueur;
 
 } parametres;
+void viderBuffer(void);
 
 Move *creatMaillon(int joueur, char position[3]);
 #endif

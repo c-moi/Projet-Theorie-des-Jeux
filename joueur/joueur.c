@@ -5,13 +5,16 @@ parametres configPlayers(parametres jeu)
 {
     char start[4];
     printf("Souhaitez-vous jouer à 1 joueur ou 2 ?\n tapez 1 pour un joueur ou 2 pour 2 joueurs\n");
+    viderBuffer();
     scanf("%d", &(jeu.nbJoueurs));
     switch (jeu.nbJoueurs)
     {
         case 1 : 
             printf("Choisissez la difficulté de l'IA : rentrez un nombre entre 1 et 10\n");
+            viderBuffer();
             scanf("%d", &(jeu.lvlOrdi));
             printf("Voulez-vous commencer en premier ?  Tapez Oui ou Non : ");
+            viderBuffer();
             scanf("%s", start);
             if (strcmp(start, "Oui") == 0 || strcmp(start,"oui") == 0)
             {
@@ -79,6 +82,7 @@ char* demandeJoueur(char* rep)
     while (strlen(rep) != 2)
     {
         printf("Quel est la position du joueur : ");
+        viderBuffer();
         fgets(rep, 3*sizeof(char), stdin);
 
         if (strlen(rep) != 2)
