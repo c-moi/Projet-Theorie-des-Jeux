@@ -2,7 +2,7 @@
 
 //version beta n'est capable que de charger une liste depuis un fichier sans retourner les pions adverses
 
-void chargerHistorique(Move** liste, Move** actuelG, Move** histo, Move** actuelH, int* fin)
+void chargerHistorique(Move** liste, Move** actuelG, Move** histo, Move** actuelH)
 {
     FILE *fichier=NULL;
     int joueur;
@@ -26,7 +26,7 @@ void chargerHistorique(Move** liste, Move** actuelG, Move** histo, Move** actuel
             
             *liste = insTT(*liste, creatMaillon(joueur, position));
             *actuelG = deplacFin(*liste);
-            (*fin)++;
+            (jeu->numTour)++;
         }
     }
     fclose(fichier);

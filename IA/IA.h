@@ -16,18 +16,12 @@
 // ----------------------------------------------------------------------------------------------
 // - prototypes moteur de jeu -------------------------------------------------------------------
 
-#ifndef H_PA_MOTEUR
-#define H_PA_MOTEUR
+// #ifndef H_PA_MOTEUR
+// #define H_PA_MOTEUR
 
-typedef struct paramJeu
-{
-    int nbJoueurs;
-    int lvlOrdi;
-    int tourJoueur;
 
-} parametres;
 
-#endif
+// #endif
 
 // ----------------------------------------------------------------------------------------------
 
@@ -54,11 +48,11 @@ char* demandeIA(char* rep, parametres* jeu);
 // ----------------------------------------------------------------------------------------------
 // - import pour la gestion des fichiers --------------------------------------------------------
 
-#ifndef H_PA_FICHIERS
-#define H_PA_FICHIERS
+// #ifndef H_PA_FICHIERS
+// #define H_PA_FICHIERS
 
-#include "../fichier/fichier.h"
+// #include "../fichier/fichier.h"
 
-#endif
+// #endif
 
 // ----------------------------------------------------------------------------------------------

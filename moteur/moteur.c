@@ -25,9 +25,12 @@ int moteurJeu(void* DATA)
     // initialisation des joueurs
     char* rep; 
 
-    int tour = 60;
+    jeu = malloc(sizeof(parametres));
+    SDL_LockMutex(mutexJ);
+    jeu->numTour = 60;
+    SDL_UnlockMutex(mutexJ);
 
-    parametres jeu;
+    
 
 
 
@@ -39,7 +42,8 @@ int moteurJeu(void* DATA)
     // boucle de jeu
     while (input->action != 6)
     {
-        if(tour < 60)
+        
+        if(jeu->numTour < 60)
         {
             // configuration action du joueur
             action = 0;
@@ -61,6 +65,8 @@ int moteurJeu(void* DATA)
             // scanf("%d", &(input->action);
             // printf("\n");
 
+            // printf("input->action :%d\n",input->action);
+            // printf("input position: %s\n",input->position);
             switch (input->action)
             {      
                 case 1:
@@ -69,9 +75,9 @@ int moteurJeu(void* DATA)
                     // printf("Le joueur %d joue en %s \n", jeu.tourJoueur, maillon->position);
                 
                 
-                    maillon = creatMaillon(jeu.tourJoueur, input->position);
-                    printf("Le joueur %d joue en %s \n", jeu.tourJoueur, maillon->position);
-                    respectRegles(&histoCp, &actuelG, &actuelH, maillon, &jeu, &tour);
+                    maillon = creatMaillon(jeu->tourJoueur, input->position);
+                    printf("Le joueur %d joue en %s \n", jeu->tourJoueur, maillon->position);
+                    respectRegles(&histoCp, &actuelG, &actuelH, maillon);
                     input->action = 0;
                     break;
                 case 2:
@@ -94,22 +100,25 @@ int moteurJeu(void* DATA)
                     break;
 
                 default:
-                    printf("Choix invalide, ceci n'est pas une action possible... \n");
+                    //debug
+                    //printf("Choix invalide, ceci n'est pas une action possible... \n");
+
                     break;
             }
-            free(rep);
-            viderBuffer();
+            // free(rep);
+            // viderBuffer();
 
-            if(tour == 60)
+            if(jeu->numTour == 60)
             {
                 char restart;
+                input->error=8;
                 printf("La partie est fini. Voulez vous recommencer une partie ? (O/N)");
                 viderBuffer();
                 scanf("%c", &restart);
                 
                 if (restart == 'O' || restart == 'o')
                 {
-                    tour = 0;
+                    jeu->numTour = 0;
                     
                     // reinit liste générale
                     if(listeG != NULL)
@@ -141,7 +150,7 @@ int moteurJeu(void* DATA)
                 }
                 else
                 {
-                    action=6;
+                   input->action=6;
                     
                 }
             }
@@ -164,7 +173,10 @@ int moteurJeu(void* DATA)
             initPlto();
             actuelG = deplacFin(listeG);
 
-            jeu = configPlayers(jeu);                        
+            //jeu = configPlayers(jeu);  
+            jeu->tourJoueur=1;
+            jeu->nbJoueurs=2;
+            jeu->lvlOrdi=0;                      
                                                                     
 
             //Chargement de partie si souhaité                                              //      
@@ -175,8 +187,9 @@ int moteurJeu(void* DATA)
                 scanf("%c", &choix_reprendre);                                                  //
                 if (choix_reprendre == 'O' || choix_reprendre == 'o')                           //
                 {                                                      //
-                    chargerHistorique(&listeG, &actuelG, &histoCp, &actuelH, &tour);  
+                    chargerHistorique(&listeG, &actuelG, &histoCp, &actuelH);  
 
+                    
                     printf("Vous avez repris la partie depuis l'historique sauvegardé.\n");     //
                 }                                                                               //
                 else                                                                            //
@@ -185,7 +198,7 @@ int moteurJeu(void* DATA)
                 } 
                 remove("fichier/historique.bin");
             }
-            tour = 0;
+            //jeu->numTour = 0;
         }
     }
     exit(0);
@@ -253,7 +266,7 @@ Move *deplacFin(Move *Liste)
 }
 
 
-void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, parametres *jeu, int* tour)
+void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon)
 {
     int pre = 0;
     Move* tst = listeG;
@@ -271,6 +284,7 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
 
         if (pre == 1)
         {
+            input->error=5;
             printf("Position impossible car la case est déjà occupée\n");
         }
         else
@@ -317,16 +331,18 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
                 *actuelG = MaillonG;
 
                 jeu->tourJoueur = (jeu->tourJoueur % 2)+ 1; 
-                (*tour)++;
+                (jeu->numTour)++;
             }
             else
             {
+                input->error=6;
                 printf("Cela ne permet de retourner aucun pion, le coup n'a pas été retenu !\n");
             }
         }
     }
     else
     {
+        input->error=7;
         printf("Ceci ne correspond pas à une case du plateau !\n");
     }
 } 
@@ -336,6 +352,7 @@ void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp, parametres *je
     
     if (histoCp == NULL)
     {
+        input->error=1;
         printf("Vous ne pouvez pas revenir à un coup joué, aucune action n'a été faite au préalable !\n");
     }
     else if (histoCp != NULL)
@@ -344,6 +361,7 @@ void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp, parametres *je
         {
             if (estDans((*actuelG)->position, histoCp) == NULL)
             {
+                input->error=2;
                 printf("Vous êtes au début du jeu !\n");
             }
             else if (estDans((*actuelG)->position, histoCp) != NULL)
@@ -366,10 +384,12 @@ void deplacArriere(Move** actuelG, Move** actuelH, Move* histoCp, parametres *je
 
                 if (estDans((*actuelG)->position, histoCp) == NULL)
                 {
+                    input->error=3;
                     printf("Vous êtes revenu au début du jeu !\n");
                 }
                 else if (estDans((*actuelG)->position, histoCp) != NULL)
                 {
+                    input->error=0;
                     printf("Vous êtes revenu au coup : %s\n", (*actuelG)->position);
                 }
             }
@@ -382,6 +402,7 @@ void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp, parametres *jeu)
 {
     if (histoCp == NULL)
     {
+        input->error=1;
         printf("Vous ne pouvez pas revenir à un coup joué, aucune action n'a été faite au préalable !\n");
     }
     else if (histoCp != NULL)
@@ -397,10 +418,12 @@ void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp, parametres *jeu)
                     retournPions((*actuelH)->switched);
                     jeu->tourJoueur = (jeu->tourJoueur % 2)+ 1;
                     *actuelG = (*actuelG)->suiv;
+                    input->error=0;
                     printf("Vous êtes revenu au coup : %s\n", (*actuelH)->position);
                 }
                 else
                 {
+                    input->error=4;
                     printf("Vous êtes à votre dernier coup joué !\n");
                 }
             }
@@ -411,6 +434,7 @@ void deplacAvant(Move** actuelG, Move** actuelH, Move* histoCp, parametres *jeu)
                 retournPions((*actuelH)->switched);
                 jeu->tourJoueur = (jeu->tourJoueur % 2)+ 1;
                 *actuelG = (*actuelG)->suiv;
+                input->error=0;
                 printf("Vous êtes revenu au coup : %s\n", (*actuelH)->position);
             }
         }
@@ -440,22 +464,26 @@ void printMoveHistory(Move *Liste, Move *End)
     int cpt = 0;
     if (Liste == NULL)
     {
+        input->error=9;
         printf("\n Historique de jeu vide ! \n");
     }
     else if (Liste != NULL)
     {
         if (estDans(End->position, Liste) == NULL)
         {
+            input->error=9;
             printf("\n Historique de jeu vide ! \n");
         }
         else if(estDans(End->position, Liste) != NULL)
         {
             while (Liste != End)
             {
+                input->error=0;
                 printf("Mouvement %d : %d a joué en (%s)\n", cpt + 1, Liste->joueur, Liste->position);
                 Liste = Liste->suiv;
                 cpt++;
             }
+            input->error=0;
             printf("Mouvement %d : %d a joué en (%s)\n", cpt + 1, Liste->joueur, Liste->position);
         }
     }
@@ -884,6 +912,7 @@ Move* verifContour(char rep[3], parametres* jeu)
 
     if (listadv == NULL)
     {
+        input->error=10;
         printf("Emplacement impossible car aucun pion adverse autour\n");
     }
     return listadv;

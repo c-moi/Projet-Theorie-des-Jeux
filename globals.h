@@ -18,9 +18,21 @@ typedef struct move {
 extern Move* listeG;
 extern SDL_mutex* mutexG;
 
+typedef struct paramJeu
+{
+    int nbJoueurs;
+    int lvlOrdi;
+    int tourJoueur;
+    int numTour;
+
+} parametres;
+extern parametres* jeu;
+extern SDL_mutex* mutexJ;
+
 typedef struct ordre {
     int action;
     char position[3];
+    int error;
 }Ordre;
 
 extern Ordre *input;

@@ -19,7 +19,7 @@
 
 #ifndef H_PA_FICHIER
 #define H_PA_FICHIER
-void chargerHistorique(Move** liste, Move** actuelG, Move** histo, Move** actuelH, int* fin);
+void chargerHistorique(Move** liste, Move** actuelG, Move** histo, Move** actuelH);
 void sauvegarderHistorique (Move *L, Move *actuel);
 
 
