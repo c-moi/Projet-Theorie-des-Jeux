@@ -20,13 +20,7 @@
 #ifndef H_PA_MOTEUR
 #define H_PA_MOTEUR
 
-typedef struct paramJeu
-{
-    int nbJoueurs;
-    int lvlOrdi;
-    int tourJoueur;
 
-} parametres;
 
 int moteurJeu(void* DATA);
 void initPlto();
@@ -35,7 +29,7 @@ Move* creatMaillon(int joueur, char position[3]);
 Move* insTT(Move *L, Move *moves);
 Move* deplacFin(Move *L);
 
-void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, parametres *jeu, int* tour);
+void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon);
 Move* verifContour(char rep[3], parametres* jeu);
 Move* verifAllie(char rep[3], parametres* jeu);
 

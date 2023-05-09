@@ -52,3 +52,9 @@ void setupTab(char* val[8][8]);
 #endif
 
 // ----------------------------------------------------------------------------------------------
+// #ifndef H_PA_JOUEUR
+// #define H_PA_JOUEUR
+
+#include "../joueur/joueur.h"
+
+// #endif

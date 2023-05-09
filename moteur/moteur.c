@@ -25,9 +25,12 @@ int moteurJeu(void* DATA)
     // initialisation des joueurs
     char* rep; 
 
-    int tour = 60;
+    jeu = malloc(sizeof(parametres));
+    SDL_LockMutex(mutexJ);
+    jeu->numTour = 60;
+    SDL_UnlockMutex(mutexJ);
 
-    parametres jeu;
+    
 
 
 
@@ -40,7 +43,7 @@ int moteurJeu(void* DATA)
     while (input->action != 6)
     {
         
-        if(tour < 60)
+        if(jeu->numTour < 60)
         {
             // configuration action du joueur
             action = 0;
@@ -72,9 +75,9 @@ int moteurJeu(void* DATA)
                     // printf("Le joueur %d joue en %s \n", jeu.tourJoueur, maillon->position);
                 
                 
-                    maillon = creatMaillon(jeu.tourJoueur, input->position);
-                    printf("Le joueur %d joue en %s \n", jeu.tourJoueur, maillon->position);
-                    respectRegles(&histoCp, &actuelG, &actuelH, maillon, &jeu, &tour);
+                    maillon = creatMaillon(jeu->tourJoueur, input->position);
+                    printf("Le joueur %d joue en %s \n", jeu->tourJoueur, maillon->position);
+                    respectRegles(&histoCp, &actuelG, &actuelH, maillon);
                     input->action = 0;
                     break;
                 case 2:
@@ -105,7 +108,7 @@ int moteurJeu(void* DATA)
             // free(rep);
             // viderBuffer();
 
-            if(tour == 60)
+            if(jeu->numTour == 60)
             {
                 char restart;
                 input->error=8;
@@ -115,7 +118,7 @@ int moteurJeu(void* DATA)
                 
                 if (restart == 'O' || restart == 'o')
                 {
-                    tour = 0;
+                    jeu->numTour = 0;
                     
                     // reinit liste générale
                     if(listeG != NULL)
@@ -171,9 +174,9 @@ int moteurJeu(void* DATA)
             actuelG = deplacFin(listeG);
 
             //jeu = configPlayers(jeu);  
-            jeu.tourJoueur=1;
-            jeu.nbJoueurs=2;
-            jeu.lvlOrdi=0;                      
+            jeu->tourJoueur=1;
+            jeu->nbJoueurs=2;
+            jeu->lvlOrdi=0;                      
                                                                     
 
             //Chargement de partie si souhaité                                              //      
@@ -184,7 +187,7 @@ int moteurJeu(void* DATA)
                 scanf("%c", &choix_reprendre);                                                  //
                 if (choix_reprendre == 'O' || choix_reprendre == 'o')                           //
                 {                                                      //
-                    chargerHistorique(&listeG, &actuelG, &histoCp, &actuelH, &tour);  
+                    chargerHistorique(&listeG, &actuelG, &histoCp, &actuelH);  
 
                     
                     printf("Vous avez repris la partie depuis l'historique sauvegardé.\n");     //
@@ -195,7 +198,7 @@ int moteurJeu(void* DATA)
                 } 
                 remove("fichier/historique.bin");
             }
-            tour = 0;
+            //jeu->numTour = 0;
         }
     }
     exit(0);
@@ -263,7 +266,7 @@ Move *deplacFin(Move *Liste)
 }
 
 
-void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon, parametres *jeu, int* tour)
+void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Maillon)
 {
     int pre = 0;
     Move* tst = listeG;
@@ -328,7 +331,7 @@ void respectRegles(Move** historique, Move** actuelG, Move** actuelH, Move* Mail
                 *actuelG = MaillonG;
 
                 jeu->tourJoueur = (jeu->tourJoueur % 2)+ 1; 
-                (*tour)++;
+                (jeu->numTour)++;
             }
             else
             {
